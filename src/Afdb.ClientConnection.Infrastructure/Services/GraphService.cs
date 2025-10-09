@@ -111,6 +111,67 @@ internal sealed class GraphService(GraphServiceClient graphClient, IConfiguratio
     }
 
 
+    public async Task<List<string>> GetFifcDOs(CancellationToken cancellationToken = default)
+    {
+        bool useMock = configuration.GetValue<bool>("Graph:UseMock");
+        List<string> adminEmails;
+
+        if (useMock)
+        {
+            List<string>? mockEmails = configuration.GetSection("Graph:MockFifc3DOUsers").Get<List<string>>();
+            if (mockEmails == null || mockEmails.Count == 0)
+            {
+                logger.LogInformation("FIFC Admin mock emails are not configured.");
+                throw new InvalidOperationException("ERR.General.MissingConfiguration");
+            }
+
+            adminEmails = [.. mockEmails!];
+        }
+        else
+        {
+            var groupName = configuration["Graph:AppGroups:CcFifc3DO"];
+            if (string.IsNullOrEmpty(groupName))
+            {
+                logger.LogInformation("FIFC Admin group name is not configured.");
+                throw new InvalidOperationException("ERR.General.MissingConfiguration");
+            }
+            adminEmails = (await GetGroupUserEmailsAsync(groupName, cancellationToken)).ToList();
+        }
+
+        return adminEmails;
+    }
+
+    public async Task<List<string>> GetFifcDAs(CancellationToken cancellationToken = default)
+    {
+        bool useMock = configuration.GetValue<bool>("Graph:UseMock");
+        List<string> adminEmails;
+
+        if (useMock)
+        {
+            List<string>? mockEmails = configuration.GetSection("Graph:MockFifc3DAUsers").Get<List<string>>();
+            if (mockEmails == null || mockEmails.Count == 0)
+            {
+                logger.LogInformation("FIFC Admin mock emails are not configured.");
+                throw new InvalidOperationException("ERR.General.MissingConfiguration");
+            }
+
+            adminEmails = [.. mockEmails!];
+        }
+        else
+        {
+            var groupName = configuration["Graph:AppGroups:CcFifc3DA"];
+            if (string.IsNullOrEmpty(groupName))
+            {
+                logger.LogInformation("FIFC Admin group name is not configured.");
+                throw new InvalidOperationException("ERR.General.MissingConfiguration");
+            }
+            adminEmails = (await GetGroupUserEmailsAsync(groupName, cancellationToken)).ToList();
+        }
+
+        return adminEmails;
+    }
+
+
     private async Task<IReadOnlyList<string>> GetGroupUserEmailsAsync(string groupName, CancellationToken cancellationToken = default)
     {
         try

@@ -2,9 +2,7 @@
 using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Domain.Enums;
 using Afdb.ClientConnection.Infrastructure.Data;
-using Afdb.ClientConnection.Infrastructure.Data.Entities;
 using Afdb.ClientConnection.Infrastructure.Data.Mapping;
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace Afdb.ClientConnection.Infrastructure.Repositories;
@@ -119,8 +117,5 @@ internal sealed class ClaimRepository : IClaimRepository
         }
     }
 
-    public async Task<bool> ExistsAsync(Guid id)
-    {
-        return await _context.Claims.AnyAsync(c => c.Id == id);
-    }
+    public async Task<bool> ExistsAsync(Guid id) => await _context.Claims.AnyAsync(c => c.Id == id);
 }

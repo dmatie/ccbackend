@@ -7,4 +7,6 @@ public interface IGraphService
         string? organizationName, CancellationToken cancellationToken = default);
     Task<bool> DeleteGuestUserAsync(string objectId, CancellationToken cancellationToken = default);
     Task<List<string>> GetFifcAdmin(CancellationToken cancellationToken = default);
+    Task<List<string>> GetFifcDOs(CancellationToken cancellationToken = default);
+    Task<List<string>> GetFifcDAs(CancellationToken cancellationToken = default);
 }

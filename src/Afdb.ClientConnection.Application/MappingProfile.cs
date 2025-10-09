@@ -55,8 +55,29 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.HasEntraIdAccount, opt => opt.MapFrom(src => src.HasEntraIdAccount))
             .ForMember(dest => dest.FunctionName, opt => opt.MapFrom(src => src.Function != null ? src.Function.Name : null))
             .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Country != null ? src.Country.Name : null))
-            .ForMember(dest => dest.BusinessProfileName, opt => opt.MapFrom(src => src.BusinessProfile != null ? src.BusinessProfile.Name : null))
+            .ForMember(dest => dest.BusinessProfileName, 
+            opt => opt.MapFrom(src => src.BusinessProfile != null ? src.BusinessProfile.Name : null))
             .ForMember(dest => dest.FinancingTypeName, opt => opt.MapFrom(src => src.FinancingType != null ? src.FinancingType.Name : null))
             .ForMember(dest => dest.SelectedProjectCodes, opt => opt.MapFrom(src => src.Projects.Select(p=>p.SapCode).ToList()));
+
+
+        CreateMap<ClaimType, ClaimTypeDto>();
+
+        CreateMap<ClaimProcess, ClaimProcessDto>()
+            .ForMember(dest => dest.UserFirstName, opt => opt.MapFrom(src => src.User != null ? src.User.FirstName : string.Empty))
+            .ForMember(dest => dest.UserLastName, opt => opt.MapFrom(src => src.User != null ? src.User.LastName : string.Empty))
+            .ForMember(dest => dest.UserFullName, 
+                        opt => opt.MapFrom(src => src.User != null ? $"{src.User.FirstName} {src.User.LastName}" : string.Empty));
+
+        CreateMap<Claim, ClaimDto>()
+            .ForMember(dest => dest.ClaimTypeName, opt => opt.MapFrom(src => src.ClaimType != null ? src.ClaimType.Name : string.Empty))
+            .ForMember(dest => dest.ClaimTypeNameFr, opt => opt.MapFrom(src => src.ClaimType != null ? src.ClaimType.NameFr : string.Empty))
+            .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Country != null ? src.Country.Name : string.Empty))
+            .ForMember(dest => dest.UserFirstName, opt => opt.MapFrom(src => src.User != null ? src.User.FirstName : string.Empty))
+            .ForMember(dest => dest.UserLastName, opt => opt.MapFrom(src => src.User != null ? src.User.LastName : string.Empty))
+            .ForMember(dest => dest.UserFullName, 
+                        opt => opt.MapFrom(src => src.User != null ? $"{src.User.FirstName} {src.User.LastName}" : string.Empty))
+            .ForMember(dest => dest.UserEmail, opt => opt.MapFrom(src => src.User != null ? src.User.Email : string.Empty))
+            .ForMember(dest => dest.Processes, opt => opt.MapFrom(src => src.Processes));
     }
 }

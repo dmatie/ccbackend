@@ -1,5 +1,6 @@
 ﻿using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Domain.Entities;
+using Afdb.ClientConnection.Domain.Enums;
 using Afdb.ClientConnection.Infrastructure.Data;
 using Afdb.ClientConnection.Infrastructure.Data.Entities;
 using AutoMapper;
@@ -50,6 +51,16 @@ internal sealed class UserRepository : IUserRepository
 
         return entities.Select(MapToDomain);
     }
+
+    public async Task<IEnumerable<User>> GetActiveUsersByRolesAsync(List<UserRole> roles)
+    {
+        var entities = await _context.Users
+            .Where(u => u.IsActive && roles.Contains(u.Role))
+            .ToListAsync();
+
+        return entities.Select(MapToDomain);
+    }
+
 
     public async Task<User> AddAsync(User user)
     {
