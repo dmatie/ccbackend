@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Application.Common.Interfaces;
+using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Domain.Enums;
 using Afdb.ClientConnection.Infrastructure.Data;
@@ -70,6 +70,32 @@ internal sealed class ClaimRepository : IClaimRepository
             .Include(c => c.User)
             .Include(c => c.Processes)
             .Where(c => c.UserId == userId)
+            .OrderByDescending(c => c.CreatedAt)
+            .ToListAsync();
+
+        if (entities.Count == 0)
+            return null;
+
+        return [.. entities.Select(DomainMappings.MapClaimToDomain)];
+    }
+
+    public async Task<IEnumerable<Claim>?> GetByUserIdAndStatusAsync(Guid userId, ClaimStaus? status)
+    {
+        var query = _context.Claims
+            .Include(c => c.ClaimType)
+            .Include(c => c.Country)
+            .Include(c => c.User)
+            .Include(c => c.Processes)
+                .ThenInclude(p => p.User)
+            .Where(c => c.UserId == userId);
+
+        if (status.HasValue)
+        {
+            query = query.Where(c => c.Status == status.Value);
+        }
+
+        var entities = await query
+            .OrderByDescending(c => c.CreatedAt)
             .ToListAsync();
 
         if (entities.Count == 0)

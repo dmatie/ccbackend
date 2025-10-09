@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Domain.Entities;
+using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Domain.Enums;
 
 namespace Afdb.ClientConnection.Application.Common.Interfaces;
@@ -11,5 +11,6 @@ public interface IClaimRepository
     Task<IEnumerable<Claim>?> GetAllByStatusAsync(ClaimStaus status);
     Task<Claim?> GetByIdAsync(Guid id);
     Task<IEnumerable<Claim>?> GetByUserIdAsync(Guid userId);
+    Task<IEnumerable<Claim>?> GetByUserIdAndStatusAsync(Guid userId, ClaimStaus? status);
     Task UpdateAsync(Claim claim);
 }
