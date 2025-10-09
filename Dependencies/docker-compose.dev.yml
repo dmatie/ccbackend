@@ -1,0 +1,23 @@
+version: '3.9'
+name: dev-local-server
+services:
+  sqlserver-dev:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver_dev
+    restart: unless-stopped
+    environment:
+      SA_PASSWORD: "aDb#Cc@Pwd!dev"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "5001:1433" 
+    volumes:
+      - sqlserver_dev_data:/var/opt/mssql   # Persistance des données
+    networks:
+      - dev_net
+
+volumes:
+  sqlserver_dev_data:
+
+networks:
+  dev_net:
+    driver: bridge

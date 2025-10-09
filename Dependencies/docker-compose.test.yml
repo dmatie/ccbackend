@@ -1,0 +1,24 @@
+version: '3.9'
+
+name: server-local-test
+services:
+  sqlserver-test:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver_test
+    restart: unless-stopped
+    environment:
+      SA_PASSWORD: "aDb#Cc@Pwd!test"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "5002:1433" # éviter conflit avec dev (port différent)
+    volumes:
+      - sqlserver_test_data:/var/opt/mssql   # Persistance des données
+    networks:
+      - test_net
+
+volumes:
+  sqlserver_test_data:
+
+networks:
+  test_net:
+    driver: bridge

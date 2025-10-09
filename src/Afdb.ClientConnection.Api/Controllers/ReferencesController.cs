@@ -1,0 +1,61 @@
+﻿using Afdb.ClientConnection.Application.Queries.ReferenceQrs;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Afdb.ClientConnection.Api.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class ReferencesController(IMediator mediator) : ControllerBase
+{
+    private readonly IMediator _mediator = mediator;
+
+    /// <summary>
+    /// Lister les pays actifs
+    /// </summary>
+    [HttpGet("countries")]
+    [AllowAnonymous]
+    public async Task<ActionResult<GetCountriesResponse>> GetCountries(CancellationToken cancellationToken = default)
+    {
+        var query = new GetCountriesQuery();
+        var result = await _mediator.Send(query, cancellationToken);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Lister les fonctions actifs
+    /// </summary>
+    [HttpGet("functions")]
+    [AllowAnonymous]
+    public async Task<ActionResult<GetFunctionsResponse>> GetFunctions(CancellationToken cancellationToken = default)
+    {
+        var query = new GetFunctionsQuery();
+        var result = await _mediator.Send(query, cancellationToken);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Lister les BusinessProfile actifs
+    /// </summary>
+    [HttpGet("business-profiles")]
+    [AllowAnonymous]
+    public async Task<ActionResult<GetBusinessProfilesResponse>> GetBusinessProfiles(CancellationToken cancellationToken = default)
+    {
+        var query = new GetBusinessProfilesQuery();
+        var result = await _mediator.Send(query, cancellationToken);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Lister les Financing types actifs
+    /// </summary>
+    [HttpGet("financing-types")]
+    [AllowAnonymous]
+    public async Task<ActionResult<GetFinancingTypesResponse>> GetFinancingTypes(CancellationToken cancellationToken = default)
+    {
+        var query = new GetFinancingTypesQuery();
+        var result = await _mediator.Send(query, cancellationToken);
+        return Ok(result);
+    }
+}
