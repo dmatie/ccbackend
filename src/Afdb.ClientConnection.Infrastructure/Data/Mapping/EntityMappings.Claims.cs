@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Domain.Entities;
+using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Infrastructure.Data.Entities;
 
 namespace Afdb.ClientConnection.Infrastructure.Data.Mapping;
@@ -76,5 +76,23 @@ internal partial class EntityMappings
         }
 
         entity.DomainEvents = source.DomainEvents.ToList();
+    }
+
+    public static ClaimProcessEntity MapClaimProcessToEntity(ClaimProcess source)
+    {
+        var entity = new ClaimProcessEntity
+        {
+            Id = source.Id,
+            ClaimId = source.ClaimId,
+            UserId = source.UserId,
+            Status = source.Status,
+            Comment = source.Comment,
+            CreatedAt = source.CreatedAt,
+            CreatedBy = source.CreatedBy,
+            UpdatedAt = source.UpdatedAt,
+            UpdatedBy = source.UpdatedBy
+        };
+
+        return entity;
     }
 }

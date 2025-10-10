@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Application.Common.Interfaces;
+using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Infrastructure.Data;
 using Afdb.ClientConnection.Infrastructure.Repositories;
 using Afdb.ClientConnection.Infrastructure.Services;
@@ -33,6 +33,9 @@ public static class DependencyInjection
         services.AddScoped<IBusinessProfileRepository, BusinessProfileRepository>();
         services.AddScoped<ICountryRepository, CountryRepository>();
         services.AddScoped<IFinancingTypeRepository, FinancingTypeRepository>();
+        services.AddScoped<IClaimRepository, ClaimRepository>();
+        services.AddScoped<IClaimTypeRepository, ClaimTypeRepository>();
+        services.AddScoped<IClaimProcessRepository, ClaimProcessRepository>();
 
         // Services
         services.AddScoped<IAuditService, AuditService>();
