@@ -1,0 +1,188 @@
+using Afdb.ClientConnection.Application.Common.Interfaces;
+using Afdb.ClientConnection.Domain.Events;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+namespace Afdb.ClientConnection.Infrastructure.Services;
+
+internal sealed class PowerAutomateService : IPowerAutomateService
+{
+    private readonly HttpClient _httpClient;
+    private readonly IConfiguration _configuration;
+    private readonly ILogger<PowerAutomateService> _logger;
+    private readonly JsonSerializerOptions _jsonOptions;
+
+    public PowerAutomateService(
+        HttpClient httpClient,
+        IConfiguration configuration,
+        ILogger<PowerAutomateService> logger)
+    {
+        _httpClient = httpClient;
+        _configuration = configuration;
+        _logger = logger;
+
+        _jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            WriteIndented = false
+        };
+    }
+
+    public async Task NotifyClaimCreatedAsync(ClaimCreatedEvent claimCreatedEvent)
+    {
+        ArgumentNullException.ThrowIfNull(claimCreatedEvent);
+
+        var url = _configuration["PowerAutomate:ClaimCreatedUrl"];
+
+        if (string.IsNullOrWhiteSpace(url))
+        {
+            _logger.LogWarning("PowerAutomate:ClaimCreatedUrl is not configured. Skipping notification for ClaimId: {ClaimId}", claimCreatedEvent.ClaimId);
+            return;
+        }
+
+        try
+        {
+            _logger.LogInformation(
+                "Sending ClaimCreated notification to PowerAutomate for ClaimId: {ClaimId}",
+                claimCreatedEvent.ClaimId);
+
+            var payload = new
+            {
+                claimId = claimCreatedEvent.ClaimId,
+                claimTypeEn = claimCreatedEvent.ClaimTypeEn,
+                claimTypeFr = claimCreatedEvent.ClaimTypeFr,
+                comment = claimCreatedEvent.Comment,
+                country = claimCreatedEvent.Country,
+                author = new
+                {
+                    firstName = claimCreatedEvent.AuthorFirstName,
+                    lastName = claimCreatedEvent.AuthorLastName,
+                    email = claimCreatedEvent.AuthorEmail
+                },
+                assignToEmail = claimCreatedEvent.AssignToEmail,
+                assignCcEmail = claimCreatedEvent.AssignCcEmail,
+                timestamp = DateTime.UtcNow
+            };
+
+            var response = await _httpClient.PostAsJsonAsync(url, payload, _jsonOptions);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                _logger.LogError(
+                    "PowerAutomate ClaimCreated notification failed. StatusCode: {StatusCode}, ClaimId: {ClaimId}, Error: {Error}",
+                    response.StatusCode,
+                    claimCreatedEvent.ClaimId,
+                    errorContent);
+
+                throw new HttpRequestException(
+                    $"PowerAutomate notification failed with status {response.StatusCode}: {errorContent}");
+            }
+
+            _logger.LogInformation(
+                "Successfully sent ClaimCreated notification to PowerAutomate for ClaimId: {ClaimId}",
+                claimCreatedEvent.ClaimId);
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogError(
+                ex,
+                "HTTP error while sending ClaimCreated notification to PowerAutomate for ClaimId: {ClaimId}",
+                claimCreatedEvent.ClaimId);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(
+                ex,
+                "Unexpected error while sending ClaimCreated notification to PowerAutomate for ClaimId: {ClaimId}",
+                claimCreatedEvent.ClaimId);
+            throw;
+        }
+    }
+
+    public async Task NotifyClaimResponseAddedAsync(ClaimProcessAddedEvent claimResponseAddedEvent)
+    {
+        ArgumentNullException.ThrowIfNull(claimResponseAddedEvent);
+
+        var url = _configuration["PowerAutomate:ClaimResponseUrl"];
+
+        if (string.IsNullOrWhiteSpace(url))
+        {
+            _logger.LogWarning("PowerAutomate:ClaimResponseUrl is not configured. Skipping notification for ClaimId: {ClaimId}", claimResponseAddedEvent.ClaimId);
+            return;
+        }
+
+        try
+        {
+            _logger.LogInformation(
+                "Sending ClaimResponseAdded notification to PowerAutomate for ClaimId: {ClaimId}",
+                claimResponseAddedEvent.ClaimId);
+
+            var payload = new
+            {
+                claimId = claimResponseAddedEvent.ClaimId,
+                claimTypeEn = claimResponseAddedEvent.ClaimTypeEn,
+                claimTypeFr = claimResponseAddedEvent.ClaimTypeFr,
+                comment = claimResponseAddedEvent.Comment,
+                country = claimResponseAddedEvent.Country,
+                author = new
+                {
+                    firstName = claimResponseAddedEvent.AuthorFirstName,
+                    lastName = claimResponseAddedEvent.AuthorLastName,
+                    email = claimResponseAddedEvent.AuthorEmail
+                },
+                process = new
+                {
+                    comment = claimResponseAddedEvent.ProcessComment,
+                    author = new
+                    {
+                        firstName = claimResponseAddedEvent.ProcessAuthorFirstName,
+                        lastName = claimResponseAddedEvent.ProcessAuthorLastName
+                    },
+                    status = claimResponseAddedEvent.ProcessStatus
+                },
+                timestamp = DateTime.UtcNow
+            };
+
+            var response = await _httpClient.PostAsJsonAsync(url, payload, _jsonOptions);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                _logger.LogError(
+                    "PowerAutomate ClaimResponseAdded notification failed. StatusCode: {StatusCode}, ClaimId: {ClaimId}, Error: {Error}",
+                    response.StatusCode,
+                    claimResponseAddedEvent.ClaimId,
+                    errorContent);
+
+                throw new HttpRequestException(
+                    $"PowerAutomate notification failed with status {response.StatusCode}: {errorContent}");
+            }
+
+            _logger.LogInformation(
+                "Successfully sent ClaimResponseAdded notification to PowerAutomate for ClaimId: {ClaimId}",
+                claimResponseAddedEvent.ClaimId);
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogError(
+                ex,
+                "HTTP error while sending ClaimResponseAdded notification to PowerAutomate for ClaimId: {ClaimId}",
+                claimResponseAddedEvent.ClaimId);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(
+                ex,
+                "Unexpected error while sending ClaimResponseAdded notification to PowerAutomate for ClaimId: {ClaimId}",
+                claimResponseAddedEvent.ClaimId);
+            throw;
+        }
+    }
+}

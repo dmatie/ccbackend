@@ -45,6 +45,13 @@ public static class DependencyInjection
         services.AddScoped<IOtpCodeRepository, OtpCodeRepository>();
         services.AddScoped<IOtpService, OtpService>();
 
+        // HttpClient for PowerAutomateService
+        services.AddHttpClient<IPowerAutomateService, PowerAutomateService>(client =>
+        {
+            client.Timeout = TimeSpan.FromSeconds(30);
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+        });
+
 
         // Service Bus
         services.AddSingleton<ServiceBusClient>(provider =>
