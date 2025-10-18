@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Infrastructure.Data.Configurations;
+using Afdb.ClientConnection.Infrastructure.Data.Configurations;
 using Afdb.ClientConnection.Infrastructure.Data.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +23,15 @@ public class ClientConnectionDbContext(DbContextOptions<ClientConnectionDbContex
     public DbSet<ClaimEntity> Claims { get; set; } = null!;
     public DbSet<ClaimTypeEntity> ClaimTypes { get; set; } = null!;
     public DbSet<ClaimProcessEntity> ClaimProcesses { get; set; } = null!;
+    public DbSet<CurrencyEntity> Currencies { get; set; } = null!;
+    public DbSet<DisbursementTypeEntity> DisbursementTypes { get; set; } = null!;
+    public DbSet<DisbursementEntity> Disbursements { get; set; } = null!;
+    public DbSet<DisbursementProcessEntity> DisbursementProcesses { get; set; } = null!;
+    public DbSet<DisbursementDocumentEntity> DisbursementDocuments { get; set; } = null!;
+    public DbSet<DisbursementA1Entity> DisbursementA1 { get; set; } = null!;
+    public DbSet<DisbursementA2Entity> DisbursementA2 { get; set; } = null!;
+    public DbSet<DisbursementA3Entity> DisbursementA3 { get; set; } = null!;
+    public DbSet<DisbursementB1Entity> DisbursementB1 { get; set; } = null!;
 
 
     protected override void OnModelCreating(ModelBuilder builder)
