@@ -2,24 +2,18 @@ using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Domain.Entities;
 
 namespace Afdb.ClientConnection.Infrastructure.Services;
-public class ReferenceService : IReferenceService
+public class ReferenceService(
+    IFunctionRepository functionRepository,
+    IBusinessProfileRepository businessProfileRepository,
+    ICountryRepository countryRepository,
+    IClaimTypeRepository claimTypeRepository,
+    IFinancingTypeRepository financingTypeRepository) : IReferenceService
 {
-    private readonly IFunctionRepository _functionRepository;
-    private readonly IBusinessProfileRepository _businessProfileRepository;
-    private readonly ICountryRepository _countryRepository;
-    private readonly IFinancingTypeRepository _financingTypeRepository;
-
-    public ReferenceService(
-        IFunctionRepository functionRepository,
-        IBusinessProfileRepository businessProfileRepository,
-        ICountryRepository countryRepository,
-        IFinancingTypeRepository financingTypeRepository)
-    {
-        _functionRepository = functionRepository;
-        _businessProfileRepository = businessProfileRepository;
-        _countryRepository = countryRepository;
-        _financingTypeRepository = financingTypeRepository;
-    }
+    private readonly IFunctionRepository _functionRepository = functionRepository;
+    private readonly IBusinessProfileRepository _businessProfileRepository = businessProfileRepository;
+    private readonly ICountryRepository _countryRepository = countryRepository;
+    private readonly IFinancingTypeRepository _financingTypeRepository = financingTypeRepository;
+    private readonly IClaimTypeRepository _claimTypeRepository = claimTypeRepository;
 
     public async Task<Function?> GetFunctionByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
@@ -59,5 +53,15 @@ public class ReferenceService : IReferenceService
     public async Task<IEnumerable<FinancingType>> GetActiveFinancingTypesAsync(CancellationToken cancellationToken = default)
     {
         return await _financingTypeRepository.GetActiveAsync(cancellationToken);
+    }
+
+    public async Task<ClaimType?> GetClaimTypeByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return await _claimTypeRepository.GetByIdAsync(id);
+    }
+
+    public async Task<IEnumerable<ClaimType>?> GetActiveClaimTypesAsync(CancellationToken cancellationToken = default)
+    {
+        return await _claimTypeRepository.GetAllAsync();
     }
 }

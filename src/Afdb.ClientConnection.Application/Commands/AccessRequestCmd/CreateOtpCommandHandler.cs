@@ -1,23 +1,22 @@
 ﻿using Afdb.ClientConnection.Application.Common.Exceptions;
 using Afdb.ClientConnection.Application.Common.Interfaces;
-using Afdb.ClientConnection.Application.DTOs;
-using AutoMapper;
 using MediatR;
 
 namespace Afdb.ClientConnection.Application.Commands.AccessRequestCmd;
 
-public sealed class CreateOtpCommandHandler(IOtpService otpService, 
-    IAccessRequestRepository accessRequestRepository) : IRequestHandler<CreateOtpCommand>
+public sealed class CreateOtpCommandHandler(IOtpService otpService,
+    IAccessRequestRepository accessRequestRepository, IPowerAutomateService powerAutomateService) : IRequestHandler<CreateOtpCommand>
 {
     public async Task Handle(CreateOtpCommand request, CancellationToken cancellationToken)
     {
         if (request.IsEmailExist)
         {
             bool exist = await accessRequestRepository.ExistsEmailAsync(request.Email);
-            if(!exist)
-                 throw new NotFoundException("ERR.AccessRequest.NotExistEmail");
+            if (!exist)
+                throw new NotFoundException("ERR.AccessRequest.AlreadyExistRequest");
         }
 
-        await otpService.GenerateOtpForEmailAsync(request.Email);
+        string optCodeValue = await otpService.GenerateOtpForEmailAsync(request.Email);
+        await powerAutomateService.NotifyOtpCreatedAsync(request.Email, optCodeValue);
     }
 }

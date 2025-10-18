@@ -8,27 +8,29 @@ public sealed class ClaimProcess : AggregateRoot
 {
     public Guid ClaimId { get; private set; }
     public Guid UserId { get; private set; }
-    public ClaimStaus Status { get; set; }
+    public ClaimStatus Status { get; set; }
     public string Comment { get; private set; }
     public User User { get; private set; }= default!;
 
-    public ClaimProcess(Guid claimId, Guid userId, string comment, User user)
+    public ClaimProcess(ClaimProcessNewParam newParam )
     {
-        if (string.IsNullOrWhiteSpace(comment))
+        if (string.IsNullOrWhiteSpace(newParam.Comment))
             throw new ArgumentException("Comment cannot be empty");
 
-        ClaimId = claimId;
-        UserId = userId;
-        Comment = comment;
+        ClaimId = newParam.ClaimId;
+        UserId = newParam.UserId;
+        Status = newParam.Status;
+        Comment = newParam.Comment;
         CreatedAt = DateTime.UtcNow;
-        CreatedBy = user.Email;
-    }
+        CreatedBy = newParam.User.Email;
 
+    }
     public ClaimProcess(ClaimProcessLoadParam loadParam)
     {
         Id = loadParam.Id;
         ClaimId = loadParam.ClaimId;
         UserId = loadParam.UserId;
+        Status = loadParam.Status;
         User = loadParam.User;
         Comment = loadParam.Comment;
         CreatedAt = loadParam.CreatedAt;

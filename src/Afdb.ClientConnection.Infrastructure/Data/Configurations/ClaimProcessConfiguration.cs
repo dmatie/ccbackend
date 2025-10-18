@@ -12,8 +12,7 @@ public class ClaimProcessConfiguration : IEntityTypeConfiguration<ClaimProcessEn
 
         builder.HasKey(x => x.Id);
 
-        builder.Property(e => e.Status)
-            .HasConversion<string>();
+        builder.Property(e => e.Status);
 
 
         builder.Property(x => x.Comment)

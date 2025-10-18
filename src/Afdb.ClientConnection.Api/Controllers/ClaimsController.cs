@@ -26,7 +26,7 @@ public class ClaimsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<CreateClaimResponse>> CreateClaim(
-        [FromBody] CreateClaimCommand command, 
+        [FromBody] CreateClaimCommand command,
         CancellationToken cancellationToken = default)
     {
         var result = await _mediator.Send(command, cancellationToken);
@@ -39,17 +39,16 @@ public class ClaimsController(IMediator mediator) : ControllerBase
     /// <param name="userId">ID de l'utilisateur</param>
     /// <param name="cancellationToken">Token d'annulation</param>
     /// <returns>Liste des claims de l'utilisateur</returns>
-    [HttpGet("user/{userId}")]
+    [HttpGet("by-user")]
     [Authorize(Policy = "ExternalUsers")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IEnumerable<ClaimDto>>> GetClaimsByUser(
-        Guid userId,
+        [FromQuery] GetClaimsByUserQuery query,
         CancellationToken cancellationToken = default)
     {
-        var query = new GetClaimsByUserQuery { UserId = userId };
         var result = await _mediator.Send(query, cancellationToken);
         return Ok(result);
     }
@@ -112,7 +111,6 @@ public class ClaimsController(IMediator mediator) : ControllerBase
         [FromBody] AddClaimResponseCommand command,
         CancellationToken cancellationToken = default)
     {
-        command.ClaimId = id;
         var result = await _mediator.Send(command, cancellationToken);
         return CreatedAtAction(nameof(GetClaimById), new { id }, result);
     }

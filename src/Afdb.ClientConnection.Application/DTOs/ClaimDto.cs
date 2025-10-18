@@ -19,7 +19,7 @@ public sealed record ClaimDto
     public string UserFullName { get; init; } = string.Empty;
     public string UserEmail { get; init; } = string.Empty;
 
-    public ClaimStaus Status { get; init; }
+    public ClaimStatus Status { get; init; }
     public DateTime? ClosedAt { get; init; }
     public string Comment { get; init; } = string.Empty;
 

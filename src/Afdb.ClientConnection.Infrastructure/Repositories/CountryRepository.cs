@@ -41,4 +41,13 @@ public class CountryRepository : ICountryRepository
 
         return entities.Select(e => new Country(e.Id, e.Name, e.NameFr, e.Code, e.CreatedBy));
     }
+
+    public async Task<Country?> GetDefaultCountryAsync(CancellationToken cancellationToken = default)
+    {
+        var entity = await _context.Countries
+            .Where(c => !c.IsActive && c.Code == "NOT")
+            .FirstOrDefaultAsync(cancellationToken);
+
+        return entity != null ? new Country(entity.Id, entity.Name, entity.NameFr, entity.Code, entity.CreatedBy) : null;
+    }
 }

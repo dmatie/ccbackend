@@ -51,7 +51,7 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
             ArgumentException => (HttpStatusCode.BadRequest,
                 JsonSerializer.Serialize(new { message = exception.Message })),
             _ => (HttpStatusCode.InternalServerError,
-                JsonSerializer.Serialize(new { message = "ERR.General.InternalServerError" }))
+                JsonSerializer.Serialize(new { message = $"ERR.General.InternalServerError {exception.Message}" }))
         };
 
         context.Response.StatusCode = (int)statusCode;

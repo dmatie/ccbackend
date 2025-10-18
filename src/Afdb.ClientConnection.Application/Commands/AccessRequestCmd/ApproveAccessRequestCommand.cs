@@ -7,6 +7,8 @@ public sealed record ApproveAccessRequestCommand : IRequest<ApproveAccessRequest
 {
     public Guid AccessRequestId { get; set; }
     public string? Comments { get; set; }
+    public bool IsFromApplication { get; set; }
+    public string ApproverEmail { get; set; } = string.Empty;
 }
 
 public sealed record ApproveAccessRequestResponse

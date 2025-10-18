@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Afdb.ClientConnection.Application.Queries.ClaimQrs;
 
-public sealed class GetAllClaimsQueryHandler : IRequestHandler<GetAllClaimsQuery, IEnumerable<ClaimDto>>
+public sealed class GetAllClaimsQueryHandler : IRequestHandler<GetAllClaimsQuery, GetAllClaimsResponse>
 {
     private readonly IClaimRepository _claimRepository;
     private readonly IMapper _mapper;
@@ -18,15 +18,25 @@ public sealed class GetAllClaimsQueryHandler : IRequestHandler<GetAllClaimsQuery
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<ClaimDto>> Handle(GetAllClaimsQuery request, CancellationToken cancellationToken)
+    public async Task<GetAllClaimsResponse> Handle(GetAllClaimsQuery request, CancellationToken cancellationToken)
     {
         var claims = request.Status.HasValue
             ? await _claimRepository.GetAllByStatusAsync(request.Status.Value)
             : await _claimRepository.GetAllAsync();
 
-        if (claims == null || !claims.Any())
-            return [];
 
-        return _mapper.Map<IEnumerable<ClaimDto>>(claims);
+        List<ClaimDto> result = new();
+
+        if (claims != null && claims.Any())
+            result = _mapper.Map<IEnumerable<ClaimDto>>(claims).ToList();
+
+        return new GetAllClaimsResponse
+        {
+            Claims = result,
+            PageNumber = request.PageNumber,
+            PageSize = request.PageSize,
+            TotalCount = result.Count,
+            TotalPages = (int)Math.Ceiling(result.Count / (double)request.PageSize)
+        };
     }
 }

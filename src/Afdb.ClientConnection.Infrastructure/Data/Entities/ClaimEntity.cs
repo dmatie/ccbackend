@@ -17,7 +17,7 @@ public class ClaimEntity : BaseEntityConfiguration
     public Guid UserId { get; set; }
 
     [Required]
-    public ClaimStaus Status { get; set; }
+    public ClaimStatus Status { get; set; }
 
     public DateTime? ClosedAt { get; set; }
 

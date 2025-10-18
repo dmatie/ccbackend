@@ -1,5 +1,6 @@
-using Afdb.ClientConnection.Domain.Entities;
+﻿using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Infrastructure.Data.Entities;
+using System.Linq;
 
 namespace Afdb.ClientConnection.Infrastructure.Data.Mapping;
 
@@ -49,7 +50,7 @@ internal partial class EntityMappings
 
     public static void UpdateClaimEntityFromDomain(ClaimEntity entity, Claim source)
     {
-        entity.Status = source.Status;       
+        entity.Status = source.Status;
         entity.ClosedAt = source.ClosedAt;
         entity.CreatedAt = source.CreatedAt;
         entity.CreatedBy = source.CreatedBy;
@@ -58,20 +59,13 @@ internal partial class EntityMappings
 
         if (source.Processes.Count > 0)
         {
-            foreach (var item in source.Processes)
+            var existingIds = entity.Processes.Select(p => p.Id).ToHashSet();
+
+            var itemsToAdd = source.Processes.Where(item => !existingIds.Contains(item.Id)).ToList();
+
+            foreach (var item in itemsToAdd)
             {
-                entity.Processes.Add(new()
-                {
-                    Id = item.Id,
-                    ClaimId = item.ClaimId,
-                    Comment = item.Comment,
-                    UserId = item.UserId,
-                    Status = item.Status,
-                    CreatedAt = item.CreatedAt,
-                    CreatedBy = item.CreatedBy,
-                    UpdatedAt = item.UpdatedAt,
-                    UpdatedBy = item.UpdatedBy
-                });
+                entity.Processes.Add(MapClaimProcessToEntity(item));
             }
         }
 
@@ -82,7 +76,6 @@ internal partial class EntityMappings
     {
         var entity = new ClaimProcessEntity
         {
-            Id = source.Id,
             ClaimId = source.ClaimId,
             UserId = source.UserId,
             Status = source.Status,

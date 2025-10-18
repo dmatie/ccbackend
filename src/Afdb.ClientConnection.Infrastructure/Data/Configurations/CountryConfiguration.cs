@@ -439,8 +439,15 @@ public class CountryConfiguration : IEntityTypeConfiguration<CountryEntity>
                 NameFr = "Zimbabwe",
                 Code = "ZW",
                 IsActive = true
-            }
-            );
+            },
+            new CountryEntity
+            {
+                Id = Guid.Parse("91431d44-531f-48d1-b990-8bd34aa185f4"),
+                Name = "Not Defined",
+                NameFr = "Non défini",
+                Code = "NOT",
+                IsActive = false
+            });
     }
 
 }

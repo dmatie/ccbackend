@@ -41,7 +41,7 @@ public sealed class ClaimResponseAddedEventHandler : INotificationHandler<ClaimP
                 ex,
                 "Error handling ClaimProcessAddedEvent for ClaimId: {ClaimId}",
                 notification.ClaimId);
-            throw;
+            throw new InvalidOperationException("Error handling ClaimProcessAddedEvent for ClaimId: {ClaimId}");
         }
     }
 }

@@ -12,8 +12,7 @@ public class AccessRequestConfiguration : IEntityTypeConfiguration<AccessRequest
 
         builder.HasIndex(e => e.Email);
 
-        builder.Property(e => e.Status)
-            .HasConversion<string>();
+        builder.Property(e => e.Status);
 
         builder.Property(e => e.FunctionEntityId);
         builder.Property(e => e.CountryEntityId);

@@ -426,3 +426,4 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+/src/Afdb.ClientConnection.Api/Properties/ServiceDependencies/cc-perso-api - Zip Deploy

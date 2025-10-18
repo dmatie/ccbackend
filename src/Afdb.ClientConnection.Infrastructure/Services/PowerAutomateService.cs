@@ -101,7 +101,7 @@ internal sealed class PowerAutomateService : IPowerAutomateService
                 ex,
                 "Unexpected error while sending ClaimCreated notification to PowerAutomate for ClaimId: {ClaimId}",
                 claimCreatedEvent.ClaimId);
-            throw;
+            throw new InvalidOperationException("An error occurred while sending notification to PowerAutomate", ex);
         }
     }
 
@@ -182,7 +182,82 @@ internal sealed class PowerAutomateService : IPowerAutomateService
                 ex,
                 "Unexpected error while sending ClaimResponseAdded notification to PowerAutomate for ClaimId: {ClaimId}",
                 claimResponseAddedEvent.ClaimId);
+            throw new InvalidOperationException("An error occurred while sending notification to PowerAutomate", ex);
+        }
+    }
+
+    public async Task NotifyOtpCreatedAsync(string customerEmail, string code)
+    {
+        ArgumentNullException.ThrowIfNull(customerEmail);
+        ArgumentNullException.ThrowIfNull(code);
+
+        string otpSigKeyName = _configuration["KeyVault:OtpSendSecretKeyName"]!;
+        string sigValue = _configuration[otpSigKeyName]!;
+        var url = _configuration["PowerAutomate:OtpSendUrl"];
+
+
+        if (string.IsNullOrWhiteSpace(sigValue))
+        {
+            _logger.LogWarning("PowerAutomate:SendOtp Key is not configured. Skipping Otp notification code to Email: {Email}",
+                customerEmail);
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(url))
+        {
+            _logger.LogWarning("PowerAutomate:SendOtp URL is not configured. Skipping Otp notification code to Email: {Email}",
+                customerEmail);
+            return;
+        }
+
+        try
+        {
+            _logger.LogInformation(
+                "Sending Otp notification to PowerAutomate for Email: {Email}",
+                customerEmail);
+
+            var payload = new
+            {
+                email = customerEmail,
+                code = code
+            };
+
+            url = $"{url}{sigValue}";
+
+            var response = await _httpClient.PostAsJsonAsync(url, payload, _jsonOptions);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                _logger.LogError(
+                    "PowerAutomate Otp notification failed. StatusCode: {StatusCode}, Email: {Email}, Error: {Error}",
+                    response.StatusCode,
+                    customerEmail,
+                    errorContent);
+
+                throw new HttpRequestException(
+                    $"PowerAutomate notification failed with status {response.StatusCode}: {errorContent}");
+            }
+
+            _logger.LogInformation(
+                "Successfully sent Otp notification to PowerAutomate for Email: {Email}",
+                customerEmail);
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogError(
+                ex,
+                "HTTP error while sending Otp notification to PowerAutomate for Email: {Email}",
+                customerEmail);
             throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(
+                ex,
+                "Unexpected error while sending Otp notification to PowerAutomate for Email: {Email}",
+                customerEmail);
+            throw new InvalidOperationException("An error occurred while sending notification to PowerAutomate", ex);
         }
     }
 }

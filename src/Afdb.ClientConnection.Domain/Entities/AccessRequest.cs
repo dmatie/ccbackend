@@ -105,7 +105,7 @@ public sealed class AccessRequest : AggregateRoot
         _projects = loadParam.Projects;
     }
 
-    public void Approve(Guid processedById, string? comments, string updatedBy)
+    public void Approve(Guid processedById, string? comments, string updatedBy, bool isFromApplication)
     {
         if (Status != RequestStatus.Pending)
             throw new InvalidOperationException("Only pending requests can be approved");
@@ -117,10 +117,11 @@ public sealed class AccessRequest : AggregateRoot
         SetUpdated(updatedBy);
 
         // Add domain event for guest account creation
-        AddDomainEvent(new AccessRequestApprovedEvent(Id, Email, FirstName, LastName));
+        if(isFromApplication)
+            AddDomainEvent(new AccessRequestApprovedEvent(Id, Email, FirstName, LastName));
     }
 
-    public void Reject(Guid processedById, string rejectionReason, string updatedBy)
+    public void Reject(Guid processedById, string rejectionReason, string updatedBy, bool isFromApplication)
     {
         if (Status != RequestStatus.Pending)
             throw new InvalidOperationException("Only pending requests can be rejected");
@@ -135,7 +136,8 @@ public sealed class AccessRequest : AggregateRoot
         SetUpdated(updatedBy);
 
         // Add domain event for rejection notification
-        AddDomainEvent(new AccessRequestRejectedEvent(Id, Email, FirstName, LastName, rejectionReason));
+        if(isFromApplication)
+            AddDomainEvent(new AccessRequestRejectedEvent(Id, Email, FirstName, LastName, rejectionReason));
     }
 
     public void SetEntraIdObjectId(string entraIdObjectId, string updatedBy)

@@ -39,7 +39,7 @@ public sealed class ClaimCreatedEventHandler : INotificationHandler<ClaimCreated
                 ex,
                 "Error handling ClaimCreatedEvent for ClaimId: {ClaimId}",
                 notification.ClaimId);
-            throw;
+            throw new InvalidOperationException("Error handling ClaimCreatedEvent for ClaimId: {ClaimId}");
         }
     }
 }

@@ -28,10 +28,10 @@ internal sealed class ClaimProcessRepository : IClaimProcessRepository
 
         if (entityWithRelations != null)
         {
-            return DomainMappings.MapClaimProcessToDomain(entityWithRelations);
+            return DomainMappings.MapClaimProcessToDomain(entityWithRelations)!;
         }
 
-        return DomainMappings.MapClaimProcessToDomain(entity);
+        return DomainMappings.MapClaimProcessToDomain(entity)!;
     }
 
     public async Task<ClaimProcess?> GetByIdAsync(Guid id)
@@ -54,6 +54,6 @@ internal sealed class ClaimProcessRepository : IClaimProcessRepository
         if (entities.Count == 0)
             return null;
 
-        return [.. entities.Select(DomainMappings.MapClaimProcessToDomain)];
+        return [.. entities.Select(DomainMappings.MapClaimProcessToDomain)!];
     }
 }

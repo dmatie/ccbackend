@@ -14,7 +14,7 @@ public class ClaimProcessEntity : BaseEntityConfiguration
     public Guid UserId { get; set; }
 
     [Required]
-    public ClaimStaus Status { get; set; }
+    public ClaimStatus Status { get; set; }
 
 
     [Required]

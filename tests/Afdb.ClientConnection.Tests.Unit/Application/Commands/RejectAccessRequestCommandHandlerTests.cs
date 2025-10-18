@@ -238,7 +238,7 @@ public class RejectAccessRequestCommandHandlerTests
         });
 
         // Simuler une demande déjà traitée (approuvée)
-        accessRequest.Approve(Guid.NewGuid(), "Already approved", "admin");
+        accessRequest.Approve(Guid.NewGuid(), "Already approved", "admin",true);
 
         var currentUser = new User(
             "admin@example.com", "Admin", "User", UserRole.Admin,

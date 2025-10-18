@@ -1,0 +1,54 @@
+﻿using Afdb.ClientConnection.Application.Common.Interfaces;
+using Afdb.ClientConnection.Domain.Entities;
+using Afdb.ClientConnection.Infrastructure.Data;
+using Afdb.ClientConnection.Infrastructure.Data.Mapping;
+using Microsoft.EntityFrameworkCore;
+
+namespace Afdb.ClientConnection.Infrastructure.Repositories;
+
+internal sealed class CountryAdminRepository : ICountryAdminRepository
+{
+    private readonly ClientConnectionDbContext _context;
+
+    public CountryAdminRepository(ClientConnectionDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<IEnumerable<CountryAdmin>?> GetByCountryIdAsync(Guid countryId, CancellationToken token)
+    {
+        var query = _context.CountryAdmins
+            .Include(c => c.Country)
+            .Include(c => c.User)
+            .Where(c => c.CountryId == countryId && c.IsActive);
+
+        var entities = await query
+            .OrderByDescending(c => c.CreatedAt)
+            .ToListAsync();
+
+        if (entities is null)
+            return null;
+
+        return [.. entities.Select(DomainMappings.MapCountryAdminToDomain)];
+    }
+
+    public async Task<IEnumerable<CountryAdmin>?> GetByUserIdAsync(Guid userId, CancellationToken token)
+    {
+        var query = _context.CountryAdmins
+            .Include(c => c.Country)
+            .Include(c => c.User)
+            .Where(c => c.UserId == userId && c.IsActive);
+
+        var entities = await query
+            .OrderByDescending(c => c.CreatedAt)
+            .ToListAsync();
+
+        if (entities is null)
+            return null;
+
+        return [.. entities.Select(DomainMappings.MapCountryAdminToDomain)];
+    }
+
+    public async Task<bool> ExistsAsync(Guid userId, Guid countryId) =>
+        await _context.CountryAdmins.AnyAsync(c => c.UserId == userId && c.CountryId == countryId);
+}

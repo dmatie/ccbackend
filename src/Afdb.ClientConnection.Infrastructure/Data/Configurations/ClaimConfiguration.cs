@@ -18,9 +18,7 @@ public class ClaimConfiguration : IEntityTypeConfiguration<ClaimEntity>
 
         builder.Property(x => x.ClosedAt);
 
-        builder.Property(e => e.Status)
-            .HasConversion<string>();
-
+        builder.Property(e => e.Status);
 
         builder.HasOne(x => x.ClaimType)
             .WithMany(x => x.Claims)

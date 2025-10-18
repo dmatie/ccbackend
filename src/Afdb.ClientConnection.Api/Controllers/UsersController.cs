@@ -8,7 +8,6 @@ namespace Afdb.ClientConnection.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Policy = "AdminOnly")]
 public class UsersController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
@@ -17,6 +16,7 @@ public class UsersController(IMediator mediator) : ControllerBase
     /// Lister les utilisateurs avec filtres (Admin uniquement)
     /// </summary>
     [HttpGet]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<ActionResult<GetUsersResponse>> GetUsers(
         [FromQuery] GetUsersQuery query, CancellationToken cancellationToken = default)
     {
@@ -69,6 +69,25 @@ public class UsersController(IMediator mediator) : ControllerBase
         if (result.User == null)
         {
             return NotFound($"Aucun utilisateur trouvé avec l'Entra ID: {entraIdObjectId}");
+        }
+
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Récupérer l'utilisateur courrant qui est connecté
+    /// </summary>
+    [HttpGet("me/{email}")]
+    [Authorize]
+    public async Task<ActionResult<GetUserMeResponse>> GetMe(
+        string email, CancellationToken cancellationToken = default)
+    {
+        var query = new GetUserMeQuery { Email = email };
+        var result = await _mediator.Send(query, cancellationToken);
+
+        if (result.User == null)
+        {
+            return NotFound($"Aucun utilisateur trouvé avec l'email: {email}");
         }
 
         return Ok(result);

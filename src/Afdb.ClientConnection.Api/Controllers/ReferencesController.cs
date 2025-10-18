@@ -58,4 +58,16 @@ public class ReferencesController(IMediator mediator) : ControllerBase
         var result = await _mediator.Send(query, cancellationToken);
         return Ok(result);
     }
+
+    /// <summary>
+    /// Lister les Claim types actifs
+    /// </summary>
+    [HttpGet("claim-types")]
+    [AllowAnonymous]
+    public async Task<ActionResult<GetClaimTypesResponse>> GetClaimTypes(CancellationToken cancellationToken = default)
+    {
+        var query = new GetClaimTypesQuery();
+        var result = await _mediator.Send(query, cancellationToken);
+        return Ok(result);
+    }
 }

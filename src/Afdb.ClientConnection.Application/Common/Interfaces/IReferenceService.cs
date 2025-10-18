@@ -13,4 +13,6 @@ public interface IReferenceService
     Task<IEnumerable<BusinessProfile>> GetActiveBusinessProfilesAsync(CancellationToken cancellationToken = default);
     Task<IEnumerable<Country>> GetActiveCountriesAsync(CancellationToken cancellationToken = default);
     Task<IEnumerable<FinancingType>> GetActiveFinancingTypesAsync(CancellationToken cancellationToken = default);
+    Task<ClaimType?> GetClaimTypeByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<IEnumerable<ClaimType>?> GetActiveClaimTypesAsync(CancellationToken cancellationToken = default);
 }

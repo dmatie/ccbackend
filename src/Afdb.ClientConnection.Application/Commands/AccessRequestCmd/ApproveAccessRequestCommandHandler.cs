@@ -38,11 +38,21 @@ public sealed class ApproveAccessRequestCommandHandler(
         }
 
         // Récupérer l'utilisateur qui approuve
-        var currentUser = await _userRepository.GetByEmailAsync(_currentUserService.Email)
-            ?? throw new NotFoundException("ERR.General.UserNotExist");
+        ///var email = _currentUserService.IsAppAuthentification ? request.ApproverEmail  : _currentUserService.Email ;
+
+        // Récupérer l'utilisateur qui rejette
+        var email = _currentUserService.Email;
+
+        if (_currentUserService.IsAppAuthentification && !string.IsNullOrEmpty(request.ApproverEmail))
+        {
+            email = request.ApproverEmail;
+        }
+
+        var currentUser = (await _userRepository.GetByEmailAsync(email))
+            ?? throw new NotFoundException($"ERR.General.UserNotExist {email}");
 
         // Approuver la demande (cela déclenchera l'événement AccessRequestApprovedEvent)
-        accessRequest.Approve(currentUser.Id, request.Comments, _currentUserService.UserId);
+        accessRequest.Approve(currentUser.Id, request.Comments, _currentUserService.UserId, request.IsFromApplication);
 
         await _accessRequestRepository.ExecuteInTransactionAsync(async () =>
         {

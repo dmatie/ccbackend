@@ -33,11 +33,18 @@ public sealed class RejectAccessRequestCommandHandler(
         }
 
         // Récupérer l'utilisateur qui rejette
-        var currentUser = await _userRepository.GetByEmailAsync(_currentUserService.Email)
-            ?? throw new NotFoundException("ERR.General.UserNotExist");
+        var email =   _currentUserService.Email;
+
+        if(_currentUserService.IsAppAuthentification && !string.IsNullOrEmpty(request.ApproverEmail))
+        {
+            email = request.ApproverEmail;
+        }
+
+        var currentUser = (await _userRepository.GetByEmailAsync(email))
+           ?? throw new NotFoundException($"ERR.General.UserNotExist {email}");
 
         // Rejeter la demande (cela déclenchera l'événement AccessRequestRejectedEvent)
-        accessRequest.Reject(currentUser.Id, request.RejectionReason, _currentUserService.UserId);
+        accessRequest.Reject(currentUser.Id, request.RejectionReason, _currentUserService.UserId, request.IsFromApplication);
 
         // Sauvegarder
         await _accessRequestRepository.UpdateAsync(accessRequest);

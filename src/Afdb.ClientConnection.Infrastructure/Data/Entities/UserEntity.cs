@@ -30,7 +30,8 @@ public class UserEntity : BaseEntityConfiguration
     public string? OrganizationName { get; set; }
 
     // Navigation properties
-    public ICollection<AccessRequestEntity> ProcessedAccessRequests { get; set; } = new List<AccessRequestEntity>();
-    public ICollection<ClaimEntity> Claims { get; set; } = new List<ClaimEntity>();
-    public ICollection<ClaimProcessEntity> ClaimProcesses { get; set; } = new List<ClaimProcessEntity>();
+    public ICollection<AccessRequestEntity> ProcessedAccessRequests { get; set; } = default!;
+    public ICollection<ClaimEntity> Claims { get; set; } = default!;
+    public ICollection<ClaimProcessEntity> ClaimProcesses { get; set; } = default!;
+    public ICollection<CountryAdminEntity> CountryAdmins { get; set; } = default!;
 }

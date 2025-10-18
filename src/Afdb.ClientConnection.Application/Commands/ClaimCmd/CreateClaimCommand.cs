@@ -7,8 +7,6 @@ namespace Afdb.ClientConnection.Application.Commands.ClaimCmd;
 public sealed record CreateClaimCommand : IRequest<CreateClaimResponse>
 {
     public Guid ClaimTypeId { get; init; }
-    public Guid UserId { get; init; }
-    public Guid CountryId { get; init; }
     public string Comment { get; init; } = string.Empty;
 }
 

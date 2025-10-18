@@ -1,4 +1,4 @@
-using Afdb.ClientConnection.Application.Common.Interfaces;
+﻿using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Domain.Enums;
 using Afdb.ClientConnection.Infrastructure.Data;
@@ -22,7 +22,7 @@ internal sealed class ClaimRepository : IClaimRepository
             .Include(c => c.ClaimType)
             .Include(c => c.Country)
             .Include(c => c.User)
-            .Include(c => c.Processes)
+            .Include(c => c.Processes).ThenInclude(pr => pr.User)
             .FirstOrDefaultAsync(c => c.Id == id);
 
         return entity == null ? null : DomainMappings.MapClaimToDomain(entity);
@@ -34,7 +34,7 @@ internal sealed class ClaimRepository : IClaimRepository
             .Include(c => c.ClaimType)
             .Include(c => c.Country)
             .Include(c => c.User)
-            .Include(c => c.Processes)
+            .Include(c => c.Processes).ThenInclude(pr => pr.User)
             .OrderByDescending(c => c.CreatedAt)
             .ToListAsync();
 
@@ -45,18 +45,24 @@ internal sealed class ClaimRepository : IClaimRepository
     }
 
 
-    public async Task<IEnumerable<Claim>?> GetAllByStatusAsync(ClaimStaus status)
+    public async Task<IEnumerable<Claim>?> GetAllByStatusAsync(ClaimStatus? status)
     {
-        var entities = await _context.Claims
-            .Where(c => c.Status == status)
-            .Include(c => c.ClaimType)
-            .Include(c => c.Country)
-            .Include(c => c.User)
-            .Include(c => c.Processes)
+
+        var query = _context.Claims
+        .Include(c => c.ClaimType)
+        .Include(c => c.Country)
+        .Include(c => c.User)
+        .Include(c => c.Processes).ThenInclude(pr => pr.User)
+        .AsQueryable();
+
+        if (status.HasValue)
+            query = query.Where(c => c.Status == status.Value);
+
+        var entities = await query
             .OrderByDescending(c => c.CreatedAt)
             .ToListAsync();
 
-        if(entities.Count == 0)
+        if (entities.Count == 0)
             return null;
 
         return [.. entities.Select(DomainMappings.MapClaimToDomain)];
@@ -68,7 +74,7 @@ internal sealed class ClaimRepository : IClaimRepository
             .Include(c => c.ClaimType)
             .Include(c => c.Country)
             .Include(c => c.User)
-            .Include(c => c.Processes)
+            .Include(c => c.Processes).ThenInclude(pr => pr.User)
             .Where(c => c.UserId == userId)
             .OrderByDescending(c => c.CreatedAt)
             .ToListAsync();
@@ -79,7 +85,7 @@ internal sealed class ClaimRepository : IClaimRepository
         return [.. entities.Select(DomainMappings.MapClaimToDomain)];
     }
 
-    public async Task<IEnumerable<Claim>?> GetByUserIdAndStatusAsync(Guid userId, ClaimStaus? status)
+    public async Task<IEnumerable<Claim>?> GetByUserIdAndStatusAsync(Guid userId, ClaimStatus? status)
     {
         var query = _context.Claims
             .Include(c => c.ClaimType)
@@ -90,9 +96,7 @@ internal sealed class ClaimRepository : IClaimRepository
             .Where(c => c.UserId == userId);
 
         if (status.HasValue)
-        {
             query = query.Where(c => c.Status == status.Value);
-        }
 
         var entities = await query
             .OrderByDescending(c => c.CreatedAt)
@@ -133,11 +137,11 @@ internal sealed class ClaimRepository : IClaimRepository
     {
         var entity = await _context.Claims
             .Include(c => c.Processes)
+            .AsTracking()
             .FirstOrDefaultAsync(c => c.Id == claim.Id);
 
         if (entity != null)
         {
-            entity.Processes.Clear();
             EntityMappings.UpdateClaimEntityFromDomain(entity, claim);
             await _context.SaveChangesAsync();
         }

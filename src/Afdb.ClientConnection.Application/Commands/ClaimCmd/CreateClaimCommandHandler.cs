@@ -15,6 +15,9 @@ public sealed class CreateClaimCommandHandler(
     ICountryRepository countryRepository,
     IClaimTypeRepository claimTypeRepository,
     IGraphService graphService,
+    ICurrentUserService currentUserService,
+    IAccessRequestRepository accessRequestRepository,
+    ICountryAdminRepository countryAdminRepository,
     IMapper mapper) : IRequestHandler<CreateClaimCommand, CreateClaimResponse>
 {
     private readonly IClaimRepository _claimRepository = claimRepository;
@@ -23,7 +26,9 @@ public sealed class CreateClaimCommandHandler(
     private readonly IClaimTypeRepository _claimTypeRepository = claimTypeRepository;
     private readonly IMapper _mapper = mapper;
     private readonly IGraphService _graphService = graphService;
-
+    private readonly ICurrentUserService _currentUserService = currentUserService;
+    private readonly IAccessRequestRepository _accessRequestRepository = accessRequestRepository;
+    private readonly ICountryAdminRepository _countryAdminRepository = countryAdminRepository;
 
     public async Task<CreateClaimResponse> Handle(CreateClaimCommand request, CancellationToken cancellationToken)
     {
@@ -33,34 +38,46 @@ public sealed class CreateClaimCommandHandler(
                 new FluentValidation.Results.ValidationFailure("ClaimTypeId", "ERR.Claim.ClaimTypeNotExist")
             });
 
-        var user = await _userRepository.GetByIdAsync(request.UserId);
-        if (user == null)
-            throw new NotFoundException("ERR.General.UserNotFound");
+        var user = await _userRepository.GetByEmailAsync(_currentUserService.Email)
+            ?? throw new NotFoundException("ERR.General.UserNotFound");
 
-        var country = await _countryRepository.GetByIdAsync(request.CountryId);
-        if (country == null)
-            throw new ValidationException(new[] {
+        var accessRequest = await _accessRequestRepository.GetByEmailAsync(user.Email) ??
+            throw new NotFoundException("ERR.General.AccessRequestNotFound");
+
+        Country? country = null;
+        if (!accessRequest.CountryId.HasValue)
+        {
+            country = await _countryRepository.GetDefaultCountryAsync() ?? throw new ValidationException(new[] {
                 new FluentValidation.Results.ValidationFailure("UserId", "ERR.Claim.RelatedCountryNotExist")
-            });
+             });
+        }
+        else
+        {
+            country = await _countryRepository.GetByIdAsync(accessRequest.CountryId.Value) ?? throw new ValidationException(new[] {
+                new FluentValidation.Results.ValidationFailure("UserId", "ERR.Claim.RelatedCountryNotExist")
+             });
+        }
 
-        string [] fifcAdmins = (await _graphService.GetFifcAdmin(cancellationToken)).ToArray() ?? [];  
-        
-        List<UserRole> Roles= new List<UserRole> { UserRole.DA,UserRole.DO };
+        string[] fifcAdmins = (await _graphService.GetFifcAdmin(cancellationToken)).ToArray() ?? [];
 
-        IEnumerable<User> usersAssignTo = await _userRepository.GetActiveUsersByRolesAsync(Roles);
+        var countryAdmins = await _countryAdminRepository.GetByCountryIdAsync(country.Id, cancellationToken);
 
-        if (usersAssignTo == null || !usersAssignTo.Any())
-            throw new ValidationException(new[] {
-                new FluentValidation.Results.ValidationFailure("AssignTo", "ERR.Claim.NoUserToAssign")
-            });
+        string[] assignTo;
 
-        string[] assignTo= [.. usersAssignTo.Select(u=>u.Email)];
+        if (countryAdmins != null && countryAdmins.Any())
+        {
+            assignTo = countryAdmins.Select(ca => ca.User.Email).ToArray();
+        }
+        else
+        {
+            assignTo = fifcAdmins;
+        }
 
         var claimNewParam = new ClaimNewParam
         {
             ClaimTypeId = request.ClaimTypeId,
-            UserId = request.UserId,
-            CountryId = request.CountryId,
+            UserId = user.Id,
+            CountryId = country.Id,
             Comment = request.Comment,
             User = user,
             Country = country,

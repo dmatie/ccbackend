@@ -7,6 +7,8 @@ public sealed record RejectAccessRequestCommand : IRequest<RejectAccessRequestRe
 {
     public Guid AccessRequestId { get; set; }
     public string RejectionReason { get; set; } = string.Empty;
+    public bool IsFromApplication { get; set; }
+    public string ApproverEmail { get; set; } = string.Empty;
 }
 
 public sealed record RejectAccessRequestResponse

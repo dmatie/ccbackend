@@ -4,10 +4,15 @@ using MediatR;
 
 namespace Afdb.ClientConnection.Application.Commands.ClaimCmd;
 
-public sealed record AddClaimResponseCommand : IRequest<ClaimDto>
+public sealed record AddClaimResponseCommand : IRequest<AddClaimResponseResponse>
 {
     public Guid ClaimId { get; init; }
-    public Guid UserId { get; init; }
-    public ClaimStaus Status { get; init; }
+    public int Status { get; init; }
     public string Comment { get; init; } = string.Empty;
+}
+
+public sealed record AddClaimResponseResponse 
+{
+    public ClaimDto Claim { get; init; } = default!;
+    public string Message { get; init; } = default!;
 }

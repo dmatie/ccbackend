@@ -10,14 +10,6 @@ public sealed class CreateClaimCommandValidator : AbstractValidator<CreateClaimC
             .NotEmpty()
             .WithMessage("ClaimTypeId is required");
 
-        RuleFor(x => x.UserId)
-            .NotEmpty()
-            .WithMessage("UserId is required");
-
-        RuleFor(x => x.CountryId)
-            .NotEmpty()
-            .WithMessage("CountryId is required");
-
         RuleFor(x => x.Comment)
             .NotEmpty()
             .WithMessage("Comment is required")

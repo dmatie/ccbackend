@@ -1,4 +1,4 @@
-using Afdb.ClientConnection.Application.Common.Interfaces;
+﻿using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Infrastructure.Data;
 using Afdb.ClientConnection.Infrastructure.Repositories;
 using Afdb.ClientConnection.Infrastructure.Services;
@@ -36,6 +36,7 @@ public static class DependencyInjection
         services.AddScoped<IClaimRepository, ClaimRepository>();
         services.AddScoped<IClaimTypeRepository, ClaimTypeRepository>();
         services.AddScoped<IClaimProcessRepository, ClaimProcessRepository>();
+        services.AddScoped<ICountryAdminRepository, CountryAdminRepository>();
 
         // Services
         services.AddScoped<IAuditService, AuditService>();
@@ -54,7 +55,7 @@ public static class DependencyInjection
 
 
         // Service Bus
-        services.AddSingleton<ServiceBusClient>(provider =>
+        services.AddScoped<ServiceBusClient>(provider =>
         {
             var connectionString = configuration.GetConnectionString("ServiceBusConnectionString");
             return new ServiceBusClient(connectionString);

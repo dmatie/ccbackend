@@ -125,7 +125,7 @@ public sealed class AccessRequestTests
         var updatedBy = "approver";
 
         // Act
-        accessRequest.Approve(processedById, comments, updatedBy);
+        accessRequest.Approve(processedById, comments, updatedBy,true);
 
         // Assert
         Assert.Equal(RequestStatus.Approved, accessRequest.Status);
@@ -142,11 +142,11 @@ public sealed class AccessRequestTests
     {
         // Arrange
         var accessRequest = CreateTestAccessRequest();
-        accessRequest.Approve(Guid.NewGuid(), "First approval", "user1");
+        accessRequest.Approve(Guid.NewGuid(), "First approval", "user1",true);
 
         // Act & Assert
         var exception = Assert.Throws<InvalidOperationException>(() =>
-            accessRequest.Approve(Guid.NewGuid(), "Second approval", "user2"));
+            accessRequest.Approve(Guid.NewGuid(), "Second approval", "user2",true));
         Assert.Contains("Only pending requests can be approved", exception.Message);
     }
 
@@ -160,7 +160,7 @@ public sealed class AccessRequestTests
         var updatedBy = "approver";
 
         // Act
-        accessRequest.Reject(processedById, rejectionReason, updatedBy);
+        accessRequest.Reject(processedById, rejectionReason, updatedBy, true);
 
         // Assert
         Assert.Equal(RequestStatus.Rejected, accessRequest.Status);
@@ -180,7 +180,7 @@ public sealed class AccessRequestTests
 
         // Act & Assert
         var exception = Assert.Throws<ArgumentException>(() =>
-            accessRequest.Reject(Guid.NewGuid(), "", "user"));
+            accessRequest.Reject(Guid.NewGuid(), "", "user", true));
         Assert.Contains("Rejection reason is required", exception.Message);
     }
 
@@ -189,7 +189,7 @@ public sealed class AccessRequestTests
     {
         // Arrange
         var accessRequest = CreateTestAccessRequest();
-        accessRequest.Approve(Guid.NewGuid(), "Approved", "user");
+        accessRequest.Approve(Guid.NewGuid(), "Approved", "user", true);
         var entraIdObjectId = "entra-id-123";
 
         // Act

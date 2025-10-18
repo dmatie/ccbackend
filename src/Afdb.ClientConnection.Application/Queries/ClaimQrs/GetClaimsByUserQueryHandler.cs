@@ -1,4 +1,4 @@
-using Afdb.ClientConnection.Application.Common.Exceptions;
+﻿using Afdb.ClientConnection.Application.Common.Exceptions;
 using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Application.DTOs;
 using AutoMapper;
@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Afdb.ClientConnection.Application.Queries.ClaimQrs;
 
-public sealed class GetClaimsByUserQueryHandler : IRequestHandler<GetClaimsByUserQuery, IEnumerable<ClaimDto>>
+public sealed class GetClaimsByUserQueryHandler : IRequestHandler<GetClaimsByUserQuery, GetClaimsByUserResponse>
 {
     private readonly IClaimRepository _claimRepository;
     private readonly IUserRepository _userRepository;
@@ -25,20 +25,31 @@ public sealed class GetClaimsByUserQueryHandler : IRequestHandler<GetClaimsByUse
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<ClaimDto>> Handle(GetClaimsByUserQuery request, CancellationToken cancellationToken)
+    public async Task<GetClaimsByUserResponse> Handle(GetClaimsByUserQuery request, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetByIdAsync(request.UserId);
+        var user = await _userRepository.GetByEmailAsync(_currentUserService.Email);
         if (user == null)
-            throw new NotFoundException("User", request.UserId);
+            throw new NotFoundException("User", _currentUserService.Email);
 
-        if (user.Email != _currentUserService.Email)
-            throw new ForbiddenAccessException("You can only access your own claims");
 
-        var claims = await _claimRepository.GetByUserIdAndStatusAsync(request.UserId, request.Status);
+        var claims = await _claimRepository.GetByUserIdAndStatusAsync(user.Id, request.Status);
 
-        if (claims == null || !claims.Any())
-            return [];
+        List<ClaimDto> claimDtos = [];
 
-        return _mapper.Map<IEnumerable<ClaimDto>>(claims);
+        if (claims != null && claims.Any())
+            claimDtos= _mapper.Map<IEnumerable<ClaimDto>>(claims).ToList();
+
+        var totalCount = claimDtos.Count;
+        var totalPages = (int)Math.Ceiling((double)totalCount / request.PageSize);
+
+
+        return new GetClaimsByUserResponse
+        {
+            Claims = claimDtos,
+            TotalCount = claimDtos.Count,
+            PageNumber = request.PageNumber,
+            PageSize = request.PageSize,
+            TotalPages= totalPages
+        };
     }
 }

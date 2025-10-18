@@ -20,4 +20,5 @@ public class CountryEntity : BaseEntityConfiguration
 
     public bool IsActive { get; set; } = true;
     public ICollection<ClaimEntity> Claims { get; set; } = default!;
+    public ICollection<CountryAdminEntity> CountryAdmins { get; set; } = default!;
 }

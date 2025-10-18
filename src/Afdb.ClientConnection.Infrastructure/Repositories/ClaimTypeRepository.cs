@@ -1,10 +1,7 @@
 ﻿using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Domain.Entities;
-using Afdb.ClientConnection.Domain.Enums;
 using Afdb.ClientConnection.Infrastructure.Data;
-using Afdb.ClientConnection.Infrastructure.Data.Entities;
 using Afdb.ClientConnection.Infrastructure.Data.Mapping;
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace Afdb.ClientConnection.Infrastructure.Repositories;

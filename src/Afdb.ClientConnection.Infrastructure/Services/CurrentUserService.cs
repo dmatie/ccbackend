@@ -20,6 +20,7 @@ internal sealed class CurrentUserService : ICurrentUserService
     public string Email => _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Email)?.Value ?? string.Empty;
 
     public bool IsAuthenticated => _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
+    public bool IsAppAuthentification => _httpContextAccessor.HttpContext?.User?.FindFirstValue("appid") != null;
 
     public IEnumerable<string> Roles => _httpContextAccessor.HttpContext?.User?.FindAll(ClaimTypes.Role)?.Select(c => c.Value) ?? Enumerable.Empty<string>();
 

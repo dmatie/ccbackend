@@ -80,9 +80,8 @@ namespace Afdb.ClientConnection.Infrastructure.Migrations
                     b.Property<DateTime>("RequestedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -319,9 +318,8 @@ namespace Afdb.ClientConnection.Infrastructure.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -365,6 +363,9 @@ namespace Afdb.ClientConnection.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -424,6 +425,74 @@ namespace Afdb.ClientConnection.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ClaimTypes", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("fd97a4df-40ef-4581-b5bf-983d56e70b3d"),
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = "",
+                            Description = "",
+                            Name = "Payment not received",
+                            NameFr = "Paiement non reçu"
+                        },
+                        new
+                        {
+                            Id = new Guid("57cf2666-198c-41a9-b828-8f0651da76ed"),
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = "",
+                            Description = "",
+                            Name = "Disbursment",
+                            NameFr = "Décaissement"
+                        },
+                        new
+                        {
+                            Id = new Guid("f671b0d7-ee85-48d8-a58b-0029660b2cad"),
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = "",
+                            Description = "",
+                            Name = "Other",
+                            NameFr = "Autre"
+                        });
+                });
+
+            modelBuilder.Entity("Afdb.ClientConnection.Infrastructure.Data.Entities.CountryAdminEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CountryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CountryId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CountryAdmins", (string)null);
                 });
 
             modelBuilder.Entity("Afdb.ClientConnection.Infrastructure.Data.Entities.CountryEntity", b =>
@@ -1004,6 +1073,16 @@ namespace Afdb.ClientConnection.Infrastructure.Migrations
                             IsActive = true,
                             Name = "Zimbabwe",
                             NameFr = "Zimbabwe"
+                        },
+                        new
+                        {
+                            Id = new Guid("91431d44-531f-48d1-b990-8bd34aa185f4"),
+                            Code = "NOT",
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = "",
+                            IsActive = false,
+                            Name = "Not Defined",
+                            NameFr = "Non défini"
                         });
                 });
 
@@ -1405,6 +1484,25 @@ namespace Afdb.ClientConnection.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Afdb.ClientConnection.Infrastructure.Data.Entities.CountryAdminEntity", b =>
+                {
+                    b.HasOne("Afdb.ClientConnection.Infrastructure.Data.Entities.CountryEntity", "Country")
+                        .WithMany("CountryAdmins")
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Afdb.ClientConnection.Infrastructure.Data.Entities.UserEntity", "User")
+                        .WithMany("CountryAdmins")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Country");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Afdb.ClientConnection.Infrastructure.Data.Entities.AccessRequestEntity", b =>
                 {
                     b.Navigation("Projects");
@@ -1423,6 +1521,8 @@ namespace Afdb.ClientConnection.Infrastructure.Migrations
             modelBuilder.Entity("Afdb.ClientConnection.Infrastructure.Data.Entities.CountryEntity", b =>
                 {
                     b.Navigation("Claims");
+
+                    b.Navigation("CountryAdmins");
                 });
 
             modelBuilder.Entity("Afdb.ClientConnection.Infrastructure.Data.Entities.UserEntity", b =>
@@ -1430,6 +1530,8 @@ namespace Afdb.ClientConnection.Infrastructure.Migrations
                     b.Navigation("ClaimProcesses");
 
                     b.Navigation("Claims");
+
+                    b.Navigation("CountryAdmins");
 
                     b.Navigation("ProcessedAccessRequests");
                 });

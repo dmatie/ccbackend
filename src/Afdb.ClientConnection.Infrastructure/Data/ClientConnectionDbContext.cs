@@ -15,6 +15,7 @@ public class ClientConnectionDbContext(DbContextOptions<ClientConnectionDbContex
     public DbSet<AccessRequestEntity> AccessRequests { get; set; } = null!;
     public DbSet<AuditLogEntity> AuditLogs { get; set; } = null!;
     public DbSet<FunctionEntity> Functions { get; set; } = null!;
+    public DbSet<CountryAdminEntity> CountryAdmins { get; set; } = null!;
     public DbSet<CountryEntity> Countries { get; set; } = null!;
     public DbSet<BusinessProfileEntity> BusinessProfiles { get; set; } = null!;
     public DbSet<FinancingTypeEntity> FinancingTypes { get; set; } = null!;
@@ -56,7 +57,7 @@ public class ClientConnectionDbContext(DbContextOptions<ClientConnectionDbContex
         // Publier les Domain Events après la sauvegarde réussie
         foreach (var domainEvent in domainEvents)
         {
-            //await _mediator.Publish(domainEvent, cancellationToken);
+            await _mediator.Publish(domainEvent, cancellationToken);
         }
 
         // Nettoyer les événements après publication
