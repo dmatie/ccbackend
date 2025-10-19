@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Application.DTOs;
+using Afdb.ClientConnection.Application.DTOs;
 using Afdb.ClientConnection.Domain.Entities;
 using AutoMapper;
 
@@ -75,9 +75,55 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Country != null ? src.Country.Name : string.Empty))
             .ForMember(dest => dest.UserFirstName, opt => opt.MapFrom(src => src.User != null ? src.User.FirstName : string.Empty))
             .ForMember(dest => dest.UserLastName, opt => opt.MapFrom(src => src.User != null ? src.User.LastName : string.Empty))
-            .ForMember(dest => dest.UserFullName, 
+            .ForMember(dest => dest.UserFullName,
                         opt => opt.MapFrom(src => src.User != null ? $"{src.User.FirstName} {src.User.LastName}" : string.Empty))
             .ForMember(dest => dest.UserEmail, opt => opt.MapFrom(src => src.User != null ? src.User.Email : string.Empty))
             .ForMember(dest => dest.Processes, opt => opt.MapFrom(src => src.Processes));
+
+        CreateMap<DisbursementType, DisbursementTypeDto>();
+
+        CreateMap<DisbursementProcess, DisbursementProcessDto>()
+            .ForMember(dest => dest.ProcessedByUserName,
+                opt => opt.MapFrom(src => src.ProcessedByUser != null ? $"{src.ProcessedByUser.FirstName} {src.ProcessedByUser.LastName}" : string.Empty))
+            .ForMember(dest => dest.ProcessedByUserEmail,
+                opt => opt.MapFrom(src => src.ProcessedByUser != null ? src.ProcessedByUser.Email : string.Empty));
+
+        CreateMap<DisbursementDocument, DisbursementDocumentDto>();
+
+        CreateMap<DisbursementA1, DisbursementA1Dto>()
+            .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.Amount.Amount))
+            .ForMember(dest => dest.CurrencyCode, opt => opt.MapFrom(src => src.Amount.Currency));
+
+        CreateMap<DisbursementA2, DisbursementA2Dto>()
+            .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.Amount.Amount))
+            .ForMember(dest => dest.CurrencyCode, opt => opt.MapFrom(src => src.Amount.Currency));
+
+        CreateMap<DisbursementA3, DisbursementA3Dto>()
+            .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.Amount.Amount))
+            .ForMember(dest => dest.CurrencyCode, opt => opt.MapFrom(src => src.Amount.Currency));
+
+        CreateMap<DisbursementB1, DisbursementB1Dto>()
+            .ForMember(dest => dest.GuaranteeAmount, opt => opt.MapFrom(src => src.GuaranteeAmount.Amount))
+            .ForMember(dest => dest.CurrencyCode, opt => opt.MapFrom(src => src.GuaranteeAmount.Currency));
+
+        CreateMap<Disbursement, DisbursementDto>()
+            .ForMember(dest => dest.DisbursementTypeCode,
+                opt => opt.MapFrom(src => src.DisbursementType != null ? src.DisbursementType.Code : string.Empty))
+            .ForMember(dest => dest.DisbursementTypeName,
+                opt => opt.MapFrom(src => src.DisbursementType != null ? src.DisbursementType.Name : string.Empty))
+            .ForMember(dest => dest.CreatedByUserName,
+                opt => opt.MapFrom(src => src.CreatedByUser != null ? $"{src.CreatedByUser.FirstName} {src.CreatedByUser.LastName}" : string.Empty))
+            .ForMember(dest => dest.CreatedByUserEmail,
+                opt => opt.MapFrom(src => src.CreatedByUser != null ? src.CreatedByUser.Email : string.Empty))
+            .ForMember(dest => dest.ProcessedByUserName,
+                opt => opt.MapFrom(src => src.ProcessedByUser != null ? $"{src.ProcessedByUser.FirstName} {src.ProcessedByUser.LastName}" : string.Empty))
+            .ForMember(dest => dest.ProcessedByUserEmail,
+                opt => opt.MapFrom(src => src.ProcessedByUser != null ? src.ProcessedByUser.Email : string.Empty))
+            .ForMember(dest => dest.Processes, opt => opt.MapFrom(src => src.Processes))
+            .ForMember(dest => dest.Documents, opt => opt.MapFrom(src => src.Documents))
+            .ForMember(dest => dest.DisbursementA1, opt => opt.MapFrom(src => src.DisbursementA1))
+            .ForMember(dest => dest.DisbursementA2, opt => opt.MapFrom(src => src.DisbursementA2))
+            .ForMember(dest => dest.DisbursementA3, opt => opt.MapFrom(src => src.DisbursementA3))
+            .ForMember(dest => dest.DisbursementB1, opt => opt.MapFrom(src => src.DisbursementB1));
     }
 }
