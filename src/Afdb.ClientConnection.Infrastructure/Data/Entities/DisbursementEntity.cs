@@ -16,7 +16,7 @@ public class DisbursementEntity : BaseEntityConfiguration
     public string SapCodeProject { get; set; } = default!;
 
     [Required]
-    [MaxLength(100)]
+    [MaxLength(13)]
     public string LoanGrantNumber { get; set; } = default!;
 
     [Required]
@@ -28,12 +28,9 @@ public class DisbursementEntity : BaseEntityConfiguration
     [Required]
     public Guid CreatedByUserId { get; set; }
 
+    public DateTime? SubmittedAt { get; set; }
+    public DateTime? ProcessedAt { get; set; }
     public Guid? ProcessedByUserId { get; set; }
-
-    public DateTime? ProcessedByDate { get; set; }
-
-    [MaxLength(1000)]
-    public string? DocumentsUrl { get; set; }
 
     public DisbursementTypeEntity DisbursementType { get; set; } = default!;
     public UserEntity CreatedByUser { get; set; } = default!;

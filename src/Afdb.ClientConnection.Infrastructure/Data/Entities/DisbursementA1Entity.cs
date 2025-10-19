@@ -10,16 +10,12 @@ public class DisbursementA1Entity : BaseEntityConfiguration
     public Guid DisbursementId { get; set; }
 
     [Required]
-    [MaxLength(50)]
-    public string BusinessPartnerNumber { get; set; } = default!;
+    [MaxLength(500)]
+    public string PaymentPurpose { get; set; } = default!;
 
     [Required]
     [MaxLength(200)]
     public string BeneficiaryName { get; set; } = default!;
-
-    [Required]
-    [MaxLength(200)]
-    public string BeneficiaryContactPerson { get; set; } = default!;
 
     [Required]
     [MaxLength(500)]
@@ -27,65 +23,36 @@ public class DisbursementA1Entity : BaseEntityConfiguration
 
     [Required]
     [MaxLength(200)]
-    public string BeneficiaryCity { get; set; } = default!;
-
-    [Required]
-    public Guid BeneficiaryCountryId { get; set; }
-
-    [Required]
-    [MaxLength(200)]
-    [EmailAddress]
-    public string BeneficiaryEmail { get; set; } = default!;
-
-    [Required]
-    [MaxLength(200)]
-    public string BankName { get; set; } = default!;
+    public string BeneficiaryBankName { get; set; } = default!;
 
     [Required]
     [MaxLength(500)]
-    public string BankAddress { get; set; } = default!;
-
-    [Required]
-    public Guid BankCountryId { get; set; }
+    public string BeneficiaryBankAddress { get; set; } = default!;
 
     [Required]
     [MaxLength(100)]
-    public string BankAccountNumber { get; set; } = default!;
+    public string BeneficiaryAccountNumber { get; set; } = default!;
 
     [Required]
     [MaxLength(50)]
-    public string BankSwiftCode { get; set; } = default!;
+    public string BeneficiarySwiftCode { get; set; } = default!;
 
     [Required]
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal Amount { get; set; }
+
+    [Required]
+    [MaxLength(3)]
+    public string CurrencyCode { get; set; } = default!;
+
     [MaxLength(200)]
-    public string SignatoryName { get; set; } = default!;
+    public string? IntermediaryBankName { get; set; }
 
-    [Required]
-    [MaxLength(200)]
-    public string SignatoryContactPerson { get; set; } = default!;
-
-    [Required]
-    [MaxLength(200)]
-    [EmailAddress]
-    public string SignatoryEmail { get; set; } = default!;
-
-    [Required]
     [MaxLength(50)]
-    public string SignatoryPhone { get; set; } = default!;
+    public string? IntermediaryBankSwiftCode { get; set; }
 
-    [Required]
-    [MaxLength(500)]
-    public string SignatoryAddress { get; set; } = default!;
-
-    [Required]
-    [MaxLength(200)]
-    public string SignatoryCity { get; set; } = default!;
-
-    [Required]
-    public Guid SignatoryCountryId { get; set; }
+    [MaxLength(1000)]
+    public string? SpecialInstructions { get; set; }
 
     public DisbursementEntity Disbursement { get; set; } = default!;
-    public CountryEntity BeneficiaryCountry { get; set; } = default!;
-    public CountryEntity BankCountry { get; set; } = default!;
-    public CountryEntity SignatoryCountry { get; set; } = default!;
 }
