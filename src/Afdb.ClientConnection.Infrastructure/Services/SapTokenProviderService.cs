@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Application.Common.Interfaces;
+using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Domain.Entities;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;

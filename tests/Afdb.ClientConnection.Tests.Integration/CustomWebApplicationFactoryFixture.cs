@@ -1,4 +1,4 @@
-﻿namespace Afdb.ClientConnection.Tests.Integration;
+namespace Afdb.ClientConnection.Tests.Integration;
 public class CustomWebApplicationFactoryFixture : IDisposable
 {
     public CustomWebApplicationFactory<Program> Factory { get; }

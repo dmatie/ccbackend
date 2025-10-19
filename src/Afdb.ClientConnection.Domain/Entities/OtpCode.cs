@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Domain.Common;
+using Afdb.ClientConnection.Domain.Common;
 
 namespace Afdb.ClientConnection.Domain.Entities;
 

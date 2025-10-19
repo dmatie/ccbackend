@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Application.Common.Interfaces;
+using Afdb.ClientConnection.Application.Common.Interfaces;
 using MediatR;
 
 namespace Afdb.ClientConnection.Application.Commands.AccessRequestCmd;

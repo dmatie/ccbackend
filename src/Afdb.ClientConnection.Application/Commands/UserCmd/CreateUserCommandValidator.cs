@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Domain.Enums;
+using Afdb.ClientConnection.Domain.Enums;
 using FluentValidation;
 
 namespace Afdb.ClientConnection.Application.Commands.UserCmd;

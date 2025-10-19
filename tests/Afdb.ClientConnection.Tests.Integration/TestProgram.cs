@@ -1,2 +1,2 @@
-﻿
+
 public partial class TestProgram { }

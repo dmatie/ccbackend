@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Domain.Common;
+using Afdb.ClientConnection.Domain.Common;
 using Afdb.ClientConnection.Domain.EntitiesParams;
 using Afdb.ClientConnection.Domain.Enums;
 using Afdb.ClientConnection.Domain.Events;

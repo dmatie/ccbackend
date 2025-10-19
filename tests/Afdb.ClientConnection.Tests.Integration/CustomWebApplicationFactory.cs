@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Application.Common.Interfaces;
+using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Infrastructure.Data;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;

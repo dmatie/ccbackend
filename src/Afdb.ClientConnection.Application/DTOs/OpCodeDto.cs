@@ -1,4 +1,4 @@
-﻿namespace Afdb.ClientConnection.Application.DTOs;
+namespace Afdb.ClientConnection.Application.DTOs;
 
 public sealed record OpCodeDto
 {

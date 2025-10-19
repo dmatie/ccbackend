@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Domain.Entities;
+using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Domain.Enums;
 
 namespace Afdb.ClientConnection.Tests.Unit.Domain.Entities;

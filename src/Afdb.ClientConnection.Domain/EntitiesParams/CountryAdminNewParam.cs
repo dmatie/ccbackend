@@ -1,4 +1,4 @@
-﻿namespace Afdb.ClientConnection.Domain.EntitiesParams;
+namespace Afdb.ClientConnection.Domain.EntitiesParams;
 
 public sealed record CountryAdminNewParam
 {

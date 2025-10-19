@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Application.Commands.AccessRequestCmd;
+using Afdb.ClientConnection.Application.Commands.AccessRequestCmd;
 using Afdb.ClientConnection.Application.Queries.ProjectQrs;
 using System.Net;
 using System.Text.Json;

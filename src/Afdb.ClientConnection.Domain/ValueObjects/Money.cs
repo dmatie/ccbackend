@@ -1,4 +1,4 @@
-﻿namespace Afdb.ClientConnection.Domain.ValueObjects;
+namespace Afdb.ClientConnection.Domain.ValueObjects;
 
 public record Money
 {

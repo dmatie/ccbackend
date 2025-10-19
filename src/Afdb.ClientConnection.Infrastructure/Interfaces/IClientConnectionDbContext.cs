@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Infrastructure.Data.Entities;
+using Afdb.ClientConnection.Infrastructure.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Afdb.ClientConnection.Infrastructure.Interfaces;
