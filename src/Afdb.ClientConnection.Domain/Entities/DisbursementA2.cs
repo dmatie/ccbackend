@@ -1,4 +1,5 @@
 using Afdb.ClientConnection.Domain.Common;
+using Afdb.ClientConnection.Domain.EntitiesParams;
 using Afdb.ClientConnection.Domain.ValueObjects;
 
 namespace Afdb.ClientConnection.Domain.Entities;
@@ -23,61 +24,70 @@ public sealed class DisbursementA2 : BaseEntity
 
     private DisbursementA2() { }
 
-    public DisbursementA2(
-        string reimbursementPurpose,
-        string claimantName,
-        string claimantAddress,
-        string claimantBankName,
-        string claimantBankAddress,
-        string claimantAccountNumber,
-        string claimantSwiftCode,
-        Money amount,
-        DateTime expenseDate,
-        string expenseDescription,
-        string? supportingDocuments,
-        string? specialInstructions,
-        string createdBy)
+    public DisbursementA2(DisbursementA2NewParam newParam)
     {
-        if (string.IsNullOrWhiteSpace(reimbursementPurpose))
+        if (string.IsNullOrWhiteSpace(newParam.ReimbursementPurpose))
             throw new ArgumentException("ReimbursementPurpose cannot be empty");
 
-        if (string.IsNullOrWhiteSpace(claimantName))
+        if (string.IsNullOrWhiteSpace(newParam.ClaimantName))
             throw new ArgumentException("ClaimantName cannot be empty");
 
-        if (string.IsNullOrWhiteSpace(claimantAddress))
+        if (string.IsNullOrWhiteSpace(newParam.ClaimantAddress))
             throw new ArgumentException("ClaimantAddress cannot be empty");
 
-        if (string.IsNullOrWhiteSpace(claimantBankName))
+        if (string.IsNullOrWhiteSpace(newParam.ClaimantBankName))
             throw new ArgumentException("ClaimantBankName cannot be empty");
 
-        if (string.IsNullOrWhiteSpace(claimantBankAddress))
+        if (string.IsNullOrWhiteSpace(newParam.ClaimantBankAddress))
             throw new ArgumentException("ClaimantBankAddress cannot be empty");
 
-        if (string.IsNullOrWhiteSpace(claimantAccountNumber))
+        if (string.IsNullOrWhiteSpace(newParam.ClaimantAccountNumber))
             throw new ArgumentException("ClaimantAccountNumber cannot be empty");
 
-        if (string.IsNullOrWhiteSpace(claimantSwiftCode))
+        if (string.IsNullOrWhiteSpace(newParam.ClaimantSwiftCode))
             throw new ArgumentException("ClaimantSwiftCode cannot be empty");
 
-        if (amount == null || amount.Amount <= 0)
+        if (newParam.Amount == null || newParam.Amount.Amount <= 0)
             throw new ArgumentException("Amount must be greater than zero");
 
-        if (string.IsNullOrWhiteSpace(expenseDescription))
+        if (string.IsNullOrWhiteSpace(newParam.ExpenseDescription))
             throw new ArgumentException("ExpenseDescription cannot be empty");
 
-        ReimbursementPurpose = reimbursementPurpose;
-        ClaimantName = claimantName;
-        ClaimantAddress = claimantAddress;
-        ClaimantBankName = claimantBankName;
-        ClaimantBankAddress = claimantBankAddress;
-        ClaimantAccountNumber = claimantAccountNumber;
-        ClaimantSwiftCode = claimantSwiftCode;
-        Amount = amount;
-        ExpenseDate = expenseDate;
-        ExpenseDescription = expenseDescription;
-        SupportingDocuments = supportingDocuments;
-        SpecialInstructions = specialInstructions;
-        CreatedBy = createdBy;
+        ReimbursementPurpose = newParam.ReimbursementPurpose;
+        ClaimantName = newParam.ClaimantName;
+        ClaimantAddress = newParam.ClaimantAddress;
+        ClaimantBankName = newParam.ClaimantBankName;
+        ClaimantBankAddress = newParam.ClaimantBankAddress;
+        ClaimantAccountNumber = newParam.ClaimantAccountNumber;
+        ClaimantSwiftCode = newParam.ClaimantSwiftCode;
+        Amount = newParam.Amount;
+        ExpenseDate = newParam.ExpenseDate;
+        ExpenseDescription = newParam.ExpenseDescription;
+        SupportingDocuments = newParam.SupportingDocuments;
+        SpecialInstructions = newParam.SpecialInstructions;
+        CreatedBy = newParam.CreatedBy;
+    }
+
+    public DisbursementA2(DisbursementA2LoadParam loadParam)
+    {
+        Id = loadParam.Id;
+        DisbursementId = loadParam.DisbursementId;
+        ReimbursementPurpose = loadParam.ReimbursementPurpose;
+        ClaimantName = loadParam.ClaimantName;
+        ClaimantAddress = loadParam.ClaimantAddress;
+        ClaimantBankName = loadParam.ClaimantBankName;
+        ClaimantBankAddress = loadParam.ClaimantBankAddress;
+        ClaimantAccountNumber = loadParam.ClaimantAccountNumber;
+        ClaimantSwiftCode = loadParam.ClaimantSwiftCode;
+        Amount = loadParam.Amount;
+        ExpenseDate = loadParam.ExpenseDate;
+        ExpenseDescription = loadParam.ExpenseDescription;
+        SupportingDocuments = loadParam.SupportingDocuments;
+        SpecialInstructions = loadParam.SpecialInstructions;
+        CreatedBy = loadParam.CreatedBy;
+        CreatedAt = loadParam.CreatedAt;
+        UpdatedBy = loadParam.UpdatedBy;
+        UpdatedAt = loadParam.UpdatedAt;
     }
 
     internal void SetDisbursementId(Guid disbursementId)

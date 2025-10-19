@@ -1,4 +1,5 @@
 using Afdb.ClientConnection.Domain.Common;
+using Afdb.ClientConnection.Domain.EntitiesParams;
 using Afdb.ClientConnection.Domain.ValueObjects;
 
 namespace Afdb.ClientConnection.Domain.Entities;
@@ -22,56 +23,65 @@ public sealed class DisbursementA1 : BaseEntity
 
     private DisbursementA1() { }
 
-    public DisbursementA1(
-        string paymentPurpose,
-        string beneficiaryName,
-        string beneficiaryAddress,
-        string beneficiaryBankName,
-        string beneficiaryBankAddress,
-        string beneficiaryAccountNumber,
-        string beneficiarySwiftCode,
-        Money amount,
-        string? intermediaryBankName,
-        string? intermediaryBankSwiftCode,
-        string? specialInstructions,
-        string createdBy)
+    public DisbursementA1(DisbursementA1NewParam newParam)
     {
-        if (string.IsNullOrWhiteSpace(paymentPurpose))
+        if (string.IsNullOrWhiteSpace(newParam.PaymentPurpose))
             throw new ArgumentException("PaymentPurpose cannot be empty");
 
-        if (string.IsNullOrWhiteSpace(beneficiaryName))
+        if (string.IsNullOrWhiteSpace(newParam.BeneficiaryName))
             throw new ArgumentException("BeneficiaryName cannot be empty");
 
-        if (string.IsNullOrWhiteSpace(beneficiaryAddress))
+        if (string.IsNullOrWhiteSpace(newParam.BeneficiaryAddress))
             throw new ArgumentException("BeneficiaryAddress cannot be empty");
 
-        if (string.IsNullOrWhiteSpace(beneficiaryBankName))
+        if (string.IsNullOrWhiteSpace(newParam.BeneficiaryBankName))
             throw new ArgumentException("BeneficiaryBankName cannot be empty");
 
-        if (string.IsNullOrWhiteSpace(beneficiaryBankAddress))
+        if (string.IsNullOrWhiteSpace(newParam.BeneficiaryBankAddress))
             throw new ArgumentException("BeneficiaryBankAddress cannot be empty");
 
-        if (string.IsNullOrWhiteSpace(beneficiaryAccountNumber))
+        if (string.IsNullOrWhiteSpace(newParam.BeneficiaryAccountNumber))
             throw new ArgumentException("BeneficiaryAccountNumber cannot be empty");
 
-        if (string.IsNullOrWhiteSpace(beneficiarySwiftCode))
+        if (string.IsNullOrWhiteSpace(newParam.BeneficiarySwiftCode))
             throw new ArgumentException("BeneficiarySwiftCode cannot be empty");
 
-        if (amount == null || amount.Amount <= 0)
+        if (newParam.Amount == null || newParam.Amount.Amount <= 0)
             throw new ArgumentException("Amount must be greater than zero");
 
-        PaymentPurpose = paymentPurpose;
-        BeneficiaryName = beneficiaryName;
-        BeneficiaryAddress = beneficiaryAddress;
-        BeneficiaryBankName = beneficiaryBankName;
-        BeneficiaryBankAddress = beneficiaryBankAddress;
-        BeneficiaryAccountNumber = beneficiaryAccountNumber;
-        BeneficiarySwiftCode = beneficiarySwiftCode;
-        Amount = amount;
-        IntermediaryBankName = intermediaryBankName;
-        IntermediaryBankSwiftCode = intermediaryBankSwiftCode;
-        SpecialInstructions = specialInstructions;
-        CreatedBy = createdBy;
+        PaymentPurpose = newParam.PaymentPurpose;
+        BeneficiaryName = newParam.BeneficiaryName;
+        BeneficiaryAddress = newParam.BeneficiaryAddress;
+        BeneficiaryBankName = newParam.BeneficiaryBankName;
+        BeneficiaryBankAddress = newParam.BeneficiaryBankAddress;
+        BeneficiaryAccountNumber = newParam.BeneficiaryAccountNumber;
+        BeneficiarySwiftCode = newParam.BeneficiarySwiftCode;
+        Amount = newParam.Amount;
+        IntermediaryBankName = newParam.IntermediaryBankName;
+        IntermediaryBankSwiftCode = newParam.IntermediaryBankSwiftCode;
+        SpecialInstructions = newParam.SpecialInstructions;
+        CreatedBy = newParam.CreatedBy;
+    }
+
+    public DisbursementA1(DisbursementA1LoadParam loadParam)
+    {
+        Id = loadParam.Id;
+        DisbursementId = loadParam.DisbursementId;
+        PaymentPurpose = loadParam.PaymentPurpose;
+        BeneficiaryName = loadParam.BeneficiaryName;
+        BeneficiaryAddress = loadParam.BeneficiaryAddress;
+        BeneficiaryBankName = loadParam.BeneficiaryBankName;
+        BeneficiaryBankAddress = loadParam.BeneficiaryBankAddress;
+        BeneficiaryAccountNumber = loadParam.BeneficiaryAccountNumber;
+        BeneficiarySwiftCode = loadParam.BeneficiarySwiftCode;
+        Amount = loadParam.Amount;
+        IntermediaryBankName = loadParam.IntermediaryBankName;
+        IntermediaryBankSwiftCode = loadParam.IntermediaryBankSwiftCode;
+        SpecialInstructions = loadParam.SpecialInstructions;
+        CreatedBy = loadParam.CreatedBy;
+        CreatedAt = loadParam.CreatedAt;
+        UpdatedBy = loadParam.UpdatedBy;
+        UpdatedAt = loadParam.UpdatedAt;
     }
 
     internal void SetDisbursementId(Guid disbursementId)

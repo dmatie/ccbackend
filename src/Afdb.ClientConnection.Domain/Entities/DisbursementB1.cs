@@ -1,4 +1,5 @@
 using Afdb.ClientConnection.Domain.Common;
+using Afdb.ClientConnection.Domain.EntitiesParams;
 using Afdb.ClientConnection.Domain.ValueObjects;
 
 namespace Afdb.ClientConnection.Domain.Entities;
@@ -21,54 +22,63 @@ public sealed class DisbursementB1 : BaseEntity
 
     private DisbursementB1() { }
 
-    public DisbursementB1(
-        string guaranteePurpose,
-        string beneficiaryName,
-        string beneficiaryAddress,
-        string beneficiaryBankName,
-        string beneficiaryBankAddress,
-        Money guaranteeAmount,
-        DateTime validityStartDate,
-        DateTime validityEndDate,
-        string guaranteeTermsAndConditions,
-        string? specialInstructions,
-        string createdBy)
+    public DisbursementB1(DisbursementB1NewParam newParam)
     {
-        if (string.IsNullOrWhiteSpace(guaranteePurpose))
+        if (string.IsNullOrWhiteSpace(newParam.GuaranteePurpose))
             throw new ArgumentException("GuaranteePurpose cannot be empty");
 
-        if (string.IsNullOrWhiteSpace(beneficiaryName))
+        if (string.IsNullOrWhiteSpace(newParam.BeneficiaryName))
             throw new ArgumentException("BeneficiaryName cannot be empty");
 
-        if (string.IsNullOrWhiteSpace(beneficiaryAddress))
+        if (string.IsNullOrWhiteSpace(newParam.BeneficiaryAddress))
             throw new ArgumentException("BeneficiaryAddress cannot be empty");
 
-        if (string.IsNullOrWhiteSpace(beneficiaryBankName))
+        if (string.IsNullOrWhiteSpace(newParam.BeneficiaryBankName))
             throw new ArgumentException("BeneficiaryBankName cannot be empty");
 
-        if (string.IsNullOrWhiteSpace(beneficiaryBankAddress))
+        if (string.IsNullOrWhiteSpace(newParam.BeneficiaryBankAddress))
             throw new ArgumentException("BeneficiaryBankAddress cannot be empty");
 
-        if (guaranteeAmount == null || guaranteeAmount.Amount <= 0)
+        if (newParam.GuaranteeAmount == null || newParam.GuaranteeAmount.Amount <= 0)
             throw new ArgumentException("GuaranteeAmount must be greater than zero");
 
-        if (validityEndDate <= validityStartDate)
+        if (newParam.ValidityEndDate <= newParam.ValidityStartDate)
             throw new ArgumentException("ValidityEndDate must be after ValidityStartDate");
 
-        if (string.IsNullOrWhiteSpace(guaranteeTermsAndConditions))
+        if (string.IsNullOrWhiteSpace(newParam.GuaranteeTermsAndConditions))
             throw new ArgumentException("GuaranteeTermsAndConditions cannot be empty");
 
-        GuaranteePurpose = guaranteePurpose;
-        BeneficiaryName = beneficiaryName;
-        BeneficiaryAddress = beneficiaryAddress;
-        BeneficiaryBankName = beneficiaryBankName;
-        BeneficiaryBankAddress = beneficiaryBankAddress;
-        GuaranteeAmount = guaranteeAmount;
-        ValidityStartDate = validityStartDate;
-        ValidityEndDate = validityEndDate;
-        GuaranteeTermsAndConditions = guaranteeTermsAndConditions;
-        SpecialInstructions = specialInstructions;
-        CreatedBy = createdBy;
+        GuaranteePurpose = newParam.GuaranteePurpose;
+        BeneficiaryName = newParam.BeneficiaryName;
+        BeneficiaryAddress = newParam.BeneficiaryAddress;
+        BeneficiaryBankName = newParam.BeneficiaryBankName;
+        BeneficiaryBankAddress = newParam.BeneficiaryBankAddress;
+        GuaranteeAmount = newParam.GuaranteeAmount;
+        ValidityStartDate = newParam.ValidityStartDate;
+        ValidityEndDate = newParam.ValidityEndDate;
+        GuaranteeTermsAndConditions = newParam.GuaranteeTermsAndConditions;
+        SpecialInstructions = newParam.SpecialInstructions;
+        CreatedBy = newParam.CreatedBy;
+    }
+
+    public DisbursementB1(DisbursementB1LoadParam loadParam)
+    {
+        Id = loadParam.Id;
+        DisbursementId = loadParam.DisbursementId;
+        GuaranteePurpose = loadParam.GuaranteePurpose;
+        BeneficiaryName = loadParam.BeneficiaryName;
+        BeneficiaryAddress = loadParam.BeneficiaryAddress;
+        BeneficiaryBankName = loadParam.BeneficiaryBankName;
+        BeneficiaryBankAddress = loadParam.BeneficiaryBankAddress;
+        GuaranteeAmount = loadParam.GuaranteeAmount;
+        ValidityStartDate = loadParam.ValidityStartDate;
+        ValidityEndDate = loadParam.ValidityEndDate;
+        GuaranteeTermsAndConditions = loadParam.GuaranteeTermsAndConditions;
+        SpecialInstructions = loadParam.SpecialInstructions;
+        CreatedBy = loadParam.CreatedBy;
+        CreatedAt = loadParam.CreatedAt;
+        UpdatedBy = loadParam.UpdatedBy;
+        UpdatedAt = loadParam.UpdatedAt;
     }
 
     internal void SetDisbursementId(Guid disbursementId)

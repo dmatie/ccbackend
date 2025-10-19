@@ -1,4 +1,5 @@
 using Afdb.ClientConnection.Domain.Common;
+using Afdb.ClientConnection.Domain.EntitiesParams;
 using Afdb.ClientConnection.Domain.ValueObjects;
 
 namespace Afdb.ClientConnection.Domain.Entities;
@@ -23,61 +24,70 @@ public sealed class DisbursementA3 : BaseEntity
 
     private DisbursementA3() { }
 
-    public DisbursementA3(
-        string advancePurpose,
-        string recipientName,
-        string recipientAddress,
-        string recipientBankName,
-        string recipientBankAddress,
-        string recipientAccountNumber,
-        string recipientSwiftCode,
-        Money amount,
-        DateTime expectedUsageDate,
-        string justificationForAdvance,
-        string? repaymentTerms,
-        string? specialInstructions,
-        string createdBy)
+    public DisbursementA3(DisbursementA3NewParam newParam)
     {
-        if (string.IsNullOrWhiteSpace(advancePurpose))
+        if (string.IsNullOrWhiteSpace(newParam.AdvancePurpose))
             throw new ArgumentException("AdvancePurpose cannot be empty");
 
-        if (string.IsNullOrWhiteSpace(recipientName))
+        if (string.IsNullOrWhiteSpace(newParam.RecipientName))
             throw new ArgumentException("RecipientName cannot be empty");
 
-        if (string.IsNullOrWhiteSpace(recipientAddress))
+        if (string.IsNullOrWhiteSpace(newParam.RecipientAddress))
             throw new ArgumentException("RecipientAddress cannot be empty");
 
-        if (string.IsNullOrWhiteSpace(recipientBankName))
+        if (string.IsNullOrWhiteSpace(newParam.RecipientBankName))
             throw new ArgumentException("RecipientBankName cannot be empty");
 
-        if (string.IsNullOrWhiteSpace(recipientBankAddress))
+        if (string.IsNullOrWhiteSpace(newParam.RecipientBankAddress))
             throw new ArgumentException("RecipientBankAddress cannot be empty");
 
-        if (string.IsNullOrWhiteSpace(recipientAccountNumber))
+        if (string.IsNullOrWhiteSpace(newParam.RecipientAccountNumber))
             throw new ArgumentException("RecipientAccountNumber cannot be empty");
 
-        if (string.IsNullOrWhiteSpace(recipientSwiftCode))
+        if (string.IsNullOrWhiteSpace(newParam.RecipientSwiftCode))
             throw new ArgumentException("RecipientSwiftCode cannot be empty");
 
-        if (amount == null || amount.Amount <= 0)
+        if (newParam.Amount == null || newParam.Amount.Amount <= 0)
             throw new ArgumentException("Amount must be greater than zero");
 
-        if (string.IsNullOrWhiteSpace(justificationForAdvance))
+        if (string.IsNullOrWhiteSpace(newParam.JustificationForAdvance))
             throw new ArgumentException("JustificationForAdvance cannot be empty");
 
-        AdvancePurpose = advancePurpose;
-        RecipientName = recipientName;
-        RecipientAddress = recipientAddress;
-        RecipientBankName = recipientBankName;
-        RecipientBankAddress = recipientBankAddress;
-        RecipientAccountNumber = recipientAccountNumber;
-        RecipientSwiftCode = recipientSwiftCode;
-        Amount = amount;
-        ExpectedUsageDate = expectedUsageDate;
-        JustificationForAdvance = justificationForAdvance;
-        RepaymentTerms = repaymentTerms;
-        SpecialInstructions = specialInstructions;
-        CreatedBy = createdBy;
+        AdvancePurpose = newParam.AdvancePurpose;
+        RecipientName = newParam.RecipientName;
+        RecipientAddress = newParam.RecipientAddress;
+        RecipientBankName = newParam.RecipientBankName;
+        RecipientBankAddress = newParam.RecipientBankAddress;
+        RecipientAccountNumber = newParam.RecipientAccountNumber;
+        RecipientSwiftCode = newParam.RecipientSwiftCode;
+        Amount = newParam.Amount;
+        ExpectedUsageDate = newParam.ExpectedUsageDate;
+        JustificationForAdvance = newParam.JustificationForAdvance;
+        RepaymentTerms = newParam.RepaymentTerms;
+        SpecialInstructions = newParam.SpecialInstructions;
+        CreatedBy = newParam.CreatedBy;
+    }
+
+    public DisbursementA3(DisbursementA3LoadParam loadParam)
+    {
+        Id = loadParam.Id;
+        DisbursementId = loadParam.DisbursementId;
+        AdvancePurpose = loadParam.AdvancePurpose;
+        RecipientName = loadParam.RecipientName;
+        RecipientAddress = loadParam.RecipientAddress;
+        RecipientBankName = loadParam.RecipientBankName;
+        RecipientBankAddress = loadParam.RecipientBankAddress;
+        RecipientAccountNumber = loadParam.RecipientAccountNumber;
+        RecipientSwiftCode = loadParam.RecipientSwiftCode;
+        Amount = loadParam.Amount;
+        ExpectedUsageDate = loadParam.ExpectedUsageDate;
+        JustificationForAdvance = loadParam.JustificationForAdvance;
+        RepaymentTerms = loadParam.RepaymentTerms;
+        SpecialInstructions = loadParam.SpecialInstructions;
+        CreatedBy = loadParam.CreatedBy;
+        CreatedAt = loadParam.CreatedAt;
+        UpdatedBy = loadParam.UpdatedBy;
+        UpdatedAt = loadParam.UpdatedAt;
     }
 
     internal void SetDisbursementId(Guid disbursementId)
