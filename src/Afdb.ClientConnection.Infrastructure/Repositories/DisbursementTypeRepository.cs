@@ -22,7 +22,7 @@ internal sealed class DisbursementTypeRepository : IDisbursementTypeRepository
         if (entity == null)
             return null;
 
-        return new DisbursementType(entity.Code, entity.Name, entity.Description);
+        return new DisbursementType(entity.Id, entity.Code, entity.Name, entity.NameFr, entity.Description, entity.CreatedAt, entity.CreatedBy, entity.UpdatedAt, entity.UpdatedBy);
     }
 
     public async Task<DisbursementType?> GetByCodeAsync(string code, CancellationToken cancellationToken = default)
@@ -33,7 +33,7 @@ internal sealed class DisbursementTypeRepository : IDisbursementTypeRepository
         if (entity == null)
             return null;
 
-        return new DisbursementType(entity.Code, entity.Name, entity.Description);
+        return new DisbursementType(entity.Id, entity.Code, entity.Name, entity.NameFr, entity.Description, entity.CreatedAt, entity.CreatedBy, entity.UpdatedAt, entity.UpdatedBy);
     }
 
     public async Task<IEnumerable<DisbursementType>> GetAllAsync(CancellationToken cancellationToken = default)
@@ -42,6 +42,6 @@ internal sealed class DisbursementTypeRepository : IDisbursementTypeRepository
             .OrderBy(dt => dt.Code)
             .ToListAsync(cancellationToken);
 
-        return entities.Select(entity => new DisbursementType(entity.Code, entity.Name, entity.Description)).ToList();
+        return entities.Select(entity => new DisbursementType(entity.Id, entity.Code, entity.Name, entity.NameFr, entity.Description, entity.CreatedAt, entity.CreatedBy, entity.UpdatedAt, entity.UpdatedBy)).ToList();
     }
 }

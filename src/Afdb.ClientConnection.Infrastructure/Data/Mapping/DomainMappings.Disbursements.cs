@@ -19,7 +19,7 @@ internal static partial class DomainMappings
             LoanGrantNumber = entity.LoanGrantNumber,
             DisbursementTypeId = entity.DisbursementTypeId,
             DisbursementType = entity.DisbursementType != null
-                ? new DisbursementType(entity.DisbursementType.Code, entity.DisbursementType.Name, entity.DisbursementType.Description)
+                ? new DisbursementType(entity.DisbursementType.Id, entity.DisbursementType.Code, entity.DisbursementType.Name, entity.DisbursementType.NameFr, entity.DisbursementType.Description, entity.DisbursementType.CreatedAt, entity.DisbursementType.CreatedBy, entity.DisbursementType.UpdatedAt, entity.DisbursementType.UpdatedBy)
                 : null,
             Status = entity.Status,
             CreatedByUserId = entity.CreatedByUserId,

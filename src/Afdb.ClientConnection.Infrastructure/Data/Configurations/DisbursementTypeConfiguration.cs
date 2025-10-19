@@ -12,6 +12,13 @@ public class DisbursementTypeConfiguration : IEntityTypeConfiguration<Disburseme
 
         builder.HasKey(x => x.Id);
 
+        builder.Property(x => x.Code)
+            .IsRequired()
+            .HasMaxLength(10);
+
+        builder.HasIndex(x => x.Code)
+            .IsUnique();
+
         builder.Property(x => x.Name)
             .IsRequired()
             .HasMaxLength(200);
@@ -20,11 +27,12 @@ public class DisbursementTypeConfiguration : IEntityTypeConfiguration<Disburseme
             .IsRequired()
             .HasMaxLength(200);
 
-        builder.Property(x => x.FormCode)
-            .IsRequired()
-            .HasMaxLength(50);
+        builder.Property(x => x.Description)
+            .HasMaxLength(500);
 
-        builder.HasIndex(x => x.FormCode)
-            .IsUnique();
+        builder.HasMany(x => x.Disbursements)
+            .WithOne(x => x.DisbursementType)
+            .HasForeignKey(x => x.DisbursementTypeId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
