@@ -12,91 +12,50 @@ public class DisbursementB1Configuration : IEntityTypeConfiguration<Disbursement
 
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.GuaranteeDetails)
-            .IsRequired()
-            .HasMaxLength(1000);
-
-        builder.Property(x => x.IssuingBankName)
-            .IsRequired()
-            .HasMaxLength(200);
-
-        builder.Property(x => x.IssuingBankAddress)
+        builder.Property(x => x.GuaranteePurpose)
             .IsRequired()
             .HasMaxLength(500);
-
-        builder.Property(x => x.Amount)
-            .IsRequired()
-            .HasColumnType("decimal(18,2)");
-
-        builder.Property(x => x.ExpiryDate)
-            .IsRequired();
 
         builder.Property(x => x.BeneficiaryName)
             .IsRequired()
             .HasMaxLength(200);
 
-        builder.Property(x => x.BeneficiaryBPNumber)
-            .IsRequired()
-            .HasMaxLength(50);
-
-        builder.Property(x => x.BeneficiaryAFDBContract)
-            .IsRequired()
-            .HasMaxLength(100);
-
         builder.Property(x => x.BeneficiaryAddress)
             .IsRequired()
             .HasMaxLength(500);
 
-        builder.Property(x => x.BeneficiaryCity)
+        builder.Property(x => x.BeneficiaryBankName)
             .IsRequired()
             .HasMaxLength(200);
 
-        builder.Property(x => x.GoodDescription)
-            .IsRequired()
-            .HasMaxLength(1000);
-
-        builder.Property(x => x.ExecutingAgencyName)
-            .IsRequired()
-            .HasMaxLength(200);
-
-        builder.Property(x => x.ExecutingAgencyContactPerson)
-            .IsRequired()
-            .HasMaxLength(200);
-
-        builder.Property(x => x.ExecutingAgencyAddress)
+        builder.Property(x => x.BeneficiaryBankAddress)
             .IsRequired()
             .HasMaxLength(500);
 
-        builder.Property(x => x.ExecutingAgencyCity)
+        builder.Property(x => x.GuaranteeAmount)
             .IsRequired()
-            .HasMaxLength(200);
+            .HasColumnType("decimal(18,2)");
 
-        builder.Property(x => x.ExecutingAgencyEmail)
+        builder.Property(x => x.CurrencyCode)
             .IsRequired()
-            .HasMaxLength(200);
+            .HasMaxLength(3);
 
-        builder.Property(x => x.ExecutingAgencyPhone)
+        builder.Property(x => x.ValidityStartDate)
+            .IsRequired();
+
+        builder.Property(x => x.ValidityEndDate)
+            .IsRequired();
+
+        builder.Property(x => x.GuaranteeTermsAndConditions)
             .IsRequired()
-            .HasMaxLength(50);
+            .HasMaxLength(2000);
+
+        builder.Property(x => x.SpecialInstructions)
+            .HasMaxLength(1000);
 
         builder.HasOne(x => x.Disbursement)
             .WithOne(x => x.DisbursementB1)
             .HasForeignKey<DisbursementB1Entity>(x => x.DisbursementId)
             .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasOne(x => x.Currency)
-            .WithMany()
-            .HasForeignKey(x => x.CurrencyId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder.HasOne(x => x.BeneficiaryCountry)
-            .WithMany()
-            .HasForeignKey(x => x.BeneficiaryCountryId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder.HasOne(x => x.ExecutingAgencyCountry)
-            .WithMany()
-            .HasForeignKey(x => x.ExecutingAgencyCountryId)
-            .OnDelete(DeleteBehavior.Restrict);
     }
 }

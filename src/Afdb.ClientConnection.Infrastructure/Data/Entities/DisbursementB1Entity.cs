@@ -10,38 +10,12 @@ public class DisbursementB1Entity : BaseEntityConfiguration
     public Guid DisbursementId { get; set; }
 
     [Required]
-    [MaxLength(1000)]
-    public string GuaranteeDetails { get; set; } = default!;
-
-    [Required]
-    [MaxLength(200)]
-    public string IssuingBankName { get; set; } = default!;
-
-    [Required]
     [MaxLength(500)]
-    public string IssuingBankAddress { get; set; } = default!;
-
-    [Required]
-    public Guid CurrencyId { get; set; }
-
-    [Required]
-    [Column(TypeName = "decimal(18,2)")]
-    public decimal Amount { get; set; }
-
-    [Required]
-    public DateTime ExpiryDate { get; set; }
+    public string GuaranteePurpose { get; set; } = default!;
 
     [Required]
     [MaxLength(200)]
     public string BeneficiaryName { get; set; } = default!;
-
-    [Required]
-    [MaxLength(50)]
-    public string BeneficiaryBPNumber { get; set; } = default!;
-
-    [Required]
-    [MaxLength(100)]
-    public string BeneficiaryAFDBContract { get; set; } = default!;
 
     [Required]
     [MaxLength(500)]
@@ -49,45 +23,32 @@ public class DisbursementB1Entity : BaseEntityConfiguration
 
     [Required]
     [MaxLength(200)]
-    public string BeneficiaryCity { get; set; } = default!;
-
-    [Required]
-    public Guid BeneficiaryCountryId { get; set; }
-
-    [Required]
-    [MaxLength(1000)]
-    public string GoodDescription { get; set; } = default!;
-
-    [Required]
-    [MaxLength(200)]
-    public string ExecutingAgencyName { get; set; } = default!;
-
-    [Required]
-    [MaxLength(200)]
-    public string ExecutingAgencyContactPerson { get; set; } = default!;
+    public string BeneficiaryBankName { get; set; } = default!;
 
     [Required]
     [MaxLength(500)]
-    public string ExecutingAgencyAddress { get; set; } = default!;
+    public string BeneficiaryBankAddress { get; set; } = default!;
 
     [Required]
-    [MaxLength(200)]
-    public string ExecutingAgencyCity { get; set; } = default!;
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal GuaranteeAmount { get; set; }
 
     [Required]
-    public Guid ExecutingAgencyCountryId { get; set; }
+    [MaxLength(3)]
+    public string CurrencyCode { get; set; } = default!;
 
     [Required]
-    [MaxLength(200)]
-    [EmailAddress]
-    public string ExecutingAgencyEmail { get; set; } = default!;
+    public DateTime ValidityStartDate { get; set; }
 
     [Required]
-    [MaxLength(50)]
-    public string ExecutingAgencyPhone { get; set; } = default!;
+    public DateTime ValidityEndDate { get; set; }
+
+    [Required]
+    [MaxLength(2000)]
+    public string GuaranteeTermsAndConditions { get; set; } = default!;
+
+    [MaxLength(1000)]
+    public string? SpecialInstructions { get; set; }
 
     public DisbursementEntity Disbursement { get; set; } = default!;
-    public CurrencyEntity Currency { get; set; } = default!;
-    public CountryEntity BeneficiaryCountry { get; set; } = default!;
-    public CountryEntity ExecutingAgencyCountry { get; set; } = default!;
 }

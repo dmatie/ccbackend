@@ -25,15 +25,13 @@ public class DisbursementConfiguration : IEntityTypeConfiguration<DisbursementEn
 
         builder.Property(x => x.LoanGrantNumber)
             .IsRequired()
-            .HasMaxLength(100);
+            .HasMaxLength(13);
 
         builder.Property(x => x.Status)
             .IsRequired();
 
-        builder.Property(x => x.ProcessedByDate);
-
-        builder.Property(x => x.DocumentsUrl)
-            .HasMaxLength(1000);
+        builder.Property(x => x.SubmittedAt);
+        builder.Property(x => x.ProcessedAt);
 
         builder.HasOne(x => x.DisbursementType)
             .WithMany()
