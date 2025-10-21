@@ -8,7 +8,6 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        // Entities
         CreateMap<OtpCode, OpCodeDto>()
             .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Code))
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
@@ -60,7 +59,6 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.FinancingTypeName, opt => opt.MapFrom(src => src.FinancingType != null ? src.FinancingType.Name : null))
             .ForMember(dest => dest.SelectedProjectCodes, opt => opt.MapFrom(src => src.Projects.Select(p=>p.SapCode).ToList()));
 
-
         CreateMap<ClaimType, ClaimTypeDto>();
 
         CreateMap<ClaimProcess, ClaimProcessDto>()
@@ -90,21 +88,10 @@ public class MappingProfile : Profile
 
         CreateMap<DisbursementDocument, DisbursementDocumentDto>();
 
-        CreateMap<DisbursementA1, DisbursementA1Dto>()
-            .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.Amount.Amount))
-            .ForMember(dest => dest.CurrencyCode, opt => opt.MapFrom(src => src.Amount.Currency));
-
-        CreateMap<DisbursementA2, DisbursementA2Dto>()
-            .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.Amount.Amount))
-            .ForMember(dest => dest.CurrencyCode, opt => opt.MapFrom(src => src.Amount.Currency));
-
-        CreateMap<DisbursementA3, DisbursementA3Dto>()
-            .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.Amount.Amount))
-            .ForMember(dest => dest.CurrencyCode, opt => opt.MapFrom(src => src.Amount.Currency));
-
-        CreateMap<DisbursementB1, DisbursementB1Dto>()
-            .ForMember(dest => dest.GuaranteeAmount, opt => opt.MapFrom(src => src.GuaranteeAmount.Amount))
-            .ForMember(dest => dest.CurrencyCode, opt => opt.MapFrom(src => src.GuaranteeAmount.Currency));
+        CreateMap<DisbursementA1, DisbursementA1Dto>();
+        CreateMap<DisbursementA2, DisbursementA2Dto>();
+        CreateMap<DisbursementA3, DisbursementA3Dto>();
+        CreateMap<DisbursementB1, DisbursementB1Dto>();
 
         CreateMap<Disbursement, DisbursementDto>()
             .ForMember(dest => dest.DisbursementTypeCode,

@@ -1,6 +1,4 @@
 using Afdb.ClientConnection.Domain.Common;
-using Afdb.ClientConnection.Domain.EntitiesParams;
-using Afdb.ClientConnection.Domain.ValueObjects;
 
 namespace Afdb.ClientConnection.Domain.Entities;
 
@@ -8,87 +6,143 @@ public sealed class DisbursementA1 : BaseEntity
 {
     public Guid DisbursementId { get; private set; }
     public string PaymentPurpose { get; private set; }
+    
+    public string BeneficiaryBpNumber { get; private set; }
     public string BeneficiaryName { get; private set; }
+    public string BeneficiaryContactPerson { get; private set; }
     public string BeneficiaryAddress { get; private set; }
-    public string BeneficiaryBankName { get; private set; }
-    public string BeneficiaryBankAddress { get; private set; }
-    public string BeneficiaryAccountNumber { get; private set; }
-    public string BeneficiarySwiftCode { get; private set; }
-    public Money Amount { get; private set; }
-    public string? IntermediaryBankName { get; private set; }
-    public string? IntermediaryBankSwiftCode { get; private set; }
-    public string? SpecialInstructions { get; private set; }
+    public Guid BeneficiaryCountryId { get; private set; }
+    public string BeneficiaryEmail { get; private set; }
+    
+    public string CorrespondentBankName { get; private set; }
+    public string CorrespondentBankAddress { get; private set; }
+    public Guid CorrespondentBankCountryId { get; private set; }
+    public string CorrespondentAccountNumber { get; private set; }
+    public string CorrespondentBankSwiftCode { get; private set; }
+    
+    public decimal Amount { get; private set; }
+    
+    public string SignatoryName { get; private set; }
+    public string SignatoryContactPerson { get; private set; }
+    public string SignatoryAddress { get; private set; }
+    public Guid SignatoryCountryId { get; private set; }
+    public string SignatoryEmail { get; private set; }
+    public string SignatoryPhone { get; private set; }
+    public string SignatoryTitle { get; private set; }
 
-    public Disbursement? Disbursement { get; private set; }
+    public Country? BeneficiaryCountry { get; private set; }
+    public Country? CorrespondentBankCountry { get; private set; }
+    public Country? SignatoryCountry { get; private set; }
 
     private DisbursementA1() { }
 
-    public DisbursementA1(DisbursementA1NewParam newParam)
+    public DisbursementA1(
+        Guid disbursementId,
+        string paymentPurpose,
+        string beneficiaryBpNumber,
+        string beneficiaryName,
+        string beneficiaryContactPerson,
+        string beneficiaryAddress,
+        Guid beneficiaryCountryId,
+        string beneficiaryEmail,
+        string correspondentBankName,
+        string correspondentBankAddress,
+        Guid correspondentBankCountryId,
+        string correspondentAccountNumber,
+        string correspondentBankSwiftCode,
+        decimal amount,
+        string signatoryName,
+        string signatoryContactPerson,
+        string signatoryAddress,
+        Guid signatoryCountryId,
+        string signatoryEmail,
+        string signatoryPhone,
+        string signatoryTitle)
     {
-        if (string.IsNullOrWhiteSpace(newParam.PaymentPurpose))
-            throw new ArgumentException("PaymentPurpose cannot be empty");
-
-        if (string.IsNullOrWhiteSpace(newParam.BeneficiaryName))
-            throw new ArgumentException("BeneficiaryName cannot be empty");
-
-        if (string.IsNullOrWhiteSpace(newParam.BeneficiaryAddress))
-            throw new ArgumentException("BeneficiaryAddress cannot be empty");
-
-        if (string.IsNullOrWhiteSpace(newParam.BeneficiaryBankName))
-            throw new ArgumentException("BeneficiaryBankName cannot be empty");
-
-        if (string.IsNullOrWhiteSpace(newParam.BeneficiaryBankAddress))
-            throw new ArgumentException("BeneficiaryBankAddress cannot be empty");
-
-        if (string.IsNullOrWhiteSpace(newParam.BeneficiaryAccountNumber))
-            throw new ArgumentException("BeneficiaryAccountNumber cannot be empty");
-
-        if (string.IsNullOrWhiteSpace(newParam.BeneficiarySwiftCode))
-            throw new ArgumentException("BeneficiarySwiftCode cannot be empty");
-
-        if (newParam.Amount == null || newParam.Amount.Amount <= 0)
-            throw new ArgumentException("Amount must be greater than zero");
-
-        PaymentPurpose = newParam.PaymentPurpose;
-        BeneficiaryName = newParam.BeneficiaryName;
-        BeneficiaryAddress = newParam.BeneficiaryAddress;
-        BeneficiaryBankName = newParam.BeneficiaryBankName;
-        BeneficiaryBankAddress = newParam.BeneficiaryBankAddress;
-        BeneficiaryAccountNumber = newParam.BeneficiaryAccountNumber;
-        BeneficiarySwiftCode = newParam.BeneficiarySwiftCode;
-        Amount = newParam.Amount;
-        IntermediaryBankName = newParam.IntermediaryBankName;
-        IntermediaryBankSwiftCode = newParam.IntermediaryBankSwiftCode;
-        SpecialInstructions = newParam.SpecialInstructions;
-        CreatedBy = newParam.CreatedBy;
-    }
-
-    public DisbursementA1(DisbursementA1LoadParam loadParam)
-    {
-        Id = loadParam.Id;
-        DisbursementId = loadParam.DisbursementId;
-        PaymentPurpose = loadParam.PaymentPurpose;
-        BeneficiaryName = loadParam.BeneficiaryName;
-        BeneficiaryAddress = loadParam.BeneficiaryAddress;
-        BeneficiaryBankName = loadParam.BeneficiaryBankName;
-        BeneficiaryBankAddress = loadParam.BeneficiaryBankAddress;
-        BeneficiaryAccountNumber = loadParam.BeneficiaryAccountNumber;
-        BeneficiarySwiftCode = loadParam.BeneficiarySwiftCode;
-        Amount = loadParam.Amount;
-        IntermediaryBankName = loadParam.IntermediaryBankName;
-        IntermediaryBankSwiftCode = loadParam.IntermediaryBankSwiftCode;
-        SpecialInstructions = loadParam.SpecialInstructions;
-        CreatedBy = loadParam.CreatedBy;
-        CreatedAt = loadParam.CreatedAt;
-        UpdatedBy = loadParam.UpdatedBy;
-        UpdatedAt = loadParam.UpdatedAt;
-    }
-
-    internal void SetDisbursementId(Guid disbursementId)
-    {
-        if (disbursementId == Guid.Empty)
-            throw new ArgumentException("DisbursementId must be a valid GUID");
-
         DisbursementId = disbursementId;
+        PaymentPurpose = paymentPurpose;
+        BeneficiaryBpNumber = beneficiaryBpNumber;
+        BeneficiaryName = beneficiaryName;
+        BeneficiaryContactPerson = beneficiaryContactPerson;
+        BeneficiaryAddress = beneficiaryAddress;
+        BeneficiaryCountryId = beneficiaryCountryId;
+        BeneficiaryEmail = beneficiaryEmail;
+        CorrespondentBankName = correspondentBankName;
+        CorrespondentBankAddress = correspondentBankAddress;
+        CorrespondentBankCountryId = correspondentBankCountryId;
+        CorrespondentAccountNumber = correspondentAccountNumber;
+        CorrespondentBankSwiftCode = correspondentBankSwiftCode;
+        Amount = amount;
+        SignatoryName = signatoryName;
+        SignatoryContactPerson = signatoryContactPerson;
+        SignatoryAddress = signatoryAddress;
+        SignatoryCountryId = signatoryCountryId;
+        SignatoryEmail = signatoryEmail;
+        SignatoryPhone = signatoryPhone;
+        SignatoryTitle = signatoryTitle;
+        CreatedBy = "System";
+        CreatedAt = DateTime.UtcNow;
+    }
+
+    public DisbursementA1(
+        Guid id,
+        Guid disbursementId,
+        string paymentPurpose,
+        string beneficiaryBpNumber,
+        string beneficiaryName,
+        string beneficiaryContactPerson,
+        string beneficiaryAddress,
+        Guid beneficiaryCountryId,
+        string beneficiaryEmail,
+        string correspondentBankName,
+        string correspondentBankAddress,
+        Guid correspondentBankCountryId,
+        string correspondentAccountNumber,
+        string correspondentBankSwiftCode,
+        decimal amount,
+        string signatoryName,
+        string signatoryContactPerson,
+        string signatoryAddress,
+        Guid signatoryCountryId,
+        string signatoryEmail,
+        string signatoryPhone,
+        string signatoryTitle,
+        DateTime createdAt,
+        string createdBy,
+        DateTime? updatedAt = null,
+        string? updatedBy = null,
+        Country? beneficiaryCountry = null,
+        Country? correspondentBankCountry = null,
+        Country? signatoryCountry = null)
+    {
+        Id = id;
+        DisbursementId = disbursementId;
+        PaymentPurpose = paymentPurpose;
+        BeneficiaryBpNumber = beneficiaryBpNumber;
+        BeneficiaryName = beneficiaryName;
+        BeneficiaryContactPerson = beneficiaryContactPerson;
+        BeneficiaryAddress = beneficiaryAddress;
+        BeneficiaryCountryId = beneficiaryCountryId;
+        BeneficiaryEmail = beneficiaryEmail;
+        CorrespondentBankName = correspondentBankName;
+        CorrespondentBankAddress = correspondentBankAddress;
+        CorrespondentBankCountryId = correspondentBankCountryId;
+        CorrespondentAccountNumber = correspondentAccountNumber;
+        CorrespondentBankSwiftCode = correspondentBankSwiftCode;
+        Amount = amount;
+        SignatoryName = signatoryName;
+        SignatoryContactPerson = signatoryContactPerson;
+        SignatoryAddress = signatoryAddress;
+        SignatoryCountryId = signatoryCountryId;
+        SignatoryEmail = signatoryEmail;
+        SignatoryPhone = signatoryPhone;
+        SignatoryTitle = signatoryTitle;
+        CreatedAt = createdAt;
+        CreatedBy = createdBy;
+        UpdatedAt = updatedAt;
+        UpdatedBy = updatedBy;
+        BeneficiaryCountry = beneficiaryCountry;
+        CorrespondentBankCountry = correspondentBankCountry;
+        SignatoryCountry = signatoryCountry;
     }
 }

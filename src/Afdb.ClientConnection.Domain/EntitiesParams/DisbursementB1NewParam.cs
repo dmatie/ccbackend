@@ -1,18 +1,26 @@
-using Afdb.ClientConnection.Domain.ValueObjects;
-
 namespace Afdb.ClientConnection.Domain.EntitiesParams;
 
-public sealed class DisbursementB1NewParam
-{
-    public required string GuaranteePurpose { get; set; }
-    public required string BeneficiaryName { get; set; }
-    public required string BeneficiaryAddress { get; set; }
-    public required string BeneficiaryBankName { get; set; }
-    public required string BeneficiaryBankAddress { get; set; }
-    public required Money GuaranteeAmount { get; set; }
-    public required DateTime ValidityStartDate { get; set; }
-    public required DateTime ValidityEndDate { get; set; }
-    public required string GuaranteeTermsAndConditions { get; set; }
-    public string? SpecialInstructions { get; set; }
-    public required string CreatedBy { get; set; }
-}
+public sealed record DisbursementB1NewParam(
+    Guid DisbursementId,
+    string GuaranteeDetails,
+    string ConfirmingBank,
+    string IssuingBankName,
+    string IssuingBankAddress,
+    decimal GuaranteeAmount,
+    DateTime ExpiryDate,
+    string BeneficiaryName,
+    string BeneficiaryBPNumber,
+    string BeneficiaryAFDBContract,
+    string BeneficiaryBankAddress,
+    string BeneficiaryCity,
+    Guid BeneficiaryCountryId,
+    string GoodDescription,
+    string BeneficiaryLcContractRef,
+    string ExecutingAgencyName,
+    string ExecutingAgencyContactPerson,
+    string ExecutingAgencyAddress,
+    string ExecutingAgencyCity,
+    Guid ExecutingAgencyCountryId,
+    string ExecutingAgencyEmail,
+    string ExecutingAgencyPhone
+);

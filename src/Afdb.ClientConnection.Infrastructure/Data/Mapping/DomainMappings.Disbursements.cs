@@ -1,6 +1,5 @@
 using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Domain.EntitiesParams;
-using Afdb.ClientConnection.Domain.ValueObjects;
 using Afdb.ClientConnection.Infrastructure.Data.Entities;
 
 namespace Afdb.ClientConnection.Infrastructure.Data.Mapping;
@@ -47,105 +46,128 @@ internal static partial class DomainMappings
     {
         ArgumentNullException.ThrowIfNull(entity);
 
-        return new DisbursementA1(new DisbursementA1LoadParam
-        {
-            Id = entity.Id,
-            DisbursementId = entity.DisbursementId,
-            PaymentPurpose = entity.PaymentPurpose,
-            BeneficiaryName = entity.BeneficiaryName,
-            BeneficiaryAddress = entity.BeneficiaryAddress,
-            BeneficiaryBankName = entity.CorrespondentBankName,
-            BeneficiaryBankAddress = entity.CorrespondentBankAddress,
-            BeneficiaryAccountNumber = entity.CorrespondantAccountNumber,
-            BeneficiarySwiftCode = entity.CorrespondentBankSwiftCode,
-            Amount = new Money(entity.Amount, entity.CurrencyCode),
-            IntermediaryBankName = entity.IntermediaryBankName,
-            IntermediaryBankSwiftCode = entity.IntermediaryBankSwiftCode,
-            SpecialInstructions = entity.SpecialInstructions,
-            CreatedAt = entity.CreatedAt,
-            CreatedBy = entity.CreatedBy,
-            UpdatedAt = entity.UpdatedAt,
-            UpdatedBy = entity.UpdatedBy
-        });
+        return new DisbursementA1(
+            entity.Id,
+            entity.DisbursementId,
+            entity.PaymentPurpose,
+            entity.BeneficiaryBpNumber,
+            entity.BeneficiaryName,
+            entity.BeneficiaryContactPerson,
+            entity.BeneficiaryAddress,
+            entity.BeneficiaryCountryId,
+            entity.BeneficiaryEmail,
+            entity.CorrespondentBankName,
+            entity.CorrespondentBankAddress,
+            entity.CorrespondentBankCountryId,
+            entity.CorrespondantAccountNumber,
+            entity.CorrespondentBankSwiftCode,
+            entity.Amount,
+            entity.SignatoryName,
+            entity.SignatoryContactPerson,
+            entity.SignatoryAddress,
+            entity.SignatoryCountryId,
+            entity.SignatoryEmail,
+            entity.SignatoryPhone,
+            entity.SignatoryTitle,
+            entity.CreatedAt,
+            entity.CreatedBy,
+            entity.UpdatedAt,
+            entity.UpdatedBy,
+            entity.BeneficiaryCountry != null ? MapCountry(entity.BeneficiaryCountry) : null,
+            entity.CorrespondentBankCountry != null ? MapCountry(entity.CorrespondentBankCountry) : null,
+            entity.SignatoryCountry != null ? MapCountry(entity.SignatoryCountry) : null
+        );
     }
 
     public static DisbursementA2 MapDisbursementA2ToDomain(DisbursementA2Entity entity)
     {
         ArgumentNullException.ThrowIfNull(entity);
 
-        return new DisbursementA2(new DisbursementA2LoadParam
-        {
-            Id = entity.Id,
-            DisbursementId = entity.DisbursementId,
-            ReimbursementPurpose = entity.ReimbursementPurpose,
-            ClaimantName = entity.GoodDescription,
-            ClaimantAddress = entity.ClaimantAddress,
-            ClaimantBankName = entity.PaymentEvidenceOfPayment,
-            ClaimantBankAddress = entity.ClaimantBankAddress,
-            ClaimantAccountNumber = entity.ClaimantAccountNumber,
-            ClaimantSwiftCode = entity.ClaimantSwiftCode,
-            Amount = new Money(entity.Amount, entity.CurrencyCode),
-            ExpenseDate = entity.ExpenseDate,
-            ExpenseDescription = entity.ExpenseDescription,
-            SupportingDocuments = entity.SupportingDocuments,
-            SpecialInstructions = entity.SpecialInstructions,
-            CreatedAt = entity.CreatedAt,
-            CreatedBy = entity.CreatedBy,
-            UpdatedAt = entity.UpdatedAt,
-            UpdatedBy = entity.UpdatedBy
-        });
+        return new DisbursementA2(
+            entity.Id,
+            entity.DisbursementId,
+            entity.ReimbursementPurpose,
+            entity.Contractor,
+            entity.GoodDescription,
+            entity.GoodOrginCountryId,
+            entity.ContractBorrowerReference,
+            entity.ContractAfDBReference,
+            entity.ContractValue,
+            entity.ContractBankShare,
+            entity.ContractAmountPreviouslyPaid,
+            entity.InvoiceRef,
+            entity.InvoiceDate,
+            entity.InvoiceAmount,
+            entity.PaymentDateOfPayment,
+            entity.PaymentAmountWithdrawn,
+            entity.PaymentEvidenceOfPayment,
+            entity.CreatedAt,
+            entity.CreatedBy,
+            entity.UpdatedAt,
+            entity.UpdatedBy,
+            entity.GoodOrginCountry != null ? MapCountry(entity.GoodOrginCountry) : null
+        );
     }
 
     public static DisbursementA3 MapDisbursementA3ToDomain(DisbursementA3Entity entity)
     {
         ArgumentNullException.ThrowIfNull(entity);
 
-        return new DisbursementA3(new DisbursementA3LoadParam
-        {
-            Id = entity.Id,
-            DisbursementId = entity.DisbursementId,
-            AdvancePurpose = entity.AdvancePurpose,
-            RecipientName = entity.PeriodForUtilization,
-            RecipientAddress = entity.RecipientAddress,
-            RecipientBankName = entity.GoodDescription,
-            RecipientBankAddress = entity.RecipientBankAddress,
-            RecipientAccountNumber = entity.RecipientAccountNumber,
-            RecipientSwiftCode = entity.RecipientSwiftCode,
-            Amount = new Money(entity.Amount, entity.CurrencyCode),
-            ExpectedUsageDate = entity.ExpectedUsageDate,
-            JustificationForAdvance = entity.JustificationForAdvance,
-            RepaymentTerms = entity.RepaymentTerms,
-            SpecialInstructions = entity.SpecialInstructions,
-            CreatedAt = entity.CreatedAt,
-            CreatedBy = entity.CreatedBy,
-            UpdatedAt = entity.UpdatedAt,
-            UpdatedBy = entity.UpdatedBy
-        });
+        return new DisbursementA3(
+            entity.Id,
+            entity.DisbursementId,
+            entity.PeriodForUtilization,
+            entity.ItemNumber,
+            entity.GoodDescription,
+            entity.GoodOrginCountryId,
+            entity.GoodQuantity,
+            entity.AnnualBudget,
+            entity.BankShare,
+            entity.AdvanceRequested,
+            entity.DateOfApproval,
+            entity.CreatedAt,
+            entity.CreatedBy,
+            entity.UpdatedAt,
+            entity.UpdatedBy,
+            entity.GoodOrginCountry != null ? MapCountry(entity.GoodOrginCountry) : null
+        );
     }
 
     public static DisbursementB1 MapDisbursementB1ToDomain(DisbursementB1Entity entity)
     {
         ArgumentNullException.ThrowIfNull(entity);
 
-        return new DisbursementB1(new DisbursementB1LoadParam
-        {
-            Id = entity.Id,
-            DisbursementId = entity.DisbursementId,
-            GuaranteePurpose = entity.GuaranteeDetails,
-            BeneficiaryName = entity.IssuingBankName,
-            BeneficiaryAddress = entity.IssuingBankAdress,
-            BeneficiaryBankName = entity.BeneficiaryBankName,
-            BeneficiaryBankAddress = entity.BeneficiaryBankAddress,
-            GuaranteeAmount = new Money(entity.GuaranteeAmount, entity.GoodDescription),
-            ValidityStartDate = entity.ValidityStartDate,
-            ValidityEndDate = entity.ValidityEndDate,
-            GuaranteeTermsAndConditions = entity.GuaranteeTermsAndConditions,
-            SpecialInstructions = entity.SpecialInstructions,
-            CreatedAt = entity.CreatedAt,
-            CreatedBy = entity.CreatedBy,
-            UpdatedAt = entity.UpdatedAt,
-            UpdatedBy = entity.UpdatedBy
-        });
+        return new DisbursementB1(
+            entity.Id,
+            entity.DisbursementId,
+            entity.GuaranteeDetails,
+            entity.ConfirmingBank,
+            entity.IssuingBankName,
+            entity.IssuingBankAdress,
+            entity.GuaranteeAmount,
+            entity.ExpiryDate,
+            entity.BeneficiaryName,
+            entity.BeneficiaryBPNumber,
+            entity.BeneficiaryAFDBContract,
+            entity.BeneficiaryBankAddress,
+            entity.BeneficiaryCity,
+            entity.BeneficiaryCountryId,
+            entity.GoodDescription,
+            entity.BeneficiaryLcContractRef,
+            entity.ExecutingAgencyName,
+            entity.ExecutingAgencyContactPerson,
+            entity.ExecutingAgencyAddress,
+            entity.ExecutingAgencyCity,
+            entity.ExecutingAgencyCountryId,
+            entity.ExecutingAgencyEmail,
+            entity.ExecutingAgencyPhone,
+            entity.CreatedAt,
+            entity.CreatedBy,
+            entity.UpdatedAt,
+            entity.UpdatedBy,
+            entity.BeneficiaryCountry != null ? MapCountry(entity.BeneficiaryCountry) : null,
+            entity.ExecutingAgencyCountry != null ? MapCountry(entity.ExecutingAgencyCountry) : null
+        );
     }
 
     public static DisbursementProcess MapDisbursementProcessToDomain(DisbursementProcessEntity entity)
