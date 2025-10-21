@@ -2,7 +2,6 @@ using Afdb.ClientConnection.Application.Common.Exceptions;
 using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Domain.EntitiesParams;
-using Afdb.ClientConnection.Domain.ValueObjects;
 using AutoMapper;
 using MediatR;
 
@@ -61,6 +60,8 @@ public sealed class CreateDisbursementCommandHandler(
 
     private void MapFormData(CreateDisbursementCommand request, string typeCode, DisbursementNewParam param)
     {
+        var disbursementId = Guid.NewGuid();
+
         switch (typeCode.ToUpper())
         {
             case "A1":
@@ -69,21 +70,29 @@ public sealed class CreateDisbursementCommandHandler(
                         new FluentValidation.Results.ValidationFailure("DisbursementA1", "ERR.Disbursement.A1DataRequired")
                     });
 
-                param.DisbursementA1 = new DisbursementA1(new DisbursementA1NewParam
-                {
-                    PaymentPurpose = request.DisbursementA1.PaymentPurpose,
-                    BeneficiaryName = request.DisbursementA1.BeneficiaryName,
-                    BeneficiaryAddress = request.DisbursementA1.BeneficiaryAddress,
-                    BeneficiaryBankName = request.DisbursementA1.BeneficiaryBankName,
-                    BeneficiaryBankAddress = request.DisbursementA1.BeneficiaryBankAddress,
-                    BeneficiaryAccountNumber = request.DisbursementA1.BeneficiaryAccountNumber,
-                    BeneficiarySwiftCode = request.DisbursementA1.BeneficiarySwiftCode,
-                    Amount = new Money(request.DisbursementA1.Amount, request.DisbursementA1.CurrencyCode),
-                    IntermediaryBankName = request.DisbursementA1.IntermediaryBankName,
-                    IntermediaryBankSwiftCode = request.DisbursementA1.IntermediaryBankSwiftCode,
-                    SpecialInstructions = request.DisbursementA1.SpecialInstructions,
-                    CreatedBy = _currentUserService.Email
-                });
+                param.DisbursementA1 = new DisbursementA1(new DisbursementA1NewParam(
+                    DisbursementId: disbursementId,
+                    PaymentPurpose: request.DisbursementA1.PaymentPurpose,
+                    BeneficiaryBpNumber: request.DisbursementA1.BeneficiaryBpNumber,
+                    BeneficiaryName: request.DisbursementA1.BeneficiaryName,
+                    BeneficiaryContactPerson: request.DisbursementA1.BeneficiaryContactPerson,
+                    BeneficiaryAddress: request.DisbursementA1.BeneficiaryAddress,
+                    BeneficiaryCountryId: request.DisbursementA1.BeneficiaryCountryId,
+                    BeneficiaryEmail: request.DisbursementA1.BeneficiaryEmail,
+                    CorrespondentBankName: request.DisbursementA1.CorrespondentBankName,
+                    CorrespondentBankAddress: request.DisbursementA1.CorrespondentBankAddress,
+                    CorrespondentBankCountryId: request.DisbursementA1.CorrespondentBankCountryId,
+                    CorrespondantAccountNumber: request.DisbursementA1.CorrespondantAccountNumber,
+                    CorrespondentBankSwiftCode: request.DisbursementA1.CorrespondentBankSwiftCode,
+                    Amount: request.DisbursementA1.Amount,
+                    SignatoryName: request.DisbursementA1.SignatoryName,
+                    SignatoryContactPerson: request.DisbursementA1.SignatoryContactPerson,
+                    SignatoryAddress: request.DisbursementA1.SignatoryAddress,
+                    SignatoryCountryId: request.DisbursementA1.SignatoryCountryId,
+                    SignatoryEmail: request.DisbursementA1.SignatoryEmail,
+                    SignatoryPhone: request.DisbursementA1.SignatoryPhone,
+                    SignatoryTitle: request.DisbursementA1.SignatoryTitle
+                ));
                 break;
 
             case "A2":
@@ -92,22 +101,24 @@ public sealed class CreateDisbursementCommandHandler(
                         new FluentValidation.Results.ValidationFailure("DisbursementA2", "ERR.Disbursement.A2DataRequired")
                     });
 
-                param.DisbursementA2 = new DisbursementA2(new DisbursementA2NewParam
-                {
-                    ReimbursementPurpose = request.DisbursementA2.ReimbursementPurpose,
-                    ClaimantName = request.DisbursementA2.ClaimantName,
-                    ClaimantAddress = request.DisbursementA2.ClaimantAddress,
-                    ClaimantBankName = request.DisbursementA2.ClaimantBankName,
-                    ClaimantBankAddress = request.DisbursementA2.ClaimantBankAddress,
-                    ClaimantAccountNumber = request.DisbursementA2.ClaimantAccountNumber,
-                    ClaimantSwiftCode = request.DisbursementA2.ClaimantSwiftCode,
-                    Amount = new Money(request.DisbursementA2.Amount, request.DisbursementA2.CurrencyCode),
-                    ExpenseDate = request.DisbursementA2.ExpenseDate,
-                    ExpenseDescription = request.DisbursementA2.ExpenseDescription,
-                    SupportingDocuments = request.DisbursementA2.SupportingDocuments,
-                    SpecialInstructions = request.DisbursementA2.SpecialInstructions,
-                    CreatedBy = _currentUserService.Email
-                });
+                param.DisbursementA2 = new DisbursementA2(new DisbursementA2NewParam(
+                    DisbursementId: disbursementId,
+                    ReimbursementPurpose: request.DisbursementA2.ReimbursementPurpose,
+                    Contractor: request.DisbursementA2.Contractor,
+                    GoodDescription: request.DisbursementA2.GoodDescription,
+                    GoodOrginCountryId: request.DisbursementA2.GoodOrginCountryId,
+                    ContractBorrowerReference: request.DisbursementA2.ContractBorrowerReference,
+                    ContractAfDBReference: request.DisbursementA2.ContractAfDBReference,
+                    ContractValue: request.DisbursementA2.ContractValue,
+                    ContractBankShare: request.DisbursementA2.ContractBankShare,
+                    ContractAmountPreviouslyPaid: request.DisbursementA2.ContractAmountPreviouslyPaid,
+                    InvoiceRef: request.DisbursementA2.InvoiceRef,
+                    InvoiceDate: request.DisbursementA2.InvoiceDate,
+                    InvoiceAmount: request.DisbursementA2.InvoiceAmount,
+                    PaymentDateOfPayment: request.DisbursementA2.PaymentDateOfPayment,
+                    PaymentAmountWithdrawn: request.DisbursementA2.PaymentAmountWithdrawn,
+                    PaymentEvidenceOfPayment: request.DisbursementA2.PaymentEvidenceOfPayment
+                ));
                 break;
 
             case "A3":
@@ -116,22 +127,18 @@ public sealed class CreateDisbursementCommandHandler(
                         new FluentValidation.Results.ValidationFailure("DisbursementA3", "ERR.Disbursement.A3DataRequired")
                     });
 
-                param.DisbursementA3 = new DisbursementA3(new DisbursementA3NewParam
-                {
-                    AdvancePurpose = request.DisbursementA3.AdvancePurpose,
-                    RecipientName = request.DisbursementA3.RecipientName,
-                    RecipientAddress = request.DisbursementA3.RecipientAddress,
-                    RecipientBankName = request.DisbursementA3.RecipientBankName,
-                    RecipientBankAddress = request.DisbursementA3.RecipientBankAddress,
-                    RecipientAccountNumber = request.DisbursementA3.RecipientAccountNumber,
-                    RecipientSwiftCode = request.DisbursementA3.RecipientSwiftCode,
-                    Amount = new Money(request.DisbursementA3.Amount, request.DisbursementA3.CurrencyCode),
-                    ExpectedUsageDate = request.DisbursementA3.ExpectedUsageDate,
-                    JustificationForAdvance = request.DisbursementA3.JustificationForAdvance,
-                    RepaymentTerms = request.DisbursementA3.RepaymentTerms,
-                    SpecialInstructions = request.DisbursementA3.SpecialInstructions,
-                    CreatedBy = _currentUserService.Email
-                });
+                param.DisbursementA3 = new DisbursementA3(new DisbursementA3NewParam(
+                    DisbursementId: disbursementId,
+                    PeriodForUtilization: request.DisbursementA3.PeriodForUtilization,
+                    ItemNumber: request.DisbursementA3.ItemNumber,
+                    GoodDescription: request.DisbursementA3.GoodDescription,
+                    GoodOrginCountryId: request.DisbursementA3.GoodOrginCountryId,
+                    GoodQuantity: request.DisbursementA3.GoodQuantity,
+                    AnnualBudget: request.DisbursementA3.AnnualBudget,
+                    BankShare: request.DisbursementA3.BankShare,
+                    AdvanceRequested: request.DisbursementA3.AdvanceRequested,
+                    DateOfApproval: request.DisbursementA3.DateOfApproval
+                ));
                 break;
 
             case "B1":
@@ -140,20 +147,30 @@ public sealed class CreateDisbursementCommandHandler(
                         new FluentValidation.Results.ValidationFailure("DisbursementB1", "ERR.Disbursement.B1DataRequired")
                     });
 
-                param.DisbursementB1 = new DisbursementB1(new DisbursementB1NewParam
-                {
-                    GuaranteePurpose = request.DisbursementB1.GuaranteePurpose,
-                    BeneficiaryName = request.DisbursementB1.BeneficiaryName,
-                    BeneficiaryAddress = request.DisbursementB1.BeneficiaryAddress,
-                    BeneficiaryBankName = request.DisbursementB1.BeneficiaryBankName,
-                    BeneficiaryBankAddress = request.DisbursementB1.BeneficiaryBankAddress,
-                    GuaranteeAmount = new Money(request.DisbursementB1.GuaranteeAmount, request.DisbursementB1.CurrencyCode),
-                    ValidityStartDate = request.DisbursementB1.ValidityStartDate,
-                    ValidityEndDate = request.DisbursementB1.ValidityEndDate,
-                    GuaranteeTermsAndConditions = request.DisbursementB1.GuaranteeTermsAndConditions,
-                    SpecialInstructions = request.DisbursementB1.SpecialInstructions,
-                    CreatedBy = _currentUserService.Email
-                });
+                param.DisbursementB1 = new DisbursementB1(new DisbursementB1NewParam(
+                    DisbursementId: disbursementId,
+                    GuaranteeDetails: request.DisbursementB1.GuaranteeDetails,
+                    ConfirmingBank: request.DisbursementB1.ConfirmingBank,
+                    IssuingBankName: request.DisbursementB1.IssuingBankName,
+                    IssuingBankAdress: request.DisbursementB1.IssuingBankAdress,
+                    GuaranteeAmount: request.DisbursementB1.GuaranteeAmount,
+                    ExpiryDate: request.DisbursementB1.ExpiryDate,
+                    BeneficiaryName: request.DisbursementB1.BeneficiaryName,
+                    BeneficiaryBPNumber: request.DisbursementB1.BeneficiaryBPNumber,
+                    BeneficiaryAFDBContract: request.DisbursementB1.BeneficiaryAFDBContract,
+                    BeneficiaryBankAddress: request.DisbursementB1.BeneficiaryBankAddress,
+                    BeneficiaryCity: request.DisbursementB1.BeneficiaryCity,
+                    BeneficiaryCountryId: request.DisbursementB1.BeneficiaryCountryId,
+                    GoodDescription: request.DisbursementB1.GoodDescription,
+                    BeneficiaryLcContractRef: request.DisbursementB1.BeneficiaryLcContractRef,
+                    ExecutingAgencyName: request.DisbursementB1.ExecutingAgencyName,
+                    ExecutingAgencyContactPerson: request.DisbursementB1.ExecutingAgencyContactPerson,
+                    ExecutingAgencyAddress: request.DisbursementB1.ExecutingAgencyAddress,
+                    ExecutingAgencyCity: request.DisbursementB1.ExecutingAgencyCity,
+                    ExecutingAgencyCountryId: request.DisbursementB1.ExecutingAgencyCountryId,
+                    ExecutingAgencyEmail: request.DisbursementB1.ExecutingAgencyEmail,
+                    ExecutingAgencyPhone: request.DisbursementB1.ExecutingAgencyPhone
+                ));
                 break;
 
             default:
