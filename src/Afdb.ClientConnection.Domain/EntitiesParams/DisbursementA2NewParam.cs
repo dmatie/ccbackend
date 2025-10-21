@@ -5,7 +5,7 @@ public sealed record DisbursementA2NewParam(
     string ReimbursementPurpose,
     string Contractor,
     string GoodDescription,
-    Guid GoodOriginCountryId,
+    Guid GoodOrginCountryId,
     string ContractBorrowerReference,
     string ContractAfDBReference,
     string ContractValue,

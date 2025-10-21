@@ -5,7 +5,7 @@ public sealed record DisbursementA3NewParam(
     string PeriodForUtilization,
     int ItemNumber,
     string GoodDescription,
-    Guid GoodOriginCountryId,
+    Guid GoodOrginCountryId,
     int GoodQuantity,
     decimal AnnualBudget,
     decimal BankShare,

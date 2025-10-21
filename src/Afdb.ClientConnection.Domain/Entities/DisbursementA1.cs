@@ -17,7 +17,7 @@ public sealed class DisbursementA1 : BaseEntity
     public string CorrespondentBankName { get; private set; }
     public string CorrespondentBankAddress { get; private set; }
     public Guid CorrespondentBankCountryId { get; private set; }
-    public string CorrespondentAccountNumber { get; private set; }
+    public string CorrespondantAccountNumber { get; private set; }
     public string CorrespondentBankSwiftCode { get; private set; }
     
     public decimal Amount { get; private set; }
@@ -48,7 +48,7 @@ public sealed class DisbursementA1 : BaseEntity
         string correspondentBankName,
         string correspondentBankAddress,
         Guid correspondentBankCountryId,
-        string correspondentAccountNumber,
+        string correspondantAccountNumber,
         string correspondentBankSwiftCode,
         decimal amount,
         string signatoryName,
@@ -70,7 +70,7 @@ public sealed class DisbursementA1 : BaseEntity
         CorrespondentBankName = correspondentBankName;
         CorrespondentBankAddress = correspondentBankAddress;
         CorrespondentBankCountryId = correspondentBankCountryId;
-        CorrespondentAccountNumber = correspondentAccountNumber;
+        CorrespondantAccountNumber = correspondantAccountNumber;
         CorrespondentBankSwiftCode = correspondentBankSwiftCode;
         Amount = amount;
         SignatoryName = signatoryName;
@@ -97,7 +97,7 @@ public sealed class DisbursementA1 : BaseEntity
         string correspondentBankName,
         string correspondentBankAddress,
         Guid correspondentBankCountryId,
-        string correspondentAccountNumber,
+        string correspondantAccountNumber,
         string correspondentBankSwiftCode,
         decimal amount,
         string signatoryName,
@@ -127,7 +127,7 @@ public sealed class DisbursementA1 : BaseEntity
         CorrespondentBankName = correspondentBankName;
         CorrespondentBankAddress = correspondentBankAddress;
         CorrespondentBankCountryId = correspondentBankCountryId;
-        CorrespondentAccountNumber = correspondentAccountNumber;
+        CorrespondantAccountNumber = correspondantAccountNumber;
         CorrespondentBankSwiftCode = correspondentBankSwiftCode;
         Amount = amount;
         SignatoryName = signatoryName;

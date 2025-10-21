@@ -9,7 +9,7 @@ public sealed class DisbursementA3 : BaseEntity
     public int ItemNumber { get; private set; }
     
     public string GoodDescription { get; private set; }
-    public Guid GoodOriginCountryId { get; private set; }
+    public Guid GoodOrginCountryId { get; private set; }
     public int GoodQuantity { get; private set; }
     
     public decimal AnnualBudget { get; private set; }
@@ -18,7 +18,7 @@ public sealed class DisbursementA3 : BaseEntity
     
     public DateTime DateOfApproval { get; private set; }
 
-    public Country? GoodOriginCountry { get; private set; }
+    public Country? GoodOrginCountry { get; private set; }
 
     private DisbursementA3() { }
 
@@ -27,7 +27,7 @@ public sealed class DisbursementA3 : BaseEntity
         string periodForUtilization,
         int itemNumber,
         string goodDescription,
-        Guid goodOriginCountryId,
+        Guid goodOrginCountryId,
         int goodQuantity,
         decimal annualBudget,
         decimal bankShare,
@@ -38,7 +38,7 @@ public sealed class DisbursementA3 : BaseEntity
         PeriodForUtilization = periodForUtilization;
         ItemNumber = itemNumber;
         GoodDescription = goodDescription;
-        GoodOriginCountryId = goodOriginCountryId;
+        GoodOrginCountryId = goodOrginCountryId;
         GoodQuantity = goodQuantity;
         AnnualBudget = annualBudget;
         BankShare = bankShare;
@@ -54,7 +54,7 @@ public sealed class DisbursementA3 : BaseEntity
         string periodForUtilization,
         int itemNumber,
         string goodDescription,
-        Guid goodOriginCountryId,
+        Guid goodOrginCountryId,
         int goodQuantity,
         decimal annualBudget,
         decimal bankShare,
@@ -64,14 +64,14 @@ public sealed class DisbursementA3 : BaseEntity
         string createdBy,
         DateTime? updatedAt = null,
         string? updatedBy = null,
-        Country? goodOriginCountry = null)
+        Country? goodOrginCountry = null)
     {
         Id = id;
         DisbursementId = disbursementId;
         PeriodForUtilization = periodForUtilization;
         ItemNumber = itemNumber;
         GoodDescription = goodDescription;
-        GoodOriginCountryId = goodOriginCountryId;
+        GoodOrginCountryId = goodOrginCountryId;
         GoodQuantity = goodQuantity;
         AnnualBudget = annualBudget;
         BankShare = bankShare;
@@ -81,6 +81,6 @@ public sealed class DisbursementA3 : BaseEntity
         CreatedBy = createdBy;
         UpdatedAt = updatedAt;
         UpdatedBy = updatedBy;
-        GoodOriginCountry = goodOriginCountry;
+        GoodOrginCountry = goodOrginCountry;
     }
 }

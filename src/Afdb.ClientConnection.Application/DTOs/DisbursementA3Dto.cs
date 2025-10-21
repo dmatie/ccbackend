@@ -8,9 +8,9 @@ public sealed record DisbursementA3Dto
     public int ItemNumber { get; init; }
     
     public string GoodDescription { get; init; } = string.Empty;
-    public Guid GoodOriginCountryId { get; init; }
+    public Guid GoodOrginCountryId { get; init; }
     public int GoodQuantity { get; init; }
-    public CountryDto? GoodOriginCountry { get; init; }
+    public CountryDto? GoodOrginCountry { get; init; }
     
     public decimal AnnualBudget { get; init; }
     public decimal BankShare { get; init; }

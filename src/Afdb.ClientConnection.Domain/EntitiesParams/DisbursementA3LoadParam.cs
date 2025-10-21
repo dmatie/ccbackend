@@ -8,7 +8,7 @@ public sealed record DisbursementA3LoadParam(
     string PeriodForUtilization,
     int ItemNumber,
     string GoodDescription,
-    Guid GoodOriginCountryId,
+    Guid GoodOrginCountryId,
     int GoodQuantity,
     decimal AnnualBudget,
     decimal BankShare,
@@ -18,5 +18,5 @@ public sealed record DisbursementA3LoadParam(
     string CreatedBy,
     DateTime? UpdatedAt = null,
     string? UpdatedBy = null,
-    Country? GoodOriginCountry = null
+    Country? GoodOrginCountry = null
 );

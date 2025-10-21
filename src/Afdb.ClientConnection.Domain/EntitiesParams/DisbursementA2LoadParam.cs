@@ -8,7 +8,7 @@ public sealed record DisbursementA2LoadParam(
     string ReimbursementPurpose,
     string Contractor,
     string GoodDescription,
-    Guid GoodOriginCountryId,
+    Guid GoodOrginCountryId,
     string ContractBorrowerReference,
     string ContractAfDBReference,
     string ContractValue,
@@ -24,5 +24,5 @@ public sealed record DisbursementA2LoadParam(
     string CreatedBy,
     DateTime? UpdatedAt = null,
     string? UpdatedBy = null,
-    Country? GoodOriginCountry = null
+    Country? GoodOrginCountry = null
 );

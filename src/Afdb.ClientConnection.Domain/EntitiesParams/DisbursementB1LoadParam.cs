@@ -8,7 +8,7 @@ public sealed record DisbursementB1LoadParam(
     string GuaranteeDetails,
     string ConfirmingBank,
     string IssuingBankName,
-    string IssuingBankAddress,
+    string IssuingBankAdress,
     decimal GuaranteeAmount,
     DateTime ExpiryDate,
     string BeneficiaryName,

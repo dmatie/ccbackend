@@ -9,7 +9,7 @@ public sealed record DisbursementB1Dto
     public string ConfirmingBank { get; init; } = string.Empty;
     
     public string IssuingBankName { get; init; } = string.Empty;
-    public string IssuingBankAddress { get; init; } = string.Empty;
+    public string IssuingBankAdress { get; init; } = string.Empty;
     public decimal GuaranteeAmount { get; init; }
     public DateTime ExpiryDate { get; init; }
     

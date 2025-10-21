@@ -15,7 +15,7 @@ public sealed record DisbursementA1LoadParam(
     string CorrespondentBankName,
     string CorrespondentBankAddress,
     Guid CorrespondentBankCountryId,
-    string CorrespondentAccountNumber,
+    string CorrespondantAccountNumber,
     string CorrespondentBankSwiftCode,
     decimal Amount,
     string SignatoryName,

@@ -8,8 +8,8 @@ public sealed record DisbursementA2Dto
     public string Contractor { get; init; } = string.Empty;
     
     public string GoodDescription { get; init; } = string.Empty;
-    public Guid GoodOriginCountryId { get; init; }
-    public CountryDto? GoodOriginCountry { get; init; }
+    public Guid GoodOrginCountryId { get; init; }
+    public CountryDto? GoodOrginCountry { get; init; }
     
     public string ContractBorrowerReference { get; init; } = string.Empty;
     public string ContractAfDBReference { get; init; } = string.Empty;

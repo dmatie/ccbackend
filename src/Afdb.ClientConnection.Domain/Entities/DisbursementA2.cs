@@ -9,7 +9,7 @@ public sealed class DisbursementA2 : BaseEntity
     public string Contractor { get; private set; }
     
     public string GoodDescription { get; private set; }
-    public Guid GoodOriginCountryId { get; private set; }
+    public Guid GoodOrginCountryId { get; private set; }
     
     public string ContractBorrowerReference { get; private set; }
     public string ContractAfDBReference { get; private set; }
@@ -25,7 +25,7 @@ public sealed class DisbursementA2 : BaseEntity
     public decimal PaymentAmountWithdrawn { get; private set; }
     public string PaymentEvidenceOfPayment { get; private set; }
 
-    public Country? GoodOriginCountry { get; private set; }
+    public Country? GoodOrginCountry { get; private set; }
 
     private DisbursementA2() { }
 
@@ -34,7 +34,7 @@ public sealed class DisbursementA2 : BaseEntity
         string reimbursementPurpose,
         string contractor,
         string goodDescription,
-        Guid goodOriginCountryId,
+        Guid goodOrginCountryId,
         string contractBorrowerReference,
         string contractAfDBReference,
         string contractValue,
@@ -51,7 +51,7 @@ public sealed class DisbursementA2 : BaseEntity
         ReimbursementPurpose = reimbursementPurpose;
         Contractor = contractor;
         GoodDescription = goodDescription;
-        GoodOriginCountryId = goodOriginCountryId;
+        GoodOrginCountryId = goodOrginCountryId;
         ContractBorrowerReference = contractBorrowerReference;
         ContractAfDBReference = contractAfDBReference;
         ContractValue = contractValue;
@@ -73,7 +73,7 @@ public sealed class DisbursementA2 : BaseEntity
         string reimbursementPurpose,
         string contractor,
         string goodDescription,
-        Guid goodOriginCountryId,
+        Guid goodOrginCountryId,
         string contractBorrowerReference,
         string contractAfDBReference,
         string contractValue,
@@ -89,14 +89,14 @@ public sealed class DisbursementA2 : BaseEntity
         string createdBy,
         DateTime? updatedAt = null,
         string? updatedBy = null,
-        Country? goodOriginCountry = null)
+        Country? goodOrginCountry = null)
     {
         Id = id;
         DisbursementId = disbursementId;
         ReimbursementPurpose = reimbursementPurpose;
         Contractor = contractor;
         GoodDescription = goodDescription;
-        GoodOriginCountryId = goodOriginCountryId;
+        GoodOrginCountryId = goodOrginCountryId;
         ContractBorrowerReference = contractBorrowerReference;
         ContractAfDBReference = contractAfDBReference;
         ContractValue = contractValue;
@@ -112,6 +112,6 @@ public sealed class DisbursementA2 : BaseEntity
         CreatedBy = createdBy;
         UpdatedAt = updatedAt;
         UpdatedBy = updatedBy;
-        GoodOriginCountry = goodOriginCountry;
+        GoodOrginCountry = goodOrginCountry;
     }
 }

@@ -17,7 +17,7 @@ public sealed record DisbursementA1Dto
     public string CorrespondentBankName { get; init; } = string.Empty;
     public string CorrespondentBankAddress { get; init; } = string.Empty;
     public Guid CorrespondentBankCountryId { get; init; }
-    public string CorrespondentAccountNumber { get; init; } = string.Empty;
+    public string CorrespondantAccountNumber { get; init; } = string.Empty;
     public string CorrespondentBankSwiftCode { get; init; } = string.Empty;
     public CountryDto? CorrespondentBankCountry { get; init; }
     
