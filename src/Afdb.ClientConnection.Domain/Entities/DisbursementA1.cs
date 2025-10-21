@@ -1,4 +1,5 @@
 using Afdb.ClientConnection.Domain.Common;
+using Afdb.ClientConnection.Domain.EntitiesParams;
 
 namespace Afdb.ClientConnection.Domain.Entities;
 
@@ -36,113 +37,63 @@ public sealed class DisbursementA1 : BaseEntity
 
     private DisbursementA1() { }
 
-    public DisbursementA1(
-        Guid disbursementId,
-        string paymentPurpose,
-        string beneficiaryBpNumber,
-        string beneficiaryName,
-        string beneficiaryContactPerson,
-        string beneficiaryAddress,
-        Guid beneficiaryCountryId,
-        string beneficiaryEmail,
-        string correspondentBankName,
-        string correspondentBankAddress,
-        Guid correspondentBankCountryId,
-        string correspondantAccountNumber,
-        string correspondentBankSwiftCode,
-        decimal amount,
-        string signatoryName,
-        string signatoryContactPerson,
-        string signatoryAddress,
-        Guid signatoryCountryId,
-        string signatoryEmail,
-        string signatoryPhone,
-        string signatoryTitle)
+    public DisbursementA1(DisbursementA1NewParam param)
     {
-        DisbursementId = disbursementId;
-        PaymentPurpose = paymentPurpose;
-        BeneficiaryBpNumber = beneficiaryBpNumber;
-        BeneficiaryName = beneficiaryName;
-        BeneficiaryContactPerson = beneficiaryContactPerson;
-        BeneficiaryAddress = beneficiaryAddress;
-        BeneficiaryCountryId = beneficiaryCountryId;
-        BeneficiaryEmail = beneficiaryEmail;
-        CorrespondentBankName = correspondentBankName;
-        CorrespondentBankAddress = correspondentBankAddress;
-        CorrespondentBankCountryId = correspondentBankCountryId;
-        CorrespondantAccountNumber = correspondantAccountNumber;
-        CorrespondentBankSwiftCode = correspondentBankSwiftCode;
-        Amount = amount;
-        SignatoryName = signatoryName;
-        SignatoryContactPerson = signatoryContactPerson;
-        SignatoryAddress = signatoryAddress;
-        SignatoryCountryId = signatoryCountryId;
-        SignatoryEmail = signatoryEmail;
-        SignatoryPhone = signatoryPhone;
-        SignatoryTitle = signatoryTitle;
+        DisbursementId = param.DisbursementId;
+        PaymentPurpose = param.PaymentPurpose;
+        BeneficiaryBpNumber = param.BeneficiaryBpNumber;
+        BeneficiaryName = param.BeneficiaryName;
+        BeneficiaryContactPerson = param.BeneficiaryContactPerson;
+        BeneficiaryAddress = param.BeneficiaryAddress;
+        BeneficiaryCountryId = param.BeneficiaryCountryId;
+        BeneficiaryEmail = param.BeneficiaryEmail;
+        CorrespondentBankName = param.CorrespondentBankName;
+        CorrespondentBankAddress = param.CorrespondentBankAddress;
+        CorrespondentBankCountryId = param.CorrespondentBankCountryId;
+        CorrespondantAccountNumber = param.CorrespondantAccountNumber;
+        CorrespondentBankSwiftCode = param.CorrespondentBankSwiftCode;
+        Amount = param.Amount;
+        SignatoryName = param.SignatoryName;
+        SignatoryContactPerson = param.SignatoryContactPerson;
+        SignatoryAddress = param.SignatoryAddress;
+        SignatoryCountryId = param.SignatoryCountryId;
+        SignatoryEmail = param.SignatoryEmail;
+        SignatoryPhone = param.SignatoryPhone;
+        SignatoryTitle = param.SignatoryTitle;
         CreatedBy = "System";
         CreatedAt = DateTime.UtcNow;
     }
 
-    public DisbursementA1(
-        Guid id,
-        Guid disbursementId,
-        string paymentPurpose,
-        string beneficiaryBpNumber,
-        string beneficiaryName,
-        string beneficiaryContactPerson,
-        string beneficiaryAddress,
-        Guid beneficiaryCountryId,
-        string beneficiaryEmail,
-        string correspondentBankName,
-        string correspondentBankAddress,
-        Guid correspondentBankCountryId,
-        string correspondantAccountNumber,
-        string correspondentBankSwiftCode,
-        decimal amount,
-        string signatoryName,
-        string signatoryContactPerson,
-        string signatoryAddress,
-        Guid signatoryCountryId,
-        string signatoryEmail,
-        string signatoryPhone,
-        string signatoryTitle,
-        DateTime createdAt,
-        string createdBy,
-        DateTime? updatedAt = null,
-        string? updatedBy = null,
-        Country? beneficiaryCountry = null,
-        Country? correspondentBankCountry = null,
-        Country? signatoryCountry = null)
+    public DisbursementA1(DisbursementA1LoadParam param)
     {
-        Id = id;
-        DisbursementId = disbursementId;
-        PaymentPurpose = paymentPurpose;
-        BeneficiaryBpNumber = beneficiaryBpNumber;
-        BeneficiaryName = beneficiaryName;
-        BeneficiaryContactPerson = beneficiaryContactPerson;
-        BeneficiaryAddress = beneficiaryAddress;
-        BeneficiaryCountryId = beneficiaryCountryId;
-        BeneficiaryEmail = beneficiaryEmail;
-        CorrespondentBankName = correspondentBankName;
-        CorrespondentBankAddress = correspondentBankAddress;
-        CorrespondentBankCountryId = correspondentBankCountryId;
-        CorrespondantAccountNumber = correspondantAccountNumber;
-        CorrespondentBankSwiftCode = correspondentBankSwiftCode;
-        Amount = amount;
-        SignatoryName = signatoryName;
-        SignatoryContactPerson = signatoryContactPerson;
-        SignatoryAddress = signatoryAddress;
-        SignatoryCountryId = signatoryCountryId;
-        SignatoryEmail = signatoryEmail;
-        SignatoryPhone = signatoryPhone;
-        SignatoryTitle = signatoryTitle;
-        CreatedAt = createdAt;
-        CreatedBy = createdBy;
-        UpdatedAt = updatedAt;
-        UpdatedBy = updatedBy;
-        BeneficiaryCountry = beneficiaryCountry;
-        CorrespondentBankCountry = correspondentBankCountry;
-        SignatoryCountry = signatoryCountry;
+        Id = param.Id;
+        DisbursementId = param.DisbursementId;
+        PaymentPurpose = param.PaymentPurpose;
+        BeneficiaryBpNumber = param.BeneficiaryBpNumber;
+        BeneficiaryName = param.BeneficiaryName;
+        BeneficiaryContactPerson = param.BeneficiaryContactPerson;
+        BeneficiaryAddress = param.BeneficiaryAddress;
+        BeneficiaryCountryId = param.BeneficiaryCountryId;
+        BeneficiaryEmail = param.BeneficiaryEmail;
+        CorrespondentBankName = param.CorrespondentBankName;
+        CorrespondentBankAddress = param.CorrespondentBankAddress;
+        CorrespondentBankCountryId = param.CorrespondentBankCountryId;
+        CorrespondantAccountNumber = param.CorrespondantAccountNumber;
+        CorrespondentBankSwiftCode = param.CorrespondentBankSwiftCode;
+        Amount = param.Amount;
+        SignatoryName = param.SignatoryName;
+        SignatoryContactPerson = param.SignatoryContactPerson;
+        SignatoryAddress = param.SignatoryAddress;
+        SignatoryCountryId = param.SignatoryCountryId;
+        SignatoryEmail = param.SignatoryEmail;
+        SignatoryPhone = param.SignatoryPhone;
+        SignatoryTitle = param.SignatoryTitle;
+        CreatedAt = param.CreatedAt;
+        CreatedBy = param.CreatedBy;
+        UpdatedAt = param.UpdatedAt;
+        UpdatedBy = param.UpdatedBy;
+        BeneficiaryCountry = param.BeneficiaryCountry;
+        CorrespondentBankCountry = param.CorrespondentBankCountry;
+        SignatoryCountry = param.SignatoryCountry;
     }
 }

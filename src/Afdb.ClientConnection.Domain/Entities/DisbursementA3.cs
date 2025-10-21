@@ -1,4 +1,5 @@
 using Afdb.ClientConnection.Domain.Common;
+using Afdb.ClientConnection.Domain.EntitiesParams;
 
 namespace Afdb.ClientConnection.Domain.Entities;
 
@@ -22,65 +23,39 @@ public sealed class DisbursementA3 : BaseEntity
 
     private DisbursementA3() { }
 
-    public DisbursementA3(
-        Guid disbursementId,
-        string periodForUtilization,
-        int itemNumber,
-        string goodDescription,
-        Guid goodOrginCountryId,
-        int goodQuantity,
-        decimal annualBudget,
-        decimal bankShare,
-        decimal advanceRequested,
-        DateTime dateOfApproval)
+    public DisbursementA3(DisbursementA3NewParam param)
     {
-        DisbursementId = disbursementId;
-        PeriodForUtilization = periodForUtilization;
-        ItemNumber = itemNumber;
-        GoodDescription = goodDescription;
-        GoodOrginCountryId = goodOrginCountryId;
-        GoodQuantity = goodQuantity;
-        AnnualBudget = annualBudget;
-        BankShare = bankShare;
-        AdvanceRequested = advanceRequested;
-        DateOfApproval = dateOfApproval;
+        DisbursementId = param.DisbursementId;
+        PeriodForUtilization = param.PeriodForUtilization;
+        ItemNumber = param.ItemNumber;
+        GoodDescription = param.GoodDescription;
+        GoodOrginCountryId = param.GoodOrginCountryId;
+        GoodQuantity = param.GoodQuantity;
+        AnnualBudget = param.AnnualBudget;
+        BankShare = param.BankShare;
+        AdvanceRequested = param.AdvanceRequested;
+        DateOfApproval = param.DateOfApproval;
         CreatedBy = "System";
         CreatedAt = DateTime.UtcNow;
     }
 
-    public DisbursementA3(
-        Guid id,
-        Guid disbursementId,
-        string periodForUtilization,
-        int itemNumber,
-        string goodDescription,
-        Guid goodOrginCountryId,
-        int goodQuantity,
-        decimal annualBudget,
-        decimal bankShare,
-        decimal advanceRequested,
-        DateTime dateOfApproval,
-        DateTime createdAt,
-        string createdBy,
-        DateTime? updatedAt = null,
-        string? updatedBy = null,
-        Country? goodOrginCountry = null)
+    public DisbursementA3(DisbursementA3LoadParam param)
     {
-        Id = id;
-        DisbursementId = disbursementId;
-        PeriodForUtilization = periodForUtilization;
-        ItemNumber = itemNumber;
-        GoodDescription = goodDescription;
-        GoodOrginCountryId = goodOrginCountryId;
-        GoodQuantity = goodQuantity;
-        AnnualBudget = annualBudget;
-        BankShare = bankShare;
-        AdvanceRequested = advanceRequested;
-        DateOfApproval = dateOfApproval;
-        CreatedAt = createdAt;
-        CreatedBy = createdBy;
-        UpdatedAt = updatedAt;
-        UpdatedBy = updatedBy;
-        GoodOrginCountry = goodOrginCountry;
+        Id = param.Id;
+        DisbursementId = param.DisbursementId;
+        PeriodForUtilization = param.PeriodForUtilization;
+        ItemNumber = param.ItemNumber;
+        GoodDescription = param.GoodDescription;
+        GoodOrginCountryId = param.GoodOrginCountryId;
+        GoodQuantity = param.GoodQuantity;
+        AnnualBudget = param.AnnualBudget;
+        BankShare = param.BankShare;
+        AdvanceRequested = param.AdvanceRequested;
+        DateOfApproval = param.DateOfApproval;
+        CreatedAt = param.CreatedAt;
+        CreatedBy = param.CreatedBy;
+        UpdatedAt = param.UpdatedAt;
+        UpdatedBy = param.UpdatedBy;
+        GoodOrginCountry = param.GoodOrginCountry;
     }
 }

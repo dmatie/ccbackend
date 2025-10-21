@@ -1,4 +1,5 @@
 using Afdb.ClientConnection.Domain.Common;
+using Afdb.ClientConnection.Domain.EntitiesParams;
 
 namespace Afdb.ClientConnection.Domain.Entities;
 
@@ -36,115 +37,64 @@ public sealed class DisbursementB1 : BaseEntity
 
     private DisbursementB1() { }
 
-    public DisbursementB1(
-        Guid disbursementId,
-        string guaranteeDetails,
-        string confirmingBank,
-        string issuingBankName,
-        string issuingBankAdress,
-        decimal guaranteeAmount,
-        DateTime expiryDate,
-        string beneficiaryName,
-        string beneficiaryBPNumber,
-        string beneficiaryAFDBContract,
-        string beneficiaryBankAddress,
-        string beneficiaryCity,
-        Guid beneficiaryCountryId,
-        string goodDescription,
-        string beneficiaryLcContractRef,
-        string executingAgencyName,
-        string executingAgencyContactPerson,
-        string executingAgencyAddress,
-        string executingAgencyCity,
-        Guid executingAgencyCountryId,
-        string executingAgencyEmail,
-        string executingAgencyPhone)
+    public DisbursementB1(DisbursementB1NewParam param)
     {
-        DisbursementId = disbursementId;
-        GuaranteeDetails = guaranteeDetails;
-        ConfirmingBank = confirmingBank;
-        IssuingBankName = issuingBankName;
-        IssuingBankAdress = issuingBankAdress;
-        GuaranteeAmount = guaranteeAmount;
-        ExpiryDate = expiryDate;
-        BeneficiaryName = beneficiaryName;
-        BeneficiaryBPNumber = beneficiaryBPNumber;
-        BeneficiaryAFDBContract = beneficiaryAFDBContract;
-        BeneficiaryBankAddress = beneficiaryBankAddress;
-        BeneficiaryCity = beneficiaryCity;
-        BeneficiaryCountryId = beneficiaryCountryId;
-        GoodDescription = goodDescription;
-        BeneficiaryLcContractRef = beneficiaryLcContractRef;
-        ExecutingAgencyName = executingAgencyName;
-        ExecutingAgencyContactPerson = executingAgencyContactPerson;
-        ExecutingAgencyAddress = executingAgencyAddress;
-        ExecutingAgencyCity = executingAgencyCity;
-        ExecutingAgencyCountryId = executingAgencyCountryId;
-        ExecutingAgencyEmail = executingAgencyEmail;
-        ExecutingAgencyPhone = executingAgencyPhone;
+        DisbursementId = param.DisbursementId;
+        GuaranteeDetails = param.GuaranteeDetails;
+        ConfirmingBank = param.ConfirmingBank;
+        IssuingBankName = param.IssuingBankName;
+        IssuingBankAdress = param.IssuingBankAdress;
+        GuaranteeAmount = param.GuaranteeAmount;
+        ExpiryDate = param.ExpiryDate;
+        BeneficiaryName = param.BeneficiaryName;
+        BeneficiaryBPNumber = param.BeneficiaryBPNumber;
+        BeneficiaryAFDBContract = param.BeneficiaryAFDBContract;
+        BeneficiaryBankAddress = param.BeneficiaryBankAddress;
+        BeneficiaryCity = param.BeneficiaryCity;
+        BeneficiaryCountryId = param.BeneficiaryCountryId;
+        GoodDescription = param.GoodDescription;
+        BeneficiaryLcContractRef = param.BeneficiaryLcContractRef;
+        ExecutingAgencyName = param.ExecutingAgencyName;
+        ExecutingAgencyContactPerson = param.ExecutingAgencyContactPerson;
+        ExecutingAgencyAddress = param.ExecutingAgencyAddress;
+        ExecutingAgencyCity = param.ExecutingAgencyCity;
+        ExecutingAgencyCountryId = param.ExecutingAgencyCountryId;
+        ExecutingAgencyEmail = param.ExecutingAgencyEmail;
+        ExecutingAgencyPhone = param.ExecutingAgencyPhone;
         CreatedBy = "System";
         CreatedAt = DateTime.UtcNow;
     }
 
-    public DisbursementB1(
-        Guid id,
-        Guid disbursementId,
-        string guaranteeDetails,
-        string confirmingBank,
-        string issuingBankName,
-        string issuingBankAdress,
-        decimal guaranteeAmount,
-        DateTime expiryDate,
-        string beneficiaryName,
-        string beneficiaryBPNumber,
-        string beneficiaryAFDBContract,
-        string beneficiaryBankAddress,
-        string beneficiaryCity,
-        Guid beneficiaryCountryId,
-        string goodDescription,
-        string beneficiaryLcContractRef,
-        string executingAgencyName,
-        string executingAgencyContactPerson,
-        string executingAgencyAddress,
-        string executingAgencyCity,
-        Guid executingAgencyCountryId,
-        string executingAgencyEmail,
-        string executingAgencyPhone,
-        DateTime createdAt,
-        string createdBy,
-        DateTime? updatedAt = null,
-        string? updatedBy = null,
-        Country? beneficiaryCountry = null,
-        Country? executingAgencyCountry = null)
+    public DisbursementB1(DisbursementB1LoadParam param)
     {
-        Id = id;
-        DisbursementId = disbursementId;
-        GuaranteeDetails = guaranteeDetails;
-        ConfirmingBank = confirmingBank;
-        IssuingBankName = issuingBankName;
-        IssuingBankAdress = issuingBankAdress;
-        GuaranteeAmount = guaranteeAmount;
-        ExpiryDate = expiryDate;
-        BeneficiaryName = beneficiaryName;
-        BeneficiaryBPNumber = beneficiaryBPNumber;
-        BeneficiaryAFDBContract = beneficiaryAFDBContract;
-        BeneficiaryBankAddress = beneficiaryBankAddress;
-        BeneficiaryCity = beneficiaryCity;
-        BeneficiaryCountryId = beneficiaryCountryId;
-        GoodDescription = goodDescription;
-        BeneficiaryLcContractRef = beneficiaryLcContractRef;
-        ExecutingAgencyName = executingAgencyName;
-        ExecutingAgencyContactPerson = executingAgencyContactPerson;
-        ExecutingAgencyAddress = executingAgencyAddress;
-        ExecutingAgencyCity = executingAgencyCity;
-        ExecutingAgencyCountryId = executingAgencyCountryId;
-        ExecutingAgencyEmail = executingAgencyEmail;
-        ExecutingAgencyPhone = executingAgencyPhone;
-        CreatedAt = createdAt;
-        CreatedBy = createdBy;
-        UpdatedAt = updatedAt;
-        UpdatedBy = updatedBy;
-        BeneficiaryCountry = beneficiaryCountry;
-        ExecutingAgencyCountry = executingAgencyCountry;
+        Id = param.Id;
+        DisbursementId = param.DisbursementId;
+        GuaranteeDetails = param.GuaranteeDetails;
+        ConfirmingBank = param.ConfirmingBank;
+        IssuingBankName = param.IssuingBankName;
+        IssuingBankAdress = param.IssuingBankAdress;
+        GuaranteeAmount = param.GuaranteeAmount;
+        ExpiryDate = param.ExpiryDate;
+        BeneficiaryName = param.BeneficiaryName;
+        BeneficiaryBPNumber = param.BeneficiaryBPNumber;
+        BeneficiaryAFDBContract = param.BeneficiaryAFDBContract;
+        BeneficiaryBankAddress = param.BeneficiaryBankAddress;
+        BeneficiaryCity = param.BeneficiaryCity;
+        BeneficiaryCountryId = param.BeneficiaryCountryId;
+        GoodDescription = param.GoodDescription;
+        BeneficiaryLcContractRef = param.BeneficiaryLcContractRef;
+        ExecutingAgencyName = param.ExecutingAgencyName;
+        ExecutingAgencyContactPerson = param.ExecutingAgencyContactPerson;
+        ExecutingAgencyAddress = param.ExecutingAgencyAddress;
+        ExecutingAgencyCity = param.ExecutingAgencyCity;
+        ExecutingAgencyCountryId = param.ExecutingAgencyCountryId;
+        ExecutingAgencyEmail = param.ExecutingAgencyEmail;
+        ExecutingAgencyPhone = param.ExecutingAgencyPhone;
+        CreatedAt = param.CreatedAt;
+        CreatedBy = param.CreatedBy;
+        UpdatedAt = param.UpdatedAt;
+        UpdatedBy = param.UpdatedBy;
+        BeneficiaryCountry = param.BeneficiaryCountry;
+        ExecutingAgencyCountry = param.ExecutingAgencyCountry;
     }
 }
