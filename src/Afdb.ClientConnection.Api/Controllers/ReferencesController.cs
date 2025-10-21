@@ -1,4 +1,4 @@
-using Afdb.ClientConnection.Application.Queries.ReferenceQrs;
+﻿using Afdb.ClientConnection.Application.Queries.ReferenceQrs;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -1,4 +1,4 @@
-using Afdb.ClientConnection.Domain.Enums;
+﻿using Afdb.ClientConnection.Domain.Enums;
 
 namespace Afdb.ClientConnection.Application.DTOs;
 

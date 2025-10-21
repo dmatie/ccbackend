@@ -25,7 +25,7 @@ internal sealed class DisbursementRepository : IDisbursementRepository
             .Include(d => d.DisbursementA2)
             .Include(d => d.DisbursementA3)
             .Include(d => d.DisbursementB1)
-            .Include(d => d.Processes).ThenInclude(p => p.User)
+            .Include(d => d.Processes).ThenInclude(p => p.CreatedByUser)
             .Include(d => d.Documents)
             .FirstOrDefaultAsync(d => d.Id == id, cancellationToken);
 
@@ -42,7 +42,7 @@ internal sealed class DisbursementRepository : IDisbursementRepository
             .Include(d => d.DisbursementA2)
             .Include(d => d.DisbursementA3)
             .Include(d => d.DisbursementB1)
-            .Include(d => d.Processes).ThenInclude(p => p.User)
+            .Include(d => d.Processes).ThenInclude(p => p.CreatedByUser)
             .Include(d => d.Documents)
             .FirstOrDefaultAsync(d => d.RequestNumber == requestNumber, cancellationToken);
 
@@ -59,7 +59,7 @@ internal sealed class DisbursementRepository : IDisbursementRepository
             .Include(d => d.DisbursementA2)
             .Include(d => d.DisbursementA3)
             .Include(d => d.DisbursementB1)
-            .Include(d => d.Processes).ThenInclude(p => p.User)
+            .Include(d => d.Processes).ThenInclude(p => p.CreatedByUser)
             .Include(d => d.Documents)
             .OrderByDescending(d => d.CreatedAt)
             .ToListAsync(cancellationToken);
@@ -77,7 +77,7 @@ internal sealed class DisbursementRepository : IDisbursementRepository
             .Include(d => d.DisbursementA2)
             .Include(d => d.DisbursementA3)
             .Include(d => d.DisbursementB1)
-            .Include(d => d.Processes).ThenInclude(p => p.User)
+            .Include(d => d.Processes).ThenInclude(p => p.CreatedByUser)
             .Include(d => d.Documents)
             .Where(d => d.CreatedByUserId == userId)
             .OrderByDescending(d => d.CreatedAt)
@@ -102,7 +102,7 @@ internal sealed class DisbursementRepository : IDisbursementRepository
             .Include(d => d.DisbursementA2)
             .Include(d => d.DisbursementA3)
             .Include(d => d.DisbursementB1)
-            .Include(d => d.Processes).ThenInclude(p => p.User)
+            .Include(d => d.Processes).ThenInclude(p => p.CreatedByUser)
             .Include(d => d.Documents)
             .FirstOrDefaultAsync(d => d.Id == entity.Id, cancellationToken);
 
@@ -133,7 +133,7 @@ internal sealed class DisbursementRepository : IDisbursementRepository
                 .Include(d => d.DisbursementA2)
                 .Include(d => d.DisbursementA3)
                 .Include(d => d.DisbursementB1)
-                .Include(d => d.Processes).ThenInclude(p => p.User)
+                .Include(d => d.Processes).ThenInclude(p => p.CreatedByUser)
                 .Include(d => d.Documents)
                 .FirstOrDefaultAsync(d => d.Id == entity.Id, cancellationToken);
 

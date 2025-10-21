@@ -1,4 +1,4 @@
-namespace Afdb.ClientConnection.Domain.Common;
+﻿namespace Afdb.ClientConnection.Domain.Common;
 
 public abstract class AggregateRoot : BaseEntity
 {

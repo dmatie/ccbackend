@@ -1,4 +1,4 @@
-namespace Afdb.ClientConnection.Application.Common.Interfaces;
+﻿namespace Afdb.ClientConnection.Application.Common.Interfaces;
 
 public interface ICurrentUserService
 {

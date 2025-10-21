@@ -84,9 +84,9 @@ public class MappingProfile : Profile
 
         CreateMap<DisbursementProcess, DisbursementProcessDto>()
             .ForMember(dest => dest.ProcessedByUserName,
-                opt => opt.MapFrom(src => src.ProcessedByUser != null ? $"{src.ProcessedByUser.FirstName} {src.ProcessedByUser.LastName}" : string.Empty))
+                opt => opt.MapFrom(src => src.CreatedByUser != null ? $"{src.CreatedByUser.FirstName} {src.CreatedByUser.LastName}" : string.Empty))
             .ForMember(dest => dest.ProcessedByUserEmail,
-                opt => opt.MapFrom(src => src.ProcessedByUser != null ? src.ProcessedByUser.Email : string.Empty));
+                opt => opt.MapFrom(src => src.CreatedByUser != null ? src.CreatedByUser.Email : string.Empty));
 
         CreateMap<DisbursementDocument, DisbursementDocumentDto>();
 

@@ -12,7 +12,7 @@ public class DisbursementDocumentConfiguration : IEntityTypeConfiguration<Disbur
 
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.Name)
+        builder.Property(x => x.FileName)
             .IsRequired()
             .HasMaxLength(500);
 

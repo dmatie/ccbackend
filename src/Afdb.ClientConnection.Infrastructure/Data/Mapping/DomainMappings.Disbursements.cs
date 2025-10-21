@@ -54,10 +54,10 @@ internal static partial class DomainMappings
             PaymentPurpose = entity.PaymentPurpose,
             BeneficiaryName = entity.BeneficiaryName,
             BeneficiaryAddress = entity.BeneficiaryAddress,
-            BeneficiaryBankName = entity.BeneficiaryBankName,
-            BeneficiaryBankAddress = entity.BeneficiaryBankAddress,
-            BeneficiaryAccountNumber = entity.BeneficiaryAccountNumber,
-            BeneficiarySwiftCode = entity.BeneficiarySwiftCode,
+            BeneficiaryBankName = entity.CorrespondentBankName,
+            BeneficiaryBankAddress = entity.CorrespondentBankAddress,
+            BeneficiaryAccountNumber = entity.CorrespondantAccountNumber,
+            BeneficiarySwiftCode = entity.CorrespondentBankSwiftCode,
             Amount = new Money(entity.Amount, entity.CurrencyCode),
             IntermediaryBankName = entity.IntermediaryBankName,
             IntermediaryBankSwiftCode = entity.IntermediaryBankSwiftCode,
@@ -78,9 +78,9 @@ internal static partial class DomainMappings
             Id = entity.Id,
             DisbursementId = entity.DisbursementId,
             ReimbursementPurpose = entity.ReimbursementPurpose,
-            ClaimantName = entity.ClaimantName,
+            ClaimantName = entity.GoodDescription,
             ClaimantAddress = entity.ClaimantAddress,
-            ClaimantBankName = entity.ClaimantBankName,
+            ClaimantBankName = entity.PaymentEvidenceOfPayment,
             ClaimantBankAddress = entity.ClaimantBankAddress,
             ClaimantAccountNumber = entity.ClaimantAccountNumber,
             ClaimantSwiftCode = entity.ClaimantSwiftCode,
@@ -105,9 +105,9 @@ internal static partial class DomainMappings
             Id = entity.Id,
             DisbursementId = entity.DisbursementId,
             AdvancePurpose = entity.AdvancePurpose,
-            RecipientName = entity.RecipientName,
+            RecipientName = entity.PeriodForUtilization,
             RecipientAddress = entity.RecipientAddress,
-            RecipientBankName = entity.RecipientBankName,
+            RecipientBankName = entity.GoodDescription,
             RecipientBankAddress = entity.RecipientBankAddress,
             RecipientAccountNumber = entity.RecipientAccountNumber,
             RecipientSwiftCode = entity.RecipientSwiftCode,
@@ -131,12 +131,12 @@ internal static partial class DomainMappings
         {
             Id = entity.Id,
             DisbursementId = entity.DisbursementId,
-            GuaranteePurpose = entity.GuaranteePurpose,
-            BeneficiaryName = entity.BeneficiaryName,
-            BeneficiaryAddress = entity.BeneficiaryAddress,
+            GuaranteePurpose = entity.GuaranteeDetails,
+            BeneficiaryName = entity.IssuingBankName,
+            BeneficiaryAddress = entity.IssuingBankAdress,
             BeneficiaryBankName = entity.BeneficiaryBankName,
             BeneficiaryBankAddress = entity.BeneficiaryBankAddress,
-            GuaranteeAmount = new Money(entity.GuaranteeAmount, entity.CurrencyCode),
+            GuaranteeAmount = new Money(entity.GuaranteeAmount, entity.GoodDescription),
             ValidityStartDate = entity.ValidityStartDate,
             ValidityEndDate = entity.ValidityEndDate,
             GuaranteeTermsAndConditions = entity.GuaranteeTermsAndConditions,
@@ -157,10 +157,10 @@ internal static partial class DomainMappings
             Id = entity.Id,
             DisbursementId = entity.DisbursementId,
             Status = entity.Status,
-            ProcessedByUserId = entity.ProcessedByUserId,
-            ProcessedByUser = entity.User != null ? MapUser(entity.User) : null,
-            Comment = entity.Comment,
-            ProcessedAt = entity.ProcessedAt,
+            CreatedByUserId = entity.CreatedByUserId,
+            CreatedByUser = entity.CreatedByUser != null ? MapUser(entity.CreatedByUser) : null,
+            Comment = entity.Comment??"",
+            ProcessedAt = entity.CreatedAt,
             CreatedAt = entity.CreatedAt,
             CreatedBy = entity.CreatedBy,
             UpdatedAt = entity.UpdatedAt,
@@ -172,18 +172,14 @@ internal static partial class DomainMappings
     {
         ArgumentNullException.ThrowIfNull(entity);
 
-        return new DisbursementDocument(
-            entity.Id,
-            entity.DisbursementId,
-            entity.FileName,
-            entity.FileUrl,
-            entity.ContentType,
-            entity.FileSize,
-            entity.UploadedAt,
-            entity.CreatedAt,
-            entity.CreatedBy,
-            entity.UpdatedAt,
-            entity.UpdatedBy
-        );
+        return new DisbursementDocument(new DisbursementDocumentLoadParam
+        {
+            Id = entity.Id,
+            DisbursementId = entity.DisbursementId,
+            FileName = entity.FileName,
+            DocumentUrl = entity.DocumentUrl,
+            CreatedAt = entity.CreatedAt,
+            CreatedBy = entity.CreatedBy
+        });
     }
 }

@@ -1,4 +1,4 @@
-using Afdb.ClientConnection.Application.Common.Interfaces;
+﻿using Afdb.ClientConnection.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 

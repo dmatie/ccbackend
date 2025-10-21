@@ -1,4 +1,4 @@
-namespace Afdb.ClientConnection.Application.Common.Exceptions;
+﻿namespace Afdb.ClientConnection.Application.Common.Exceptions;
 
 public class ForbiddenAccessException : Exception
 {

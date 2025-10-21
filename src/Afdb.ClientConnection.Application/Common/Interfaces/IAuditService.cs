@@ -1,4 +1,4 @@
-namespace Afdb.ClientConnection.Application.Common.Interfaces;
+﻿namespace Afdb.ClientConnection.Application.Common.Interfaces;
 public interface IAuditService
 {
     Task LogAsync(string entityName, Guid entityId, string action, string? oldValues = null,

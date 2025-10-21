@@ -11,44 +11,92 @@ public class DisbursementB1Entity : BaseEntityConfiguration
 
     [Required]
     [MaxLength(500)]
-    public string GuaranteePurpose { get; set; } = default!;
-
-    [Required]
-    [MaxLength(200)]
-    public string BeneficiaryName { get; set; } = default!;
+    public string GuaranteeDetails { get; set; } = default!;
 
     [Required]
     [MaxLength(500)]
-    public string BeneficiaryAddress { get; set; } = default!;
+    public string ConfirmingBank { get; set; } = default!;
+
 
     [Required]
     [MaxLength(200)]
-    public string BeneficiaryBankName { get; set; } = default!;
+    public string IssuingBankName { get; set; } = default!;
 
     [Required]
     [MaxLength(500)]
-    public string BeneficiaryBankAddress { get; set; } = default!;
+    public string IssuingBankAdress { get; set; } = default!;
 
     [Required]
     [Column(TypeName = "decimal(18,2)")]
     public decimal GuaranteeAmount { get; set; }
 
     [Required]
-    [MaxLength(3)]
-    public string CurrencyCode { get; set; } = default!;
+    public DateTime ExpiryDate { get; set; }
+
 
     [Required]
-    public DateTime ValidityStartDate { get; set; }
+    [MaxLength(200)]
+    public string BeneficiaryName { get; set; } = default!;
 
     [Required]
-    public DateTime ValidityEndDate { get; set; }
+    [MaxLength(200)]
+    public string BeneficiaryBPNumber { get; set; } = default!;
 
     [Required]
-    [MaxLength(2000)]
-    public string GuaranteeTermsAndConditions { get; set; } = default!;
+    [MaxLength(200)]
+    public string BeneficiaryAFDBContract { get; set; } = default!;
 
-    [MaxLength(1000)]
-    public string? SpecialInstructions { get; set; }
+    [Required]
+    [MaxLength(500)]
+    public string BeneficiaryBankAddress { get; set; } = default!;
+
+    [Required]
+    [MaxLength(200)]
+    public string BeneficiaryCity { get; set; } = default!;
+
+    [Required]
+    public Guid BeneficiaryCountryId { get; set; }
+
+    [Required]
+    [MaxLength(500)]
+    public string GoodDescription { get; set; } = default!;
+
+    [Required]
+    [MaxLength(200)]
+    public string BeneficiaryLcContractRef { get; set; } = default!;
+
+
+    [Required]
+    [MaxLength(200)]
+    public string ExecutingAgencyName { get; set; } = default!;
+
+    [Required]
+    [MaxLength(200)]
+    public string ExecutingAgencyContactPerson { get; set; } = default!;
+
+    [Required]
+    [MaxLength(500)]
+    public string ExecutingAgencyAddress { get; set; } = default!;
+
+    [Required]
+    [MaxLength(200)]
+    public string ExecutingAgencyCity { get; set; } = default!;
+
+    [Required]
+    public Guid ExecutingAgencyCountryId { get; set; }
+
+    [Required]
+    [MaxLength(200)]
+    public string ExecutingAgencyEmail { get; set; } = default!;
+
+    [Required]
+    [MaxLength(200)]
+    public string ExecutingAgencyPhone { get; set; } = default!;
+
 
     public DisbursementEntity Disbursement { get; set; } = default!;
+
+    public CountryEntity BeneficiaryCountry { get; set; } = default!;
+
+    public CountryEntity ExecutingAgencyCountry { get; set; } = default!;
 }

@@ -1,4 +1,4 @@
-using Afdb.ClientConnection.Domain.Entities;
+﻿using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Infrastructure.Data.Entities;
 using System.Linq;
 

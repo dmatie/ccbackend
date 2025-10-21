@@ -1,4 +1,4 @@
-namespace Afdb.ClientConnection.Domain.Enums;
+﻿namespace Afdb.ClientConnection.Domain.Enums;
 
 public enum ClaimStatus
 {

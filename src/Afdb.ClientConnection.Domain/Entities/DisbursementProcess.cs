@@ -8,12 +8,10 @@ public sealed class DisbursementProcess : BaseEntity
 {
     public Guid DisbursementId { get; private set; }
     public DisbursementStatus Status { get; private set; }
-    public Guid ProcessedByUserId { get; private set; }
+    public Guid CreatedByUserId { get; private set; }
     public string Comment { get; private set; }
-    public DateTime ProcessedAt { get; private set; }
-
     public Disbursement? Disbursement { get; private set; }
-    public User? ProcessedByUser { get; private set; }
+    public User? CreatedByUser { get; private set; }
 
     private DisbursementProcess() { }
 
@@ -30,10 +28,10 @@ public sealed class DisbursementProcess : BaseEntity
 
         DisbursementId = newParam.DisbursementId;
         Status = newParam.Status;
-        ProcessedByUserId = newParam.ProcessedByUserId;
-        ProcessedByUser = newParam.ProcessedByUser;
+        CreatedByUserId = newParam.ProcessedByUserId;
+        CreatedByUser = newParam.ProcessedByUser;
         Comment = newParam.Comment;
-        ProcessedAt = DateTime.UtcNow;
+        CreatedAt = DateTime.UtcNow;
         CreatedBy = newParam.CreatedBy;
     }
 
@@ -42,11 +40,12 @@ public sealed class DisbursementProcess : BaseEntity
         Id = loadParam.Id;
         DisbursementId = loadParam.DisbursementId;
         Status = loadParam.Status;
-        ProcessedByUserId = loadParam.ProcessedByUserId;
-        ProcessedByUser = loadParam.ProcessedByUser;
+        CreatedByUserId = loadParam.CreatedByUserId;
+        CreatedByUser = loadParam.CreatedByUser;
         Comment = loadParam.Comment;
-        ProcessedAt = loadParam.ProcessedAt;
         CreatedBy = loadParam.CreatedBy;
         CreatedAt = loadParam.CreatedAt;
+        UpdatedAt = loadParam.UpdatedAt;
+        UpdatedBy = loadParam.UpdatedBy;
     }
 }

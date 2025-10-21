@@ -12,58 +12,45 @@ public class DisbursementA3Configuration : IEntityTypeConfiguration<Disbursement
 
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.AdvancePurpose)
-            .IsRequired()
-            .HasMaxLength(500);
-
-        builder.Property(x => x.RecipientName)
+        builder.Property(x => x.PeriodForUtilization)
             .IsRequired()
             .HasMaxLength(200);
 
-        builder.Property(x => x.RecipientAddress)
-            .IsRequired()
-            .HasMaxLength(500);
+        builder.Property(x => x.ItemNumber)
+            .IsRequired();
 
-        builder.Property(x => x.RecipientBankName)
+        builder.Property(x => x.GoodDescription)
             .IsRequired()
             .HasMaxLength(200);
 
-        builder.Property(x => x.RecipientBankAddress)
-            .IsRequired()
-            .HasMaxLength(500);
+        builder.Property(x => x.GoodOrginCountryId);
 
-        builder.Property(x => x.RecipientAccountNumber)
-            .IsRequired()
-            .HasMaxLength(100);
+        builder.Property(x => x.GoodQuantity)
+            .IsRequired();
 
-        builder.Property(x => x.RecipientSwiftCode)
-            .IsRequired()
-            .HasMaxLength(50);
-
-        builder.Property(x => x.Amount)
+        builder.Property(x => x.AnnualBudget)
             .IsRequired()
             .HasColumnType("decimal(18,2)");
 
-        builder.Property(x => x.CurrencyCode)
+        builder.Property(x => x.BankShare)
             .IsRequired()
-            .HasMaxLength(3);
+            .HasColumnType("decimal(18,2)");
 
-        builder.Property(x => x.ExpectedUsageDate)
+        builder.Property(x => x.AdvanceRequested)
+            .IsRequired()
+            .HasColumnType("decimal(18,2)");
+
+        builder.Property(x => x.DateOfApproval)
             .IsRequired();
-
-        builder.Property(x => x.JustificationForAdvance)
-            .IsRequired()
-            .HasMaxLength(1000);
-
-        builder.Property(x => x.RepaymentTerms)
-            .HasMaxLength(1000);
-
-        builder.Property(x => x.SpecialInstructions)
-            .HasMaxLength(1000);
 
         builder.HasOne(x => x.Disbursement)
             .WithOne(x => x.DisbursementA3)
             .HasForeignKey<DisbursementA3Entity>(x => x.DisbursementId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(x => x.GoodOrginCountry)
+            .WithMany()
+            .HasForeignKey(x => x.GoodOrginCountryId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

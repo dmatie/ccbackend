@@ -1,4 +1,4 @@
-namespace Afdb.ClientConnection.Domain.Entities;
+﻿namespace Afdb.ClientConnection.Domain.Entities;
 
 public sealed class Token
 {

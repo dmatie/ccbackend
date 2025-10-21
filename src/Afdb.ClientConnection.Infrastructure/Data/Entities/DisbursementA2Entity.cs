@@ -15,48 +15,59 @@ public class DisbursementA2Entity : BaseEntityConfiguration
 
     [Required]
     [MaxLength(200)]
-    public string ClaimantName { get; set; } = default!;
-
-    [Required]
-    [MaxLength(500)]
-    public string ClaimantAddress { get; set; } = default!;
+    public string Contractor { get; set; } = default!;
 
     [Required]
     [MaxLength(200)]
-    public string ClaimantBankName { get; set; } = default!;
+    public string GoodDescription { get; set; } = default!;
 
     [Required]
-    [MaxLength(500)]
-    public string ClaimantBankAddress { get; set; } = default!;
+    public Guid GoodOrginCountryId { get; set; }
 
     [Required]
-    [MaxLength(100)]
-    public string ClaimantAccountNumber { get; set; } = default!;
+    [MaxLength(200)]
+    public string ContractBorrowerReference { get; set; } = default!;
 
     [Required]
-    [MaxLength(50)]
-    public string ClaimantSwiftCode { get; set; } = default!;
+    [MaxLength(200)]
+    public string ContractAfDBReference { get; set; } = default!;
+
+    [Required]
+    [MaxLength(200)]
+    public string ContractValue { get; set; } = default!;
+
+    [Required]
+    [MaxLength(200)]
+    public string ContractBankShare { get; set; } = default!;
 
     [Required]
     [Column(TypeName = "decimal(18,2)")]
-    public decimal Amount { get; set; }
+    public decimal ContractAmountPreviouslyPaid { get; set; } = default!;
 
     [Required]
-    [MaxLength(3)]
-    public string CurrencyCode { get; set; } = default!;
+    [MaxLength(200)]
+    public string InvoiceRef { get; set; } = default!;
 
     [Required]
-    public DateTime ExpenseDate { get; set; }
+    public DateTime InvoiceDate { get; set; } = default!;
 
     [Required]
-    [MaxLength(1000)]
-    public string ExpenseDescription { get; set; } = default!;
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal InvoiceAmount { get; set; } = default!;
 
-    [MaxLength(1000)]
-    public string? SupportingDocuments { get; set; }
+    [Required]
+    public DateTime PaymentDateOfPayment { get; set; } = default!;
 
-    [MaxLength(1000)]
-    public string? SpecialInstructions { get; set; }
 
+    [Required]
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal PaymentAmountWithdrawn { get; set; } = default!;
+
+    [Required]
+    [MaxLength(200)]
+    public string PaymentEvidenceOfPayment { get; set; } = default!;
+   
     public DisbursementEntity Disbursement { get; set; } = default!;
+
+    public CountryEntity GoodOrginCountry { get; set; } = default!;
 }

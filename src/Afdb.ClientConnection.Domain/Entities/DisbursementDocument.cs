@@ -1,4 +1,5 @@
 using Afdb.ClientConnection.Domain.Common;
+using Afdb.ClientConnection.Domain.EntitiesParams;
 
 namespace Afdb.ClientConnection.Domain.Entities;
 
@@ -6,38 +7,42 @@ public sealed class DisbursementDocument : BaseEntity
 {
     public Guid DisbursementId { get; private set; }
     public string FileName { get; private set; }
-    public string FileUrl { get; private set; }
-    public string ContentType { get; private set; }
-    public long FileSize { get; private set; }
-    public DateTime UploadedAt { get; private set; }
+    public string DocumentUrl { get; private set; }
 
     public Disbursement? Disbursement { get; private set; }
 
     private DisbursementDocument() { }
 
-    public DisbursementDocument(Guid disbursementId, string fileName, string fileUrl, string contentType, long fileSize, string createdBy)
+    public DisbursementDocument(DisbursementDocumentNewParam newParam)
     {
-        if (disbursementId == Guid.Empty)
+        if (newParam == null)
+            throw new ArgumentNullException(nameof(newParam));
+        if (string.IsNullOrWhiteSpace(newParam.FileName))
+            throw new ArgumentException("FileName cannot be empty");
+        if (string.IsNullOrWhiteSpace(newParam.DocumentUrl))
+            throw new ArgumentException("DocumentUrl cannot be empty");
+
+        FileName = newParam.FileName;
+        DocumentUrl = newParam.DocumentUrl;
+        CreatedAt = DateTime.UtcNow;
+        CreatedBy = newParam.CreatedBy;
+    }
+
+    public DisbursementDocument(DisbursementDocumentLoadParam loadParam)
+    {
+        if (loadParam.DisbursementId == Guid.Empty)
             throw new ArgumentException("DisbursementId must be a valid GUID");
 
-        if (string.IsNullOrWhiteSpace(fileName))
+        if (string.IsNullOrWhiteSpace(loadParam.FileName))
             throw new ArgumentException("FileName cannot be empty");
 
-        if (string.IsNullOrWhiteSpace(fileUrl))
+        if (string.IsNullOrWhiteSpace(loadParam.DocumentUrl))
             throw new ArgumentException("FileUrl cannot be empty");
 
-        if (string.IsNullOrWhiteSpace(contentType))
-            throw new ArgumentException("ContentType cannot be empty");
-
-        if (fileSize <= 0)
-            throw new ArgumentException("FileSize must be greater than zero");
-
-        DisbursementId = disbursementId;
-        FileName = fileName;
-        FileUrl = fileUrl;
-        ContentType = contentType;
-        FileSize = fileSize;
-        UploadedAt = DateTime.UtcNow;
-        CreatedBy = createdBy;
+        DisbursementId = loadParam.DisbursementId;
+        FileName = loadParam.FileName;
+        DocumentUrl = loadParam.DocumentUrl;
+        CreatedBy = loadParam.CreatedBy;
+        CreatedAt = loadParam.CreatedAt;
     }
 }

@@ -1,4 +1,4 @@
-using Afdb.ClientConnection.Domain.Entities;
+﻿using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Infrastructure.Data.Entities;
 
 namespace Afdb.ClientConnection.Infrastructure.Data.Mapping;

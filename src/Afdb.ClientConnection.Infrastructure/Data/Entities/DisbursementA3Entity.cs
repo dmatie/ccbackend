@@ -10,53 +10,38 @@ public class DisbursementA3Entity : BaseEntityConfiguration
     public Guid DisbursementId { get; set; }
 
     [Required]
-    [MaxLength(500)]
-    public string AdvancePurpose { get; set; } = default!;
+    [MaxLength(200)]
+    public string PeriodForUtilization { get; set; } = default!;
+
+    [Required]
+    public int ItemNumber { get; set; } = default!;
 
     [Required]
     [MaxLength(200)]
-    public string RecipientName { get; set; } = default!;
+    public string GoodDescription { get; set; } = default!;
 
     [Required]
-    [MaxLength(500)]
-    public string RecipientAddress { get; set; } = default!;
+    public Guid GoodOrginCountryId { get; set; }
 
     [Required]
-    [MaxLength(200)]
-    public string RecipientBankName { get; set; } = default!;
-
-    [Required]
-    [MaxLength(500)]
-    public string RecipientBankAddress { get; set; } = default!;
-
-    [Required]
-    [MaxLength(100)]
-    public string RecipientAccountNumber { get; set; } = default!;
-
-    [Required]
-    [MaxLength(50)]
-    public string RecipientSwiftCode { get; set; } = default!;
+    public int GoodQuantity { get; set; } = default!;
 
     [Required]
     [Column(TypeName = "decimal(18,2)")]
-    public decimal Amount { get; set; }
+    public decimal AnnualBudget { get; set; }
 
     [Required]
-    [MaxLength(3)]
-    public string CurrencyCode { get; set; } = default!;
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal BankShare { get; set; }
 
     [Required]
-    public DateTime ExpectedUsageDate { get; set; }
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal AdvanceRequested { get; set; }
 
     [Required]
-    [MaxLength(1000)]
-    public string JustificationForAdvance { get; set; } = default!;
-
-    [MaxLength(1000)]
-    public string? RepaymentTerms { get; set; }
-
-    [MaxLength(1000)]
-    public string? SpecialInstructions { get; set; }
+    public DateTime DateOfApproval { get; set; }
 
     public DisbursementEntity Disbursement { get; set; } = default!;
+
+    public CountryEntity GoodOrginCountry { get; set; } = default!;
 }

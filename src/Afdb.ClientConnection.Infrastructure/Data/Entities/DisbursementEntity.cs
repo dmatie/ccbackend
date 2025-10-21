@@ -23,6 +23,9 @@ public class DisbursementEntity : BaseEntityConfiguration
     public Guid DisbursementTypeId { get; set; }
 
     [Required]
+    public Guid CurrencyId { get; set; }
+
+    [Required]
     public DisbursementStatus Status { get; set; }
 
     [Required]
@@ -42,4 +45,5 @@ public class DisbursementEntity : BaseEntityConfiguration
     public DisbursementA2Entity? DisbursementA2 { get; set; }
     public DisbursementA3Entity? DisbursementA3 { get; set; }
     public DisbursementB1Entity? DisbursementB1 { get; set; }
+    public CurrencyEntity Currency { get; set; } = default!;
 }

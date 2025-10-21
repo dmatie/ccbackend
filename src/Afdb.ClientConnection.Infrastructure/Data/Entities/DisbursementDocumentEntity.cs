@@ -11,7 +11,7 @@ public class DisbursementDocumentEntity : BaseEntityConfiguration
 
     [Required]
     [MaxLength(500)]
-    public string Name { get; set; } = default!;
+    public string FileName { get; set; } = default!;
 
     [Required]
     [MaxLength(1000)]

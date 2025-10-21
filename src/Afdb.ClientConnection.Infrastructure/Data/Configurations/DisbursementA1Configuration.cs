@@ -16,7 +16,15 @@ public class DisbursementA1Configuration : IEntityTypeConfiguration<Disbursement
             .IsRequired()
             .HasMaxLength(500);
 
+        builder.Property(x => x.BeneficiaryBpNumber)
+            .IsRequired()
+            .HasMaxLength(200);
+
         builder.Property(x => x.BeneficiaryName)
+            .IsRequired()
+            .HasMaxLength(200);
+
+        builder.Property(x => x.BeneficiaryContactPerson)
             .IsRequired()
             .HasMaxLength(200);
 
@@ -24,19 +32,28 @@ public class DisbursementA1Configuration : IEntityTypeConfiguration<Disbursement
             .IsRequired()
             .HasMaxLength(500);
 
-        builder.Property(x => x.BeneficiaryBankName)
+        builder.Property(x => x.BeneficiaryCountryId);
+
+        builder.Property(x => x.BeneficiaryEmail)
             .IsRequired()
             .HasMaxLength(200);
 
-        builder.Property(x => x.BeneficiaryBankAddress)
+
+        builder.Property(x => x.CorrespondentBankName)
+            .IsRequired()
+            .HasMaxLength(200);
+
+        builder.Property(x => x.CorrespondentBankAddress)
             .IsRequired()
             .HasMaxLength(500);
 
-        builder.Property(x => x.BeneficiaryAccountNumber)
+        builder.Property(x => x.CorrespondentBankCountryId);
+
+        builder.Property(x => x.CorrespondantAccountNumber)
             .IsRequired()
             .HasMaxLength(100);
 
-        builder.Property(x => x.BeneficiarySwiftCode)
+        builder.Property(x => x.CorrespondentBankSwiftCode)
             .IsRequired()
             .HasMaxLength(50);
 
@@ -44,22 +61,51 @@ public class DisbursementA1Configuration : IEntityTypeConfiguration<Disbursement
             .IsRequired()
             .HasColumnType("decimal(18,2)");
 
-        builder.Property(x => x.CurrencyCode)
-            .IsRequired()
-            .HasMaxLength(3);
 
-        builder.Property(x => x.IntermediaryBankName)
+        builder.Property(x => x.SignatoryName)
             .HasMaxLength(200);
 
-        builder.Property(x => x.IntermediaryBankSwiftCode)
-            .HasMaxLength(50);
+        builder.Property(x => x.SignatoryContactPerson)
+            .IsRequired()
+            .HasMaxLength(200);
 
-        builder.Property(x => x.SpecialInstructions)
-            .HasMaxLength(1000);
+        builder.Property(x => x.SignatoryAddress)
+            .IsRequired()
+            .HasMaxLength(500);
+
+        builder.Property(x => x.SignatoryCountryId);
+
+        builder.Property(x => x.SignatoryEmail)
+            .IsRequired()
+            .HasMaxLength(200);
+
+        builder.Property(x => x.SignatoryPhone)
+            .IsRequired()
+            .HasMaxLength(200);
+
+        builder.Property(x => x.SignatoryTitle)
+            .IsRequired()
+            .HasMaxLength(200);
 
         builder.HasOne(x => x.Disbursement)
             .WithOne(x => x.DisbursementA1)
             .HasForeignKey<DisbursementA1Entity>(x => x.DisbursementId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(x => x.BeneficiaryCountry)
+            .WithMany()
+            .HasForeignKey(x => x.BeneficiaryCountryId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(x => x.CorrespondentBankCountry)
+            .WithMany()
+            .HasForeignKey(x => x.CorrespondentBankCountryId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(x => x.SignatoryCountry)
+            .WithMany()
+            .HasForeignKey(x => x.SignatoryCountryId)
+            .OnDelete(DeleteBehavior.Cascade);
+
     }
 }

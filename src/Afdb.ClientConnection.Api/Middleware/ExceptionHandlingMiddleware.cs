@@ -1,4 +1,4 @@
-using Afdb.ClientConnection.Application.Common.Exceptions;
+﻿using Afdb.ClientConnection.Application.Common.Exceptions;
 using System.Net;
 using System.Text.Json;
 

@@ -16,54 +16,63 @@ public class DisbursementA2Configuration : IEntityTypeConfiguration<Disbursement
             .IsRequired()
             .HasMaxLength(500);
 
-        builder.Property(x => x.ClaimantName)
+        builder.Property(x => x.Contractor)
             .IsRequired()
             .HasMaxLength(200);
 
-        builder.Property(x => x.ClaimantAddress)
-            .IsRequired()
-            .HasMaxLength(500);
 
-        builder.Property(x => x.ClaimantBankName)
+        builder.Property(x => x.GoodDescription)
             .IsRequired()
             .HasMaxLength(200);
 
-        builder.Property(x => x.ClaimantBankAddress)
-            .IsRequired()
-            .HasMaxLength(500);
+        builder.Property(x => x.GoodOrginCountryId);
 
-        builder.Property(x => x.ClaimantAccountNumber)
+        builder.Property(x => x.ContractBorrowerReference)
             .IsRequired()
-            .HasMaxLength(100);
+            .HasMaxLength(200);
 
-        builder.Property(x => x.ClaimantSwiftCode)
+        builder.Property(x => x.ContractAfDBReference)
             .IsRequired()
-            .HasMaxLength(50);
+            .HasMaxLength(200);
 
-        builder.Property(x => x.Amount)
+        builder.Property(x => x.ContractValue)
             .IsRequired()
-            .HasColumnType("decimal(18,2)");
+            .HasMaxLength(200);
 
-        builder.Property(x => x.CurrencyCode)
+        builder.Property(x => x.ContractBankShare)
             .IsRequired()
-            .HasMaxLength(3);
+            .HasMaxLength(200);
 
-        builder.Property(x => x.ExpenseDate)
+        builder.Property(x => x.ContractAmountPreviouslyPaid)
+            .HasPrecision(18, 2)
             .IsRequired();
 
-        builder.Property(x => x.ExpenseDescription)
+        builder.Property(x => x.InvoiceRef)
             .IsRequired()
-            .HasMaxLength(1000);
+            .HasMaxLength(200);
 
-        builder.Property(x => x.SupportingDocuments)
-            .HasMaxLength(1000);
+        builder.Property(x => x.InvoiceDate)
+            .IsRequired();
 
-        builder.Property(x => x.SpecialInstructions)
-            .HasMaxLength(1000);
+        builder.Property(x => x.InvoiceAmount)
+            .HasPrecision(18, 2)
+            .IsRequired();
+
+        builder.Property(x => x.PaymentDateOfPayment)
+            .IsRequired();
+
+        builder.Property(x => x.PaymentAmountWithdrawn)
+            .HasPrecision(18, 2)
+            .IsRequired();
 
         builder.HasOne(x => x.Disbursement)
             .WithOne(x => x.DisbursementA2)
             .HasForeignKey<DisbursementA2Entity>(x => x.DisbursementId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(x => x.GoodOrginCountry)
+            .WithMany()
+            .HasForeignKey(x => x.GoodOrginCountryId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

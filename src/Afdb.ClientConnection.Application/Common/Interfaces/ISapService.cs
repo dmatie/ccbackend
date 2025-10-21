@@ -1,4 +1,4 @@
-using Afdb.ClientConnection.Application.DTOs;
+﻿using Afdb.ClientConnection.Application.DTOs;
 
 namespace Afdb.ClientConnection.Application.Common.Interfaces;
 
