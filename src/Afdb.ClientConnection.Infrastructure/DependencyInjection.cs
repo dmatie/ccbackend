@@ -39,6 +39,7 @@ public static class DependencyInjection
         services.AddScoped<ICountryAdminRepository, CountryAdminRepository>();
         services.AddScoped<IDisbursementRepository, DisbursementRepository>();
         services.AddScoped<IDisbursementTypeRepository, DisbursementTypeRepository>();
+        services.AddScoped<ICurrencyRepository, CurrencyRepository>();
 
         // Services
         services.AddScoped<IAuditService, AuditService>();

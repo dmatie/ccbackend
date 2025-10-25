@@ -34,6 +34,11 @@ public class ClientConnectionDbContext(DbContextOptions<ClientConnectionDbContex
     public DbSet<DisbursementB1Entity> DisbursementB1 { get; set; } = null!;
 
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.EnableSensitiveDataLogging().EnableDetailedErrors();
+    }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());

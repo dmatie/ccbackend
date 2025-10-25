@@ -25,7 +25,7 @@ public class DisbursementB1Configuration : IEntityTypeConfiguration<Disbursement
             .IsRequired()
             .HasMaxLength(200);
 
-        builder.Property(x => x.IssuingBankAdress)
+        builder.Property(x => x.IssuingBankAddress)
             .IsRequired()
             .HasMaxLength(500);
 
@@ -94,11 +94,11 @@ public class DisbursementB1Configuration : IEntityTypeConfiguration<Disbursement
         builder.HasOne(x => x.BeneficiaryCountry)
             .WithMany()
             .HasForeignKey(x => x.BeneficiaryCountryId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasOne(x => x.ExecutingAgencyCountry)
             .WithMany()
             .HasForeignKey(x => x.ExecutingAgencyCountryId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

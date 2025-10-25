@@ -7,6 +7,7 @@ public sealed record DisbursementDocumentDto
     public string FileName { get; init; } = string.Empty;
     public string FileUrl { get; init; } = string.Empty;
     public string ContentType { get; init; } = string.Empty;
+    public Stream FileContent { get; set; } = default!;
     public long FileSize { get; init; }
     public DateTime UploadedAt { get; init; }
     public string CreatedBy { get; init; } = string.Empty;

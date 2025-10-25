@@ -10,7 +10,7 @@ public sealed class DisbursementA3 : BaseEntity
     public int ItemNumber { get; private set; }
     
     public string GoodDescription { get; private set; }
-    public Guid GoodOrginCountryId { get; private set; }
+    public Guid GoodOriginCountryId { get; private set; }
     public int GoodQuantity { get; private set; }
     
     public decimal AnnualBudget { get; private set; }
@@ -25,11 +25,10 @@ public sealed class DisbursementA3 : BaseEntity
 
     public DisbursementA3(DisbursementA3NewParam param)
     {
-        DisbursementId = param.DisbursementId;
         PeriodForUtilization = param.PeriodForUtilization;
         ItemNumber = param.ItemNumber;
         GoodDescription = param.GoodDescription;
-        GoodOrginCountryId = param.GoodOrginCountryId;
+        GoodOriginCountryId = param.GoodOrginCountryId;
         GoodQuantity = param.GoodQuantity;
         AnnualBudget = param.AnnualBudget;
         BankShare = param.BankShare;
@@ -46,7 +45,7 @@ public sealed class DisbursementA3 : BaseEntity
         PeriodForUtilization = param.PeriodForUtilization;
         ItemNumber = param.ItemNumber;
         GoodDescription = param.GoodDescription;
-        GoodOrginCountryId = param.GoodOrginCountryId;
+        GoodOriginCountryId = param.GoodOrginCountryId;
         GoodQuantity = param.GoodQuantity;
         AnnualBudget = param.AnnualBudget;
         BankShare = param.BankShare;

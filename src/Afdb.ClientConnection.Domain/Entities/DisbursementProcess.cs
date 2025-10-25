@@ -17,16 +17,12 @@ public sealed class DisbursementProcess : BaseEntity
 
     public DisbursementProcess(DisbursementProcessNewParam newParam)
     {
-        if (newParam.DisbursementId == Guid.Empty)
-            throw new ArgumentException("DisbursementId must be a valid GUID");
-
         if (newParam.ProcessedByUserId == Guid.Empty)
             throw new ArgumentException("ProcessedByUserId must be a valid GUID");
 
         if (string.IsNullOrWhiteSpace(newParam.Comment))
             throw new ArgumentException("Comment cannot be empty");
 
-        DisbursementId = newParam.DisbursementId;
         Status = newParam.Status;
         CreatedByUserId = newParam.ProcessedByUserId;
         CreatedByUser = newParam.ProcessedByUser;

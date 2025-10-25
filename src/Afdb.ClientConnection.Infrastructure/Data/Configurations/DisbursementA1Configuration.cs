@@ -95,17 +95,17 @@ public class DisbursementA1Configuration : IEntityTypeConfiguration<Disbursement
         builder.HasOne(x => x.BeneficiaryCountry)
             .WithMany()
             .HasForeignKey(x => x.BeneficiaryCountryId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasOne(x => x.CorrespondentBankCountry)
             .WithMany()
             .HasForeignKey(x => x.CorrespondentBankCountryId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasOne(x => x.SignatoryCountry)
             .WithMany()
             .HasForeignKey(x => x.SignatoryCountryId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
     }
 }

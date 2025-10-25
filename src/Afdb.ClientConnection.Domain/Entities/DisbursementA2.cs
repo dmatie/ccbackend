@@ -10,7 +10,7 @@ public sealed class DisbursementA2 : BaseEntity
     public string Contractor { get; private set; }
     
     public string GoodDescription { get; private set; }
-    public Guid GoodOrginCountryId { get; private set; }
+    public Guid GoodOriginCountryId { get; private set; }
     
     public string ContractBorrowerReference { get; private set; }
     public string ContractAfDBReference { get; private set; }
@@ -32,11 +32,10 @@ public sealed class DisbursementA2 : BaseEntity
 
     public DisbursementA2(DisbursementA2NewParam param)
     {
-        DisbursementId = param.DisbursementId;
         ReimbursementPurpose = param.ReimbursementPurpose;
         Contractor = param.Contractor;
         GoodDescription = param.GoodDescription;
-        GoodOrginCountryId = param.GoodOrginCountryId;
+        GoodOriginCountryId = param.GoodOrginCountryId;
         ContractBorrowerReference = param.ContractBorrowerReference;
         ContractAfDBReference = param.ContractAfDBReference;
         ContractValue = param.ContractValue;
@@ -59,7 +58,7 @@ public sealed class DisbursementA2 : BaseEntity
         ReimbursementPurpose = param.ReimbursementPurpose;
         Contractor = param.Contractor;
         GoodDescription = param.GoodDescription;
-        GoodOrginCountryId = param.GoodOrginCountryId;
+        GoodOriginCountryId = param.GoodOrginCountryId;
         ContractBorrowerReference = param.ContractBorrowerReference;
         ContractAfDBReference = param.ContractAfDBReference;
         ContractValue = param.ContractValue;

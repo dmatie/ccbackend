@@ -1,5 +1,6 @@
 using Afdb.ClientConnection.Application.DTOs;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 
 namespace Afdb.ClientConnection.Application.Commands.DisbursementCmd;
 
@@ -8,11 +9,13 @@ public sealed record CreateDisbursementCommand : IRequest<CreateDisbursementResp
     public string SapCodeProject { get; init; } = string.Empty;
     public string LoanGrantNumber { get; init; } = string.Empty;
     public Guid DisbursementTypeId { get; init; }
+    public Guid CurrencyId { get; set; }
 
     public CreateDisbursementA1Command? DisbursementA1 { get; init; }
     public CreateDisbursementA2Command? DisbursementA2 { get; init; }
     public CreateDisbursementA3Command? DisbursementA3 { get; init; }
     public CreateDisbursementB1Command? DisbursementB1 { get; init; }
+    public List<IFormFile>? Documents { get; init; }
 }
 
 public sealed record CreateDisbursementA1Command

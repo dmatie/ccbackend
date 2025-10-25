@@ -16,8 +16,7 @@ public class DisbursementTypeConfiguration : IEntityTypeConfiguration<Disburseme
             .IsRequired()
             .HasMaxLength(10);
 
-        builder.HasIndex(x => x.Code)
-            .IsUnique();
+        builder.HasIndex(x => x.Code);
 
         builder.Property(x => x.Name)
             .IsRequired()
@@ -38,7 +37,7 @@ public class DisbursementTypeConfiguration : IEntityTypeConfiguration<Disburseme
         builder.HasData(
             new DisbursementTypeEntity
             {
-                Id = Guid.Parse("a1f5c8e2-3d4b-4f6a-9c2e-1b2c3d4e5f60"),
+                Id = Guid.Parse("65616f7b-b385-45f7-a5fc-87dbf5a68d3b"),
                 Code = "A1",
                 Name = "Direct payment",
                 NameFr = "Paiement direct",
@@ -46,7 +45,7 @@ public class DisbursementTypeConfiguration : IEntityTypeConfiguration<Disburseme
             },
             new DisbursementTypeEntity
             {
-                Id = Guid.Parse("b2f6d9f3-4e5c-5g7b-0d3f-2c3d4e5f6g70"),
+                Id = Guid.Parse("691ca504-2252-4039-a4cc-86228432ccea"),
                 Code = "A1",
                 Name = "Replenishment of a Special Account",
                 NameFr = "Réapprovisionnement d'un compte spécial",
@@ -54,7 +53,7 @@ public class DisbursementTypeConfiguration : IEntityTypeConfiguration<Disburseme
             },
             new DisbursementTypeEntity
             {
-                Id = Guid.Parse("c3g7e0g4-5f6d-6h8c-1e4g-3d4e5f6g7h80"),
+                Id = Guid.Parse("84e690ed-c29c-4b34-b113-34a5c5d61b6f"),
                 Code = "A1",
                 Name = "Justification only",
                 NameFr = "Justification",
@@ -62,7 +61,7 @@ public class DisbursementTypeConfiguration : IEntityTypeConfiguration<Disburseme
             },
             new DisbursementTypeEntity
             {
-                Id = Guid.Parse("d4h8f1h5-6g7e-7i9d-2f5h-4e5f6g7h8i90"),
+                Id = Guid.Parse("9509bfe3-5ba7-4302-b7fb-11ca7007fa39"),
                 Code = "A2",
                 Name = "Declare Expenditures",
                 NameFr = "Déclarer les dépenses",
@@ -70,7 +69,7 @@ public class DisbursementTypeConfiguration : IEntityTypeConfiguration<Disburseme
             },
             new DisbursementTypeEntity
             {
-                Id = Guid.Parse("e5i9g2i6-7h8f-8j0e-3g6i-5f6g7h8i9j00"),
+                Id = Guid.Parse("76f95c38-b800-4f4c-a0c3-cada31703bd5"),
                 Code = "A3",
                 Name = "Estimate Budgeted Activities",
                 NameFr = "Estimation des activités budgétisées",
@@ -78,7 +77,7 @@ public class DisbursementTypeConfiguration : IEntityTypeConfiguration<Disburseme
             },
             new DisbursementTypeEntity
             {
-                Id = Guid.Parse("f6j0h3j7-8i9g-9k1f-4h7j-6g7h8i9j0k10"),
+                Id = Guid.Parse("3fcde576-d6e1-4145-a52e-0da14f8e08c1"),
                 Code = "B1",
                 Name = "Reimbursement of a guarantee",
                 NameFr = "Remboursement d'une garantie",

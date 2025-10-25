@@ -2,6 +2,7 @@ using Afdb.ClientConnection.Domain.Common;
 using Afdb.ClientConnection.Domain.EntitiesParams;
 using Afdb.ClientConnection.Domain.Enums;
 using Afdb.ClientConnection.Domain.Events;
+using Afdb.ClientConnection.Domain.ValueObjects;
 
 namespace Afdb.ClientConnection.Domain.Entities;
 
@@ -14,6 +15,7 @@ public sealed class Disbursement : AggregateRoot
     public string SapCodeProject { get; private set; }
     public string LoanGrantNumber { get; private set; }
     public Guid DisbursementTypeId { get; private set; }
+    public Guid CurrencyId { get;private set; }
     public DisbursementStatus Status { get; private set; }
     public Guid CreatedByUserId { get; private set; }
     public DateTime? SubmittedAt { get; private set; }
@@ -21,6 +23,7 @@ public sealed class Disbursement : AggregateRoot
     public Guid? ProcessedByUserId { get; private set; }
 
     public DisbursementType? DisbursementType { get; private set; }
+    public Currency? Currency { get; private set; }
     public User? CreatedByUser { get; private set; }
     public User? ProcessedByUser { get; private set; }
 
@@ -62,12 +65,12 @@ public sealed class Disbursement : AggregateRoot
         CreatedByUserId = newParam.CreatedByUserId;
         CreatedByUser = newParam.CreatedByUser;
         CreatedBy = newParam.CreatedBy;
+        CurrencyId = newParam.CurrencyId;
 
         SetFormData(newParam);
 
         var process = new DisbursementProcess(new DisbursementProcessNewParam
         {
-            DisbursementId = Id,
             Status = DisbursementStatus.Draft,
             ProcessedByUserId = newParam.CreatedByUserId,
             Comment = "Disbursement created",
@@ -86,6 +89,8 @@ public sealed class Disbursement : AggregateRoot
         LoanGrantNumber = loadParam.LoanGrantNumber;
         DisbursementTypeId = loadParam.DisbursementTypeId;
         DisbursementType = loadParam.DisbursementType;
+        CurrencyId = loadParam.CurrencyId;
+        Currency = loadParam.Currency;
         Status = loadParam.Status;
         CreatedByUserId = loadParam.CreatedByUserId;
         CreatedByUser = loadParam.CreatedByUser;
@@ -110,25 +115,25 @@ public sealed class Disbursement : AggregateRoot
             _documents.AddRange(loadParam.Documents);
     }
 
-    private void ValidateFormData(DisbursementNewParam param)
+    private static void ValidateFormData(DisbursementNewParam param)
     {
         var typeCode = param.DisbursementType?.Code?.ToUpper();
 
         switch (typeCode)
         {
-            case "A1":
+            case DisbursementTypeCode.A1:
                 if (param.DisbursementA1 == null)
                     throw new ArgumentException("DisbursementA1 data is required for type A1");
                 break;
-            case "A2":
+            case DisbursementTypeCode.A2:
                 if (param.DisbursementA2 == null)
                     throw new ArgumentException("DisbursementA2 data is required for type A2");
                 break;
-            case "A3":
+            case DisbursementTypeCode.A3:
                 if (param.DisbursementA3 == null)
                     throw new ArgumentException("DisbursementA3 data is required for type A3");
                 break;
-            case "B1":
+            case DisbursementTypeCode.B1:
                 if (param.DisbursementB1 == null)
                     throw new ArgumentException("DisbursementB1 data is required for type B1");
                 break;
@@ -145,73 +150,63 @@ public sealed class Disbursement : AggregateRoot
         {
             case "A1":
                 DisbursementA1 = param.DisbursementA1;
-                if (DisbursementA1 != null)
-                    DisbursementA1.SetDisbursementId(Id);
                 break;
             case "A2":
                 DisbursementA2 = param.DisbursementA2;
-                if (DisbursementA2 != null)
-                    DisbursementA2.SetDisbursementId(Id);
                 break;
             case "A3":
                 DisbursementA3 = param.DisbursementA3;
-                if (DisbursementA3 != null)
-                    DisbursementA3.SetDisbursementId(Id);
                 break;
             case "B1":
                 DisbursementB1 = param.DisbursementB1;
-                if (DisbursementB1 != null)
-                    DisbursementB1.SetDisbursementId(Id);
                 break;
         }
     }
 
-    public void Submit(string updatedBy)
+    public void Submit(User user)
     {
         if (Status != DisbursementStatus.Draft && Status != DisbursementStatus.BackedToClient)
             throw new InvalidOperationException("Only draft or backed to client disbursements can be submitted");
 
         Status = DisbursementStatus.Submitted;
         SubmittedAt = DateTime.UtcNow;
-        SetUpdated(updatedBy);
+        SetUpdated(user.Email);
 
         var process = new DisbursementProcess(new DisbursementProcessNewParam
         {
-            DisbursementId = Id,
             Status = DisbursementStatus.Submitted,
-            ProcessedByUserId = CreatedByUserId,
+            ProcessedByUserId = user.Id,
             Comment = "Disbursement submitted for approval",
-            CreatedBy = updatedBy
+            CreatedBy = user.Email
         });
         _processes.Add(process);
 
         AddDomainEvent(new DisbursementSubmittedEvent(Id, RequestNumber, SapCodeProject, LoanGrantNumber));
     }
 
-    public void Approve(Guid processedByUserId, string updatedBy)
+    public void Approve(User user)
     {
         if (Status != DisbursementStatus.Submitted)
             throw new InvalidOperationException("Only submitted disbursements can be approved");
 
         Status = DisbursementStatus.Approved;
         ProcessedAt = DateTime.UtcNow;
-        ProcessedByUserId = processedByUserId;
-        SetUpdated(updatedBy);
+        ProcessedByUserId = user.Id;
+        SetUpdated(user.Email);
 
         var process = new DisbursementProcess(new DisbursementProcessNewParam
         {
-            DisbursementId = Id,
             Status = DisbursementStatus.Approved,
-            ProcessedByUserId = processedByUserId,
+            ProcessedByUserId = user.Id,
             Comment = "Disbursement approved",
-            CreatedBy = updatedBy
+            CreatedBy = user.Email
         });
         _processes.Add(process);
 
         AddDomainEvent(new DisbursementApprovedEvent(Id, RequestNumber, SapCodeProject, LoanGrantNumber));
     }
 
-    public void Reject(Guid processedByUserId, string comment, string updatedBy)
+    public void Reject(User user, string comment)
     {
         if (Status != DisbursementStatus.Submitted)
             throw new InvalidOperationException("Only submitted disbursements can be rejected");
@@ -221,23 +216,22 @@ public sealed class Disbursement : AggregateRoot
 
         Status = DisbursementStatus.Rejected;
         ProcessedAt = DateTime.UtcNow;
-        ProcessedByUserId = processedByUserId;
-        SetUpdated(updatedBy);
+        ProcessedByUserId = user.Id;
+        SetUpdated(user.Email);
 
         var process = new DisbursementProcess(new DisbursementProcessNewParam
         {
-            DisbursementId = Id,
             Status = DisbursementStatus.Rejected,
-            ProcessedByUserId = processedByUserId,
+            ProcessedByUserId = user.Id,
             Comment = comment,
-            CreatedBy = updatedBy
+            CreatedBy = user.Email
         });
         _processes.Add(process);
 
         AddDomainEvent(new DisbursementRejectedEvent(Id, RequestNumber, SapCodeProject, LoanGrantNumber, comment));
     }
 
-    public void BackToClient(Guid processedByUserId, string comment, string updatedBy)
+    public void BackToClient(User user, string comment)
     {
         if (Status != DisbursementStatus.Submitted)
             throw new InvalidOperationException("Only submitted disbursements can be backed to client");
@@ -247,16 +241,15 @@ public sealed class Disbursement : AggregateRoot
 
         Status = DisbursementStatus.BackedToClient;
         ProcessedAt = DateTime.UtcNow;
-        ProcessedByUserId = processedByUserId;
-        SetUpdated(updatedBy);
+        ProcessedByUserId = user.Id;
+        SetUpdated(user.Email);
 
         var process = new DisbursementProcess(new DisbursementProcessNewParam
         {
-            DisbursementId = Id,
             Status = DisbursementStatus.BackedToClient,
-            ProcessedByUserId = processedByUserId,
+            ProcessedByUserId = user.Id,
             Comment = comment,
-            CreatedBy = updatedBy
+            CreatedBy = user.Email
         });
         _processes.Add(process);
 

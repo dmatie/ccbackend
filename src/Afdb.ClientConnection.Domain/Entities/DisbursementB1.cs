@@ -11,7 +11,7 @@ public sealed class DisbursementB1 : BaseEntity
     public string ConfirmingBank { get; private set; }
     
     public string IssuingBankName { get; private set; }
-    public string IssuingBankAdress { get; private set; }
+    public string IssuingBankAddress { get; private set; }
     public decimal GuaranteeAmount { get; private set; }
     public DateTime ExpiryDate { get; private set; }
     
@@ -39,11 +39,10 @@ public sealed class DisbursementB1 : BaseEntity
 
     public DisbursementB1(DisbursementB1NewParam param)
     {
-        DisbursementId = param.DisbursementId;
         GuaranteeDetails = param.GuaranteeDetails;
         ConfirmingBank = param.ConfirmingBank;
         IssuingBankName = param.IssuingBankName;
-        IssuingBankAdress = param.IssuingBankAdress;
+        IssuingBankAddress = param.IssuingBankAdress;
         GuaranteeAmount = param.GuaranteeAmount;
         ExpiryDate = param.ExpiryDate;
         BeneficiaryName = param.BeneficiaryName;
@@ -72,7 +71,7 @@ public sealed class DisbursementB1 : BaseEntity
         GuaranteeDetails = param.GuaranteeDetails;
         ConfirmingBank = param.ConfirmingBank;
         IssuingBankName = param.IssuingBankName;
-        IssuingBankAdress = param.IssuingBankAdress;
+        IssuingBankAddress = param.IssuingBankAdress;
         GuaranteeAmount = param.GuaranteeAmount;
         ExpiryDate = param.ExpiryDate;
         BeneficiaryName = param.BeneficiaryName;

@@ -1,4 +1,5 @@
 using Afdb.ClientConnection.Domain.Common;
+using Afdb.ClientConnection.Domain.EntitiesParams;
 
 namespace Afdb.ClientConnection.Domain.Entities;
 
@@ -10,20 +11,23 @@ public sealed class Currency : BaseEntity
 
     private Currency() { }
 
-    public Currency(string code, string name, string symbol)
+    public Currency(CurrencyLoadParam loadParam )
     {
-        if (string.IsNullOrWhiteSpace(code))
+        if (string.IsNullOrWhiteSpace(loadParam.Code))
             throw new ArgumentException("Code cannot be empty");
 
-        if (string.IsNullOrWhiteSpace(name))
+        if (string.IsNullOrWhiteSpace(loadParam.Name))
             throw new ArgumentException("Name cannot be empty");
 
-        if (string.IsNullOrWhiteSpace(symbol))
+        if (string.IsNullOrWhiteSpace(loadParam.Symbol))
             throw new ArgumentException("Symbol cannot be empty");
 
-        Code = code.ToUpper();
-        Name = name;
-        Symbol = symbol;
-        CreatedBy = "System";
+        Code = loadParam.Code.ToUpper();
+        Name = loadParam.Name;
+        Symbol = loadParam.Symbol;
+        CreatedBy = loadParam.CreatedBy;
+        CreatedAt = loadParam.CreatedAt;
+        UpdatedAt = loadParam.UpdatedAt;
+        UpdatedBy = loadParam.UpdatedBy;
     }
 }

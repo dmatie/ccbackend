@@ -79,6 +79,7 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Processes, opt => opt.MapFrom(src => src.Processes));
 
         CreateMap<DisbursementType, DisbursementTypeDto>();
+        CreateMap<Currency, CurrencyDto>();
 
         CreateMap<DisbursementProcess, DisbursementProcessDto>()
             .ForMember(dest => dest.ProcessedByUserName,
@@ -86,24 +87,28 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.ProcessedByUserEmail,
                 opt => opt.MapFrom(src => src.CreatedByUser != null ? src.CreatedByUser.Email : string.Empty));
 
-        CreateMap<DisbursementDocument, DisbursementDocumentDto>();
-
         CreateMap<DisbursementA1, DisbursementA1Dto>();
         CreateMap<DisbursementA2, DisbursementA2Dto>();
         CreateMap<DisbursementA3, DisbursementA3Dto>();
         CreateMap<DisbursementB1, DisbursementB1Dto>();
 
         CreateMap<Disbursement, DisbursementDto>()
+            .ForMember(dest => dest.Currency,
+                opt => opt.MapFrom(src => src.Currency != null ? src.Currency.Code : string.Empty))
             .ForMember(dest => dest.DisbursementTypeCode,
                 opt => opt.MapFrom(src => src.DisbursementType != null ? src.DisbursementType.Code : string.Empty))
             .ForMember(dest => dest.DisbursementTypeName,
                 opt => opt.MapFrom(src => src.DisbursementType != null ? src.DisbursementType.Name : string.Empty))
+            .ForMember(dest => dest.DisbursementTypeNameFr,
+                opt => opt.MapFrom(src => src.DisbursementType != null ? src.DisbursementType.NameFr : string.Empty))
             .ForMember(dest => dest.CreatedByUserName,
-                opt => opt.MapFrom(src => src.CreatedByUser != null ? $"{src.CreatedByUser.FirstName} {src.CreatedByUser.LastName}" : string.Empty))
+                opt => opt.MapFrom(src => src.CreatedByUser != null ?
+                        $"{src.CreatedByUser.FirstName} {src.CreatedByUser.LastName}" : string.Empty))
             .ForMember(dest => dest.CreatedByUserEmail,
                 opt => opt.MapFrom(src => src.CreatedByUser != null ? src.CreatedByUser.Email : string.Empty))
             .ForMember(dest => dest.ProcessedByUserName,
-                opt => opt.MapFrom(src => src.ProcessedByUser != null ? $"{src.ProcessedByUser.FirstName} {src.ProcessedByUser.LastName}" : string.Empty))
+                opt => opt.MapFrom(src => src.ProcessedByUser != null ?
+                        $"{src.ProcessedByUser.FirstName} {src.ProcessedByUser.LastName}" : string.Empty))
             .ForMember(dest => dest.ProcessedByUserEmail,
                 opt => opt.MapFrom(src => src.ProcessedByUser != null ? src.ProcessedByUser.Email : string.Empty))
             .ForMember(dest => dest.Processes, opt => opt.MapFrom(src => src.Processes))

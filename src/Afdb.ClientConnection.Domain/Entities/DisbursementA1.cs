@@ -39,7 +39,6 @@ public sealed class DisbursementA1 : BaseEntity
 
     public DisbursementA1(DisbursementA1NewParam param)
     {
-        DisbursementId = param.DisbursementId;
         PaymentPurpose = param.PaymentPurpose;
         BeneficiaryBpNumber = param.BeneficiaryBpNumber;
         BeneficiaryName = param.BeneficiaryName;

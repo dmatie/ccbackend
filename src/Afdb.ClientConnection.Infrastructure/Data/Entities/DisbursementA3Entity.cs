@@ -21,7 +21,7 @@ public class DisbursementA3Entity : BaseEntityConfiguration
     public string GoodDescription { get; set; } = default!;
 
     [Required]
-    public Guid GoodOrginCountryId { get; set; }
+    public Guid GoodOriginCountryId { get; set; }
 
     [Required]
     public int GoodQuantity { get; set; } = default!;

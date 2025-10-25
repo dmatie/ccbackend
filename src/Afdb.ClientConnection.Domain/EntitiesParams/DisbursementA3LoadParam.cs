@@ -2,21 +2,18 @@ using Afdb.ClientConnection.Domain.Entities;
 
 namespace Afdb.ClientConnection.Domain.EntitiesParams;
 
-public sealed record DisbursementA3LoadParam(
-    Guid Id,
-    Guid DisbursementId,
-    string PeriodForUtilization,
-    int ItemNumber,
-    string GoodDescription,
-    Guid GoodOrginCountryId,
-    int GoodQuantity,
-    decimal AnnualBudget,
-    decimal BankShare,
-    decimal AdvanceRequested,
-    DateTime DateOfApproval,
-    DateTime CreatedAt,
-    string CreatedBy,
-    DateTime? UpdatedAt = null,
-    string? UpdatedBy = null,
-    Country? GoodOrginCountry = null
-);
+public sealed record DisbursementA3LoadParam : CommonLoadParam
+{
+    public Guid DisbursementId { get; init; }
+    public string PeriodForUtilization { get; init; } = default!;
+    public int ItemNumber { get; init; }
+    public string GoodDescription { get; init; } = default!;
+    public Guid GoodOrginCountryId { get; init; }
+    public int GoodQuantity { get; init; }
+    public decimal AnnualBudget { get; init; }
+    public decimal BankShare { get; init; }
+    public decimal AdvanceRequested { get; init; }
+    public DateTime DateOfApproval { get; init; }
+
+    public Country? GoodOrginCountry { get; init; } = default!;
+}

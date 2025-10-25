@@ -5,7 +5,6 @@ namespace Afdb.ClientConnection.Domain.EntitiesParams;
 
 public sealed class DisbursementProcessNewParam
 {
-    public required Guid DisbursementId { get; set; }
     public required DisbursementStatus Status { get; set; }
     public required Guid ProcessedByUserId { get; set; }
     public User? ProcessedByUser { get; set; }

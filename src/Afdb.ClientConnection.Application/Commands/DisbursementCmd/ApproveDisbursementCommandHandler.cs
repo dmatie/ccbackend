@@ -24,7 +24,7 @@ public sealed class ApproveDisbursementCommandHandler(
         var user = await _userRepository.GetByEmailAsync(_currentUserService.Email)
             ?? throw new NotFoundException("ERR.General.UserNotFound");
 
-        disbursement.Approve(user.Id, _currentUserService.Email);
+        disbursement.Approve(user);
 
         var updatedDisbursement = await _disbursementRepository.UpdateAsync(disbursement, cancellationToken);
 

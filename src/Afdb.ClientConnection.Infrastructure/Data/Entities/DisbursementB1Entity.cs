@@ -24,7 +24,7 @@ public class DisbursementB1Entity : BaseEntityConfiguration
 
     [Required]
     [MaxLength(500)]
-    public string IssuingBankAdress { get; set; } = default!;
+    public string IssuingBankAddress { get; set; } = default!;
 
     [Required]
     [Column(TypeName = "decimal(18,2)")]

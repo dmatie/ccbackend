@@ -20,7 +20,7 @@ public class DisbursementsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<CreateDisbursementResponse>> CreateDisbursement(
-        [FromBody] CreateDisbursementCommand command,
+        [FromForm] CreateDisbursementCommand command,
         CancellationToken cancellationToken = default)
     {
         var result = await _mediator.Send(command, cancellationToken);
@@ -35,10 +35,10 @@ public class DisbursementsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<SubmitDisbursementResponse>> SubmitDisbursement(
-        Guid id,
+        Guid id, [FromForm] List<IFormFile>? additionalDocuments,
         CancellationToken cancellationToken = default)
     {
-        var command = new SubmitDisbursementCommand { DisbursementId = id };
+        var command = new SubmitDisbursementCommand { DisbursementId = id, AdditionalDocuments= additionalDocuments };
         var result = await _mediator.Send(command, cancellationToken);
         return Ok(result);
     }
@@ -85,7 +85,7 @@ public class DisbursementsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<BackToClientDisbursementResponse>> BackToClientDisbursement(
         Guid id,
-        [FromBody] BackToClientDisbursementCommand command,
+        [FromForm] BackToClientDisbursementCommand command,
         CancellationToken cancellationToken = default)
     {
         command = command with { DisbursementId = id };

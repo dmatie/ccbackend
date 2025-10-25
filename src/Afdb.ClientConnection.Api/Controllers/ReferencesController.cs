@@ -63,10 +63,34 @@ public class ReferencesController(IMediator mediator) : ControllerBase
     /// Lister les Claim types actifs
     /// </summary>
     [HttpGet("claim-types")]
-    [AllowAnonymous]
+    [Authorize]
     public async Task<ActionResult<GetClaimTypesResponse>> GetClaimTypes(CancellationToken cancellationToken = default)
     {
         var query = new GetClaimTypesQuery();
+        var result = await _mediator.Send(query, cancellationToken);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Lister les Disbursement type actifs
+    /// </summary>
+    [HttpGet("disbursement-types")]
+    [Authorize]
+    public async Task<ActionResult<GetDisbursementTypesResponse>> GetDisbursementTypes(CancellationToken cancellationToken = default)
+    {
+        var query = new GetDisbursementTypesQuery();
+        var result = await _mediator.Send(query, cancellationToken);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Lister les currencies
+    /// </summary>
+    [HttpGet("currencies")]
+    [Authorize]
+    public async Task<ActionResult<GetCurrenciesResponse>> GetCurrencies(CancellationToken cancellationToken = default)
+    {
+        var query = new GetCurrenciesQuery();
         var result = await _mediator.Send(query, cancellationToken);
         return Ok(result);
     }

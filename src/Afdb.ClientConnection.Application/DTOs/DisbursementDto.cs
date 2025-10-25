@@ -9,9 +9,12 @@ public sealed record DisbursementDto
     public string SapCodeProject { get; init; } = string.Empty;
     public string LoanGrantNumber { get; init; } = string.Empty;
 
+    public Guid CurrencyId { get; init; }
+    public string Currency { get; init; } = string.Empty;
     public Guid DisbursementTypeId { get; init; }
     public string DisbursementTypeCode { get; init; } = string.Empty;
     public string DisbursementTypeName { get; init; } = string.Empty;
+    public string DisbursementTypeNameFr { get; init; } = string.Empty;
 
     public DisbursementStatus Status { get; init; }
 
@@ -30,7 +33,6 @@ public sealed record DisbursementDto
     public string CreatedBy { get; init; } = string.Empty;
     public DateTime? UpdatedAt { get; init; }
     public string? UpdatedBy { get; init; }
-
     public DisbursementA1Dto? DisbursementA1 { get; init; }
     public DisbursementA2Dto? DisbursementA2 { get; init; }
     public DisbursementA3Dto? DisbursementA3 { get; init; }

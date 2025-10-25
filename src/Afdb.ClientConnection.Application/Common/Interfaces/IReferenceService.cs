@@ -15,4 +15,8 @@ public interface IReferenceService
     Task<IEnumerable<FinancingType>> GetActiveFinancingTypesAsync(CancellationToken cancellationToken = default);
     Task<ClaimType?> GetClaimTypeByIdAsync(Guid id, CancellationToken cancellationToken = default);
     Task<IEnumerable<ClaimType>?> GetActiveClaimTypesAsync(CancellationToken cancellationToken = default);
+    Task<DisbursementType?> GetDisbursmentTypeByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<IEnumerable<DisbursementType>?> GetDisbursmentTypesAsync(CancellationToken cancellationToken = default);
+    Task<Currency?> GetCurrencyByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<IEnumerable<Currency>?> GetCurrenciesAsync(CancellationToken cancellationToken = default);
 }

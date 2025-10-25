@@ -7,6 +7,8 @@ public class ReferenceService(
     IBusinessProfileRepository businessProfileRepository,
     ICountryRepository countryRepository,
     IClaimTypeRepository claimTypeRepository,
+    IDisbursementTypeRepository disbursementTypeRepository,
+    ICurrencyRepository currencyRepository,
     IFinancingTypeRepository financingTypeRepository) : IReferenceService
 {
     private readonly IFunctionRepository _functionRepository = functionRepository;
@@ -14,6 +16,8 @@ public class ReferenceService(
     private readonly ICountryRepository _countryRepository = countryRepository;
     private readonly IFinancingTypeRepository _financingTypeRepository = financingTypeRepository;
     private readonly IClaimTypeRepository _claimTypeRepository = claimTypeRepository;
+    private readonly IDisbursementTypeRepository _disbursementTypeRepository = disbursementTypeRepository;
+    private readonly ICurrencyRepository _currencyRepository = currencyRepository;
 
     public async Task<Function?> GetFunctionByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
@@ -64,4 +68,17 @@ public class ReferenceService(
     {
         return await _claimTypeRepository.GetAllAsync();
     }
+
+    public async Task<DisbursementType?> GetDisbursmentTypeByIdAsync(Guid id, CancellationToken cancellationToken = default) => 
+        await _disbursementTypeRepository.GetByIdAsync(id);
+
+    public async Task<IEnumerable<DisbursementType>?> GetDisbursmentTypesAsync(CancellationToken cancellationToken = default) =>
+        await _disbursementTypeRepository.GetAllAsync();
+
+    public async Task<Currency?> GetCurrencyByIdAsync(Guid id, CancellationToken cancellationToken = default) =>
+    await _currencyRepository.GetByIdAsync(id);
+
+    public async Task<IEnumerable<Currency>?> GetCurrenciesAsync(CancellationToken cancellationToken = default) =>
+        await _currencyRepository.GetAllAsync();
+
 }

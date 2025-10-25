@@ -150,22 +150,32 @@ internal sealed class DisbursementRepository : IDisbursementRepository
         var currentYear = DateTime.UtcNow.Year;
         var prefix = $"DIS-{currentYear}-";
 
-        var lastDisbursement = await _context.Disbursements
+        // Utilisation d'une transaction pour garantir l'unicité
+        using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable, cancellationToken);
+
+        var numbers = await _context.Disbursements
             .Where(d => d.RequestNumber.StartsWith(prefix))
-            .OrderByDescending(d => d.RequestNumber)
-            .FirstOrDefaultAsync(cancellationToken);
+            .Select(d => d.RequestNumber.Replace(prefix, ""))
+            .ToListAsync(cancellationToken);
 
-        if (lastDisbursement == null)
+        int lastNumber = 0;
+        foreach (var num in numbers)
         {
-            return $"{prefix}1";
+            if (int.TryParse(num, out var n) && n > lastNumber)
+                lastNumber = n;
         }
 
-        var lastNumberPart = lastDisbursement.RequestNumber.Replace(prefix, "");
-        if (int.TryParse(lastNumberPart, out var lastNumber))
+        var newRequestNumber = $"{prefix}{lastNumber + 1}";
+
+        // Vérification qu'il n'existe pas déjà (très rare mais possible en cas de course)
+        var exists = await _context.Disbursements.AnyAsync(d => d.RequestNumber == newRequestNumber, cancellationToken);
+        if (exists)
         {
-            return $"{prefix}{lastNumber + 1}";
+            // Relancer la génération (récursif ou boucle)
+            return await GenerateRequestNumberAsync(cancellationToken);
         }
 
-        return $"{prefix}1";
+        await transaction.CommitAsync(cancellationToken);
+        return newRequestNumber;
     }
 }

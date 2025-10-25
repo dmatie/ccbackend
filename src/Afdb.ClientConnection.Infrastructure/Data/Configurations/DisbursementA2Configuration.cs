@@ -25,7 +25,7 @@ public class DisbursementA2Configuration : IEntityTypeConfiguration<Disbursement
             .IsRequired()
             .HasMaxLength(200);
 
-        builder.Property(x => x.GoodOrginCountryId);
+        builder.Property(x => x.GoodOriginCountryId);
 
         builder.Property(x => x.ContractBorrowerReference)
             .IsRequired()
@@ -72,7 +72,7 @@ public class DisbursementA2Configuration : IEntityTypeConfiguration<Disbursement
 
         builder.HasOne(x => x.GoodOrginCountry)
             .WithMany()
-            .HasForeignKey(x => x.GoodOrginCountryId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .HasForeignKey(x => x.GoodOriginCountryId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

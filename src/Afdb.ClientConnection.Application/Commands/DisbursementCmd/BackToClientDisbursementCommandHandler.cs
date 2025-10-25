@@ -24,7 +24,7 @@ public sealed class BackToClientDisbursementCommandHandler(
         var user = await _userRepository.GetByEmailAsync(_currentUserService.Email)
             ?? throw new NotFoundException("ERR.General.UserNotFound");
 
-        disbursement.BackToClient(user.Id, request.Comment, _currentUserService.Email);
+        disbursement.BackToClient(user, request.Comment);
 
         var updatedDisbursement = await _disbursementRepository.UpdateAsync(disbursement, cancellationToken);
 

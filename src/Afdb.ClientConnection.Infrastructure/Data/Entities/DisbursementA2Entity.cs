@@ -22,7 +22,7 @@ public class DisbursementA2Entity : BaseEntityConfiguration
     public string GoodDescription { get; set; } = default!;
 
     [Required]
-    public Guid GoodOrginCountryId { get; set; }
+    public Guid GoodOriginCountryId { get; set; }
 
     [Required]
     [MaxLength(200)]

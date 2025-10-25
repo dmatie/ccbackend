@@ -7,11 +7,13 @@ namespace Afdb.ClientConnection.Application.Commands.DisbursementCmd;
 
 public sealed class SubmitDisbursementCommandHandler(
     IDisbursementRepository disbursementRepository,
+    IUserRepository userRepository,
     ICurrentUserService currentUserService,
     IMapper mapper) : IRequestHandler<SubmitDisbursementCommand, SubmitDisbursementResponse>
 {
     private readonly IDisbursementRepository _disbursementRepository = disbursementRepository;
     private readonly ICurrentUserService _currentUserService = currentUserService;
+    private readonly IUserRepository _userRepository = userRepository;
     private readonly IMapper _mapper = mapper;
 
     public async Task<SubmitDisbursementResponse> Handle(SubmitDisbursementCommand request, CancellationToken cancellationToken)
@@ -19,7 +21,10 @@ public sealed class SubmitDisbursementCommandHandler(
         var disbursement = await _disbursementRepository.GetByIdAsync(request.DisbursementId, cancellationToken)
             ?? throw new NotFoundException("ERR.Disbursement.NotFound");
 
-        disbursement.Submit(_currentUserService.Email);
+        var user = await _userRepository.GetByEmailAsync(_currentUserService.Email)
+            ?? throw new NotFoundException("ERR.General.UserNotFound");
+
+        disbursement.Submit(user);
 
         var updatedDisbursement = await _disbursementRepository.UpdateAsync(disbursement, cancellationToken);
 
