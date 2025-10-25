@@ -17,11 +17,14 @@ public sealed class DisbursementDocument : BaseEntity
     {
         if (newParam == null)
             throw new ArgumentNullException(nameof(newParam));
+        if (newParam.DisbursementId == Guid.Empty)
+            throw new ArgumentException("DisbursementId must be a valid GUID");
         if (string.IsNullOrWhiteSpace(newParam.FileName))
             throw new ArgumentException("FileName cannot be empty");
         if (string.IsNullOrWhiteSpace(newParam.DocumentUrl))
             throw new ArgumentException("DocumentUrl cannot be empty");
 
+        DisbursementId = newParam.DisbursementId;
         FileName = newParam.FileName;
         DocumentUrl = newParam.DocumentUrl;
         CreatedAt = DateTime.UtcNow;

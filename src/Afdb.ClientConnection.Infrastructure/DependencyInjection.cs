@@ -2,6 +2,7 @@ using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Infrastructure.Data;
 using Afdb.ClientConnection.Infrastructure.Repositories;
 using Afdb.ClientConnection.Infrastructure.Services;
+using Afdb.ClientConnection.Infrastructure.Settings;
 using Azure.Identity;
 using Azure.Messaging.ServiceBus;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,9 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        // Configuration Settings
+        services.Configure<SharePointSettings>(configuration.GetSection(SharePointSettings.SectionName));
+
         // Database
         services.AddDbContext<ClientConnectionDbContext>((serviceProvider, options) =>
         {
@@ -80,6 +84,7 @@ public static class DependencyInjection
         });
 
         services.AddScoped<IGraphService, GraphService>();
+        services.AddScoped<ISharePointGraphService, SharePointGraphService>();
 
         var useMock = configuration.GetSection("Sap").GetValue<bool>("UseMock");
         if (useMock)

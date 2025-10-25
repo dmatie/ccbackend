@@ -2,10 +2,10 @@ using Afdb.ClientConnection.Application.Common.Exceptions;
 using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Domain.EntitiesParams;
-using Afdb.ClientConnection.Domain.ValueObjects;
+using Afdb.ClientConnection.Infrastructure.Settings;
 using AutoMapper;
 using MediatR;
-using System;
+using Microsoft.Extensions.Options;
 
 namespace Afdb.ClientConnection.Application.Commands.DisbursementCmd;
 
@@ -15,6 +15,8 @@ public sealed class CreateDisbursementCommandHandler(
     IUserRepository userRepository,
     ICurrentUserService currentUserService,
     ICurrencyRepository currencyRepository,
+    ISharePointGraphService sharePointService,
+    IOptions<SharePointSettings> sharePointSettings,
     IMapper mapper) : IRequestHandler<CreateDisbursementCommand, CreateDisbursementResponse>
 {
     private readonly IDisbursementRepository _disbursementRepository = disbursementRepository;
@@ -22,6 +24,8 @@ public sealed class CreateDisbursementCommandHandler(
     private readonly IUserRepository _userRepository = userRepository;
     private readonly ICurrentUserService _currentUserService = currentUserService;
     private readonly ICurrencyRepository _currencyRepository = currencyRepository;
+    private readonly ISharePointGraphService _sharePointService = sharePointService;
+    private readonly SharePointSettings _sharePointSettings = sharePointSettings.Value;
     private readonly IMapper _mapper = mapper;
 
     public async Task<CreateDisbursementResponse> Handle(CreateDisbursementCommand request, CancellationToken cancellationToken)
@@ -67,11 +71,59 @@ public sealed class CreateDisbursementCommandHandler(
 
         var createdDisbursement = await _disbursementRepository.AddAsync(disbursement, cancellationToken);
 
+        if (request.Documents != null && request.Documents.Count > 0)
+        {
+            await UploadDocumentsAsync(createdDisbursement, request.Documents, cancellationToken);
+        }
+
         return new CreateDisbursementResponse
         {
             Disbursement = _mapper.Map<DTOs.DisbursementDto>(createdDisbursement),
             Message = "MSG.DISBURSEMENT.CREATED_SUCCESS"
         };
+    }
+
+    private async Task UploadDocumentsAsync(Disbursement disbursement, List<Microsoft.AspNetCore.Http.IFormFile> documents, CancellationToken cancellationToken)
+    {
+        if (!_sharePointSettings.UseSharePointStorage)
+        {
+            return;
+        }
+
+        foreach (var document in documents)
+        {
+            if (document.Length == 0)
+                continue;
+
+            try
+            {
+                using var stream = document.OpenReadStream();
+
+                var documentUrl = await _sharePointService.UploadFileAsync(
+                    _sharePointSettings.SiteId,
+                    _sharePointSettings.DriveId,
+                    disbursement.RequestNumber,
+                    stream,
+                    document.FileName,
+                    null);
+
+                var disbursementDocument = new DisbursementDocument(new DisbursementDocumentNewParam
+                {
+                    DisbursementId = disbursement.Id,
+                    FileName = document.FileName,
+                    DocumentUrl = documentUrl,
+                    CreatedBy = _currentUserService.Email
+                });
+
+                disbursement.AddDocument(disbursementDocument);
+            }
+            catch (Exception ex)
+            {
+                throw new ServerErrorException($"Failed to upload document '{document.FileName}': {ex.Message}");
+            }
+        }
+
+        await _disbursementRepository.UpdateAsync(disbursement, cancellationToken);
     }
 
     private static DisbursementA1 MapFormA1Data(CreateDisbursementCommand request)
