@@ -19,6 +19,7 @@ public static class DependencyInjection
     {
         // Configuration Settings
         services.Configure<SharePointSettings>(configuration.GetSection(SharePointSettings.SectionName));
+        services.Configure<FileUploadSettings>(configuration.GetSection(FileUploadSettings.SectionName));
 
         // Database
         services.AddDbContext<ClientConnectionDbContext>((serviceProvider, options) =>
@@ -85,6 +86,7 @@ public static class DependencyInjection
 
         services.AddScoped<IGraphService, GraphService>();
         services.AddScoped<ISharePointGraphService, SharePointGraphService>();
+        services.AddScoped<IFileValidationService, FileValidationService>();
 
         var useMock = configuration.GetSection("Sap").GetValue<bool>("UseMock");
         if (useMock)

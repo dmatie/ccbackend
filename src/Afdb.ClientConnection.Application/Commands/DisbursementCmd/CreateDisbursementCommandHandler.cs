@@ -1,4 +1,5 @@
 using Afdb.ClientConnection.Application.Common.Exceptions;
+using Afdb.ClientConnection.Application.Common.Helpers;
 using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Domain.EntitiesParams;
@@ -17,6 +18,7 @@ public sealed class CreateDisbursementCommandHandler(
     ICurrencyRepository currencyRepository,
     ISharePointGraphService sharePointService,
     IOptions<SharePointSettings> sharePointSettings,
+    IFileValidationService fileValidationService,
     IMapper mapper) : IRequestHandler<CreateDisbursementCommand, CreateDisbursementResponse>
 {
     private readonly IDisbursementRepository _disbursementRepository = disbursementRepository;
@@ -26,10 +28,16 @@ public sealed class CreateDisbursementCommandHandler(
     private readonly ICurrencyRepository _currencyRepository = currencyRepository;
     private readonly ISharePointGraphService _sharePointService = sharePointService;
     private readonly SharePointSettings _sharePointSettings = sharePointSettings.Value;
+    private readonly IFileValidationService _fileValidationService = fileValidationService;
     private readonly IMapper _mapper = mapper;
 
     public async Task<CreateDisbursementResponse> Handle(CreateDisbursementCommand request, CancellationToken cancellationToken)
     {
+        if (request.Documents != null && request.Documents.Count > 0)
+        {
+            await _fileValidationService.ValidateAndThrowAsync(request.Documents, "Documents");
+        }
+
         var disbursementType = await _disbursementTypeRepository.GetByIdAsync(request.DisbursementTypeId);
         if (disbursementType == null)
             throw new ValidationException(new[] {
