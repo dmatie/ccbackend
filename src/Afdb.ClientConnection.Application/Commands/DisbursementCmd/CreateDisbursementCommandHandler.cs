@@ -38,7 +38,7 @@ public sealed class CreateDisbursementCommandHandler(
                 new FluentValidation.Results.ValidationFailure("CurrencyId", "ERR.Disbursement.CurrencyNotExist")
             });
 
-        if (DisbursementTypeCode.IsValid(disbursementType.Code))
+        if (!DisbursementTypeCode.IsValid(disbursementType.Code))
             throw new ArgumentException("ERR.Disbursement.DisbursementTypeCodeNotExist");
 
         var user = await _userRepository.GetByEmailAsync(_currentUserService.Email)
@@ -59,7 +59,7 @@ public sealed class CreateDisbursementCommandHandler(
             CreatedBy = _currentUserService.Email,
             DisbursementA1 = request.DisbursementA1 != null ? MapFormA1Data(request) : null,
             DisbursementA2 = request.DisbursementA2 != null ? MapFormA2Data(request) : null,
-            DisbursementA3 = request.DisbursementA2 != null ? MapFormA3Data(request) : null,
+            DisbursementA3 = request.DisbursementA3 != null ? MapFormA3Data(request) : null,
             DisbursementB1 = request.DisbursementB1 != null ? MapFormB1Data(request) : null,
         };
 
@@ -112,7 +112,7 @@ public sealed class CreateDisbursementCommandHandler(
     {
         if (request.DisbursementA2 == null)
             throw new ValidationException(new[] {
-                        new FluentValidation.Results.ValidationFailure("DisbursementA1", "ERR.Disbursement.A1DataRequired")
+                        new FluentValidation.Results.ValidationFailure("DisbursementA2", "ERR.Disbursement.A1DataRequired")
                     });
 
 
