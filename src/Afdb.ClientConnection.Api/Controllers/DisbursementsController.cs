@@ -27,6 +27,27 @@ public class DisbursementsController(IMediator mediator) : ControllerBase
         return CreatedAtAction(nameof(GetDisbursementById), new { id = result.Disbursement.Id }, result);
     }
 
+    [HttpPut("{id}")]
+    [Authorize(Policy = "ExternalUsers")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<EditDisbursementResponse>> UpdateDisbursement(
+        Guid id,
+        [FromForm] EditDisbursementCommand command,
+        CancellationToken cancellationToken = default)
+    {
+        if (id != command.Id)
+        {
+            return BadRequest(new { Message = "ERR.Disbursement.IdMismatch" });
+        }
+
+        var result = await _mediator.Send(command, cancellationToken);
+        return Ok(result);
+    }
+
     [HttpPost("{id}/submit")]
     [Authorize(Policy = "ExternalUsers")]
     [ProducesResponseType(StatusCodes.Status200OK)]
