@@ -87,6 +87,7 @@ public static class DependencyInjection
         services.AddScoped<IGraphService, GraphService>();
         services.AddScoped<ISharePointGraphService, SharePointGraphService>();
         services.AddScoped<IFileValidationService, FileValidationService>();
+        services.AddScoped<IDisbursementDocumentService, DisbursementDocumentService>();
 
         var useMock = configuration.GetSection("Sap").GetValue<bool>("UseMock");
         if (useMock)
