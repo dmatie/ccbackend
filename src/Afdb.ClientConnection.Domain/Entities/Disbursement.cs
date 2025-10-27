@@ -142,6 +142,14 @@ public sealed class Disbursement : AggregateRoot
         }
     }
 
+    public void ResetFormData()
+    {
+        DisbursementA1 = null;
+        DisbursementA2 = null;
+        DisbursementA3 = null;
+        DisbursementB1 = null;
+    }
+
     private void SetFormData(DisbursementNewParam param)
     {
         var typeCode = param.DisbursementType?.Code?.ToUpper();
@@ -162,6 +170,31 @@ public sealed class Disbursement : AggregateRoot
                 break;
         }
     }
+
+    public void SetFormDataForEdit(string DisbursementTypeCode, 
+        DisbursementA1? formA1,
+        DisbursementA2? formA2,
+        DisbursementA3? formA3,
+        DisbursementB1? formB1)
+    {
+
+        switch (DisbursementTypeCode)
+        {
+            case "A1":
+                DisbursementA1 = formA1;
+                break;
+            case "A2":
+                DisbursementA2 = formA2;
+                break;
+            case "A3":
+                DisbursementA3 = formA3;
+                break;
+            case "B1":
+                DisbursementB1 = formB1;
+                break;
+        }
+    }
+
 
     public void Submit(User user)
     {

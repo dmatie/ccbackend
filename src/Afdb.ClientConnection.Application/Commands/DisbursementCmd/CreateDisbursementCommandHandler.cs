@@ -3,6 +3,7 @@ using Afdb.ClientConnection.Application.Common.Helpers;
 using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Domain.EntitiesParams;
+using Afdb.ClientConnection.Domain.ValueObjects;
 using AutoMapper;
 using MediatR;
 
@@ -131,8 +132,6 @@ public sealed class CreateDisbursementCommandHandler(
             throw new ValidationException(new[] {
                         new FluentValidation.Results.ValidationFailure("DisbursementA2", "ERR.Disbursement.A1DataRequired")
                     });
-
-
 
         DisbursementA2 formA2 = new DisbursementA2(new DisbursementA2NewParam
         {

@@ -1,5 +1,6 @@
 using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Infrastructure.Data.Entities;
+using Microsoft.Graph.Models;
 
 namespace Afdb.ClientConnection.Infrastructure.Data.Mapping;
 
@@ -28,119 +29,22 @@ internal static partial class EntityMappings
 
         if (disbursement.DisbursementA1 != null)
         {
-            entity.DisbursementA1 = new DisbursementA1Entity
-            {
-                Id = disbursement.DisbursementA1.Id,
-                DisbursementId = disbursement.Id,
-                PaymentPurpose = disbursement.DisbursementA1.PaymentPurpose,
-                BeneficiaryBpNumber = disbursement.DisbursementA1.BeneficiaryBpNumber,
-                BeneficiaryName = disbursement.DisbursementA1.BeneficiaryName,
-                BeneficiaryContactPerson = disbursement.DisbursementA1.BeneficiaryContactPerson,
-                BeneficiaryAddress = disbursement.DisbursementA1.BeneficiaryAddress,
-                BeneficiaryCountryId = disbursement.DisbursementA1.BeneficiaryCountryId,
-                BeneficiaryEmail = disbursement.DisbursementA1.BeneficiaryEmail,
-                CorrespondentBankName = disbursement.DisbursementA1.CorrespondentBankName,
-                CorrespondentBankAddress = disbursement.DisbursementA1.CorrespondentBankAddress,
-                CorrespondentBankCountryId = disbursement.DisbursementA1.CorrespondentBankCountryId,
-                CorrespondantAccountNumber = disbursement.DisbursementA1.CorrespondantAccountNumber,
-                CorrespondentBankSwiftCode = disbursement.DisbursementA1.CorrespondentBankSwiftCode,
-                Amount = disbursement.DisbursementA1.Amount,
-                SignatoryName = disbursement.DisbursementA1.SignatoryName,
-                SignatoryContactPerson = disbursement.DisbursementA1.SignatoryContactPerson,
-                SignatoryAddress = disbursement.DisbursementA1.SignatoryAddress,
-                SignatoryCountryId = disbursement.DisbursementA1.SignatoryCountryId,
-                SignatoryEmail = disbursement.DisbursementA1.SignatoryEmail,
-                SignatoryPhone = disbursement.DisbursementA1.SignatoryPhone,
-                SignatoryTitle = disbursement.DisbursementA1.SignatoryTitle,
-                CreatedAt = disbursement.DisbursementA1.CreatedAt,
-                CreatedBy = disbursement.DisbursementA1.CreatedBy,
-                UpdatedAt = disbursement.DisbursementA1.UpdatedAt,
-                UpdatedBy = disbursement.DisbursementA1.UpdatedBy
-            };
+            entity.DisbursementA1 = MapDisbursementA1ToEntity(disbursement.DisbursementA1);
         }
 
         if (disbursement.DisbursementA2 != null)
         {
-            entity.DisbursementA2 = new DisbursementA2Entity
-            {
-                Id = disbursement.DisbursementA2.Id,
-                DisbursementId = disbursement.Id,
-                ReimbursementPurpose = disbursement.DisbursementA2.ReimbursementPurpose,
-                Contractor = disbursement.DisbursementA2.Contractor,
-                GoodDescription = disbursement.DisbursementA2.GoodDescription,
-                GoodOriginCountryId = disbursement.DisbursementA2.GoodOriginCountryId,
-                ContractBorrowerReference = disbursement.DisbursementA2.ContractBorrowerReference,
-                ContractAfDBReference = disbursement.DisbursementA2.ContractAfDBReference,
-                ContractValue = disbursement.DisbursementA2.ContractValue,
-                ContractBankShare = disbursement.DisbursementA2.ContractBankShare,
-                ContractAmountPreviouslyPaid = disbursement.DisbursementA2.ContractAmountPreviouslyPaid,
-                InvoiceRef = disbursement.DisbursementA2.InvoiceRef,
-                InvoiceDate = disbursement.DisbursementA2.InvoiceDate,
-                InvoiceAmount = disbursement.DisbursementA2.InvoiceAmount,
-                PaymentDateOfPayment = disbursement.DisbursementA2.PaymentDateOfPayment,
-                PaymentAmountWithdrawn = disbursement.DisbursementA2.PaymentAmountWithdrawn,
-                PaymentEvidenceOfPayment = disbursement.DisbursementA2.PaymentEvidenceOfPayment,
-                CreatedAt = disbursement.DisbursementA2.CreatedAt,
-                CreatedBy = disbursement.DisbursementA2.CreatedBy,
-                UpdatedAt = disbursement.DisbursementA2.UpdatedAt,
-                UpdatedBy = disbursement.DisbursementA2.UpdatedBy
-            };
+            entity.DisbursementA2 = MapDisbursementA2ToEntity(disbursement.DisbursementA2);
         }
 
         if (disbursement.DisbursementA3 != null)
         {
-            entity.DisbursementA3 = new DisbursementA3Entity
-            {
-                Id = disbursement.DisbursementA3.Id,
-                DisbursementId = disbursement.Id,
-                PeriodForUtilization = disbursement.DisbursementA3.PeriodForUtilization,
-                ItemNumber = disbursement.DisbursementA3.ItemNumber,
-                GoodDescription = disbursement.DisbursementA3.GoodDescription,
-                GoodOriginCountryId = disbursement.DisbursementA3.GoodOriginCountryId,
-                GoodQuantity = disbursement.DisbursementA3.GoodQuantity,
-                AnnualBudget = disbursement.DisbursementA3.AnnualBudget,
-                BankShare = disbursement.DisbursementA3.BankShare,
-                AdvanceRequested = disbursement.DisbursementA3.AdvanceRequested,
-                DateOfApproval = disbursement.DisbursementA3.DateOfApproval,
-                CreatedAt = disbursement.DisbursementA3.CreatedAt,
-                CreatedBy = disbursement.DisbursementA3.CreatedBy,
-                UpdatedAt = disbursement.DisbursementA3.UpdatedAt,
-                UpdatedBy = disbursement.DisbursementA3.UpdatedBy
-            };
+            entity.DisbursementA3 = MapDisbursementA3ToEntity(disbursement.DisbursementA3);
         }
 
         if (disbursement.DisbursementB1 != null)
         {
-            entity.DisbursementB1 = new DisbursementB1Entity
-            {
-                Id = disbursement.DisbursementB1.Id,
-                DisbursementId = disbursement.Id,
-                GuaranteeDetails = disbursement.DisbursementB1.GuaranteeDetails,
-                ConfirmingBank = disbursement.DisbursementB1.ConfirmingBank,
-                IssuingBankName = disbursement.DisbursementB1.IssuingBankName,
-                IssuingBankAddress = disbursement.DisbursementB1.IssuingBankAddress,
-                GuaranteeAmount = disbursement.DisbursementB1.GuaranteeAmount,
-                ExpiryDate = disbursement.DisbursementB1.ExpiryDate,
-                BeneficiaryName = disbursement.DisbursementB1.BeneficiaryName,
-                BeneficiaryBPNumber = disbursement.DisbursementB1.BeneficiaryBPNumber,
-                BeneficiaryAFDBContract = disbursement.DisbursementB1.BeneficiaryAFDBContract,
-                BeneficiaryBankAddress = disbursement.DisbursementB1.BeneficiaryBankAddress,
-                BeneficiaryCity = disbursement.DisbursementB1.BeneficiaryCity,
-                BeneficiaryCountryId = disbursement.DisbursementB1.BeneficiaryCountryId,
-                GoodDescription = disbursement.DisbursementB1.GoodDescription,
-                BeneficiaryLcContractRef = disbursement.DisbursementB1.BeneficiaryLcContractRef,
-                ExecutingAgencyName = disbursement.DisbursementB1.ExecutingAgencyName,
-                ExecutingAgencyContactPerson = disbursement.DisbursementB1.ExecutingAgencyContactPerson,
-                ExecutingAgencyAddress = disbursement.DisbursementB1.ExecutingAgencyAddress,
-                ExecutingAgencyCity = disbursement.DisbursementB1.ExecutingAgencyCity,
-                ExecutingAgencyCountryId = disbursement.DisbursementB1.ExecutingAgencyCountryId,
-                ExecutingAgencyEmail = disbursement.DisbursementB1.ExecutingAgencyEmail,
-                ExecutingAgencyPhone = disbursement.DisbursementB1.ExecutingAgencyPhone,
-                CreatedAt = disbursement.DisbursementB1.CreatedAt,
-                CreatedBy = disbursement.DisbursementB1.CreatedBy,
-                UpdatedAt = disbursement.DisbursementB1.UpdatedAt,
-                UpdatedBy = disbursement.DisbursementB1.UpdatedBy
-            };
+            entity.DisbursementB1 = MapDisbursementB1ToEntity(disbursement.DisbursementB1);
         }
 
         if (disbursement.Processes.Count > 0)
@@ -177,6 +81,117 @@ internal static partial class EntityMappings
         return entity;
     }
 
+    public static DisbursementA1Entity MapDisbursementA1ToEntity(DisbursementA1 disbursementA1)
+    {
+        return new DisbursementA1Entity
+        {
+            PaymentPurpose = disbursementA1.PaymentPurpose,
+            BeneficiaryBpNumber = disbursementA1.BeneficiaryBpNumber,
+            BeneficiaryName = disbursementA1.BeneficiaryName,
+            BeneficiaryContactPerson = disbursementA1.BeneficiaryContactPerson,
+            BeneficiaryAddress = disbursementA1.BeneficiaryAddress,
+            BeneficiaryCountryId = disbursementA1.BeneficiaryCountryId,
+            BeneficiaryEmail = disbursementA1.BeneficiaryEmail,
+            CorrespondentBankName = disbursementA1.CorrespondentBankName,
+            CorrespondentBankAddress = disbursementA1.CorrespondentBankAddress,
+            CorrespondentBankCountryId = disbursementA1.CorrespondentBankCountryId,
+            CorrespondantAccountNumber = disbursementA1.CorrespondantAccountNumber,
+            CorrespondentBankSwiftCode = disbursementA1.CorrespondentBankSwiftCode,
+            Amount = disbursementA1.Amount,
+            SignatoryName = disbursementA1.SignatoryName,
+            SignatoryContactPerson = disbursementA1.SignatoryContactPerson,
+            SignatoryAddress = disbursementA1.SignatoryAddress,
+            SignatoryCountryId = disbursementA1.SignatoryCountryId,
+            SignatoryEmail = disbursementA1.SignatoryEmail,
+            SignatoryPhone = disbursementA1.SignatoryPhone,
+            SignatoryTitle = disbursementA1.SignatoryTitle,
+            CreatedAt = disbursementA1.CreatedAt,
+            CreatedBy = disbursementA1.CreatedBy,
+            UpdatedAt = disbursementA1.UpdatedAt,
+            UpdatedBy = disbursementA1.UpdatedBy
+        };
+    }
+
+    public static DisbursementA2Entity MapDisbursementA2ToEntity(DisbursementA2 disbursementA2)
+    {
+        return new DisbursementA2Entity
+        {
+            ReimbursementPurpose = disbursementA2.ReimbursementPurpose,
+            Contractor = disbursementA2.Contractor,
+            GoodDescription = disbursementA2.GoodDescription,
+            GoodOriginCountryId = disbursementA2.GoodOriginCountryId,
+            ContractBorrowerReference = disbursementA2.ContractBorrowerReference,
+            ContractAfDBReference = disbursementA2.ContractAfDBReference,
+            ContractValue = disbursementA2.ContractValue,
+            ContractBankShare = disbursementA2.ContractBankShare,
+            ContractAmountPreviouslyPaid = disbursementA2.ContractAmountPreviouslyPaid,
+            InvoiceRef = disbursementA2.InvoiceRef,
+            InvoiceDate = disbursementA2.InvoiceDate,
+            InvoiceAmount = disbursementA2.InvoiceAmount,
+            PaymentDateOfPayment = disbursementA2.PaymentDateOfPayment,
+            PaymentAmountWithdrawn = disbursementA2.PaymentAmountWithdrawn,
+            PaymentEvidenceOfPayment = disbursementA2.PaymentEvidenceOfPayment,
+            CreatedAt = disbursementA2.CreatedAt,
+            CreatedBy = disbursementA2.CreatedBy,
+            UpdatedAt = disbursementA2.UpdatedAt,
+            UpdatedBy = disbursementA2.UpdatedBy
+        };
+    }
+
+    public static DisbursementA3Entity MapDisbursementA3ToEntity(DisbursementA3 disbursementA3)
+    {
+        return new DisbursementA3Entity
+        {
+            PeriodForUtilization = disbursementA3.PeriodForUtilization,
+            ItemNumber = disbursementA3.ItemNumber,
+            GoodDescription = disbursementA3.GoodDescription,
+            GoodOriginCountryId = disbursementA3.GoodOriginCountryId,
+            GoodQuantity = disbursementA3.GoodQuantity,
+            AnnualBudget = disbursementA3.AnnualBudget,
+            BankShare = disbursementA3.BankShare,
+            AdvanceRequested = disbursementA3.AdvanceRequested,
+            DateOfApproval = disbursementA3.DateOfApproval,
+            CreatedAt = disbursementA3.CreatedAt,
+            CreatedBy = disbursementA3.CreatedBy,
+            UpdatedAt = disbursementA3.UpdatedAt,
+            UpdatedBy = disbursementA3.UpdatedBy
+        };
+    }
+
+
+    public static DisbursementB1Entity MapDisbursementB1ToEntity(DisbursementB1 disbursementB1)
+    {
+        return new DisbursementB1Entity
+        {
+            GuaranteeDetails = disbursementB1.GuaranteeDetails,
+            ConfirmingBank = disbursementB1.ConfirmingBank,
+            IssuingBankName = disbursementB1.IssuingBankName,
+            IssuingBankAddress = disbursementB1.IssuingBankAddress,
+            GuaranteeAmount = disbursementB1.GuaranteeAmount,
+            ExpiryDate = disbursementB1.ExpiryDate,
+            BeneficiaryName = disbursementB1.BeneficiaryName,
+            BeneficiaryBPNumber = disbursementB1.BeneficiaryBPNumber,
+            BeneficiaryAFDBContract = disbursementB1.BeneficiaryAFDBContract,
+            BeneficiaryBankAddress = disbursementB1.BeneficiaryBankAddress,
+            BeneficiaryCity = disbursementB1.BeneficiaryCity,
+            BeneficiaryCountryId = disbursementB1.BeneficiaryCountryId,
+            GoodDescription = disbursementB1.GoodDescription,
+            BeneficiaryLcContractRef = disbursementB1.BeneficiaryLcContractRef,
+            ExecutingAgencyName = disbursementB1.ExecutingAgencyName,
+            ExecutingAgencyContactPerson = disbursementB1.ExecutingAgencyContactPerson,
+            ExecutingAgencyAddress = disbursementB1.ExecutingAgencyAddress,
+            ExecutingAgencyCity = disbursementB1.ExecutingAgencyCity,
+            ExecutingAgencyCountryId = disbursementB1.ExecutingAgencyCountryId,
+            ExecutingAgencyEmail = disbursementB1.ExecutingAgencyEmail,
+            ExecutingAgencyPhone = disbursementB1.ExecutingAgencyPhone,
+            CreatedAt = disbursementB1.CreatedAt,
+            CreatedBy = disbursementB1.CreatedBy,
+            UpdatedAt = disbursementB1.UpdatedAt,
+            UpdatedBy = disbursementB1.UpdatedBy
+        };
+    }
+
+
     public static void UpdateDisbursementEntityFromDomain(DisbursementEntity entity, Disbursement disbursement)
     {
         entity.Status = disbursement.Status;
@@ -185,6 +200,27 @@ internal static partial class EntityMappings
         entity.ProcessedByUserId = disbursement.ProcessedByUserId;
         entity.UpdatedAt = disbursement.UpdatedAt;
         entity.UpdatedBy = disbursement.UpdatedBy;
+
+        if (disbursement.DisbursementA1 != null)
+        {
+            entity.DisbursementA1 = MapDisbursementA1ToEntity(disbursement.DisbursementA1);
+        }
+
+        if (disbursement.DisbursementA2 != null)
+        {
+            entity.DisbursementA2 = MapDisbursementA2ToEntity(disbursement.DisbursementA2);
+        }
+
+        if (disbursement.DisbursementA3 != null)
+        {
+            entity.DisbursementA3 = MapDisbursementA3ToEntity(disbursement.DisbursementA3);
+        }
+
+        if (disbursement.DisbursementB1 != null)
+        {
+            entity.DisbursementB1 = MapDisbursementB1ToEntity(disbursement.DisbursementB1);
+        }
+
 
         if (disbursement.Processes.Count > 0)
         {
@@ -197,6 +233,39 @@ internal static partial class EntityMappings
                 {
                     Id = process.Id,
                     DisbursementId = disbursement.Id,
+                    Status = process.Status,
+                    CreatedByUserId = process.CreatedByUserId,
+                    Comment = process.Comment,
+                    CreatedAt = process.CreatedAt,
+                    CreatedBy = process.CreatedBy,
+                    UpdatedAt = process.UpdatedAt,
+                    UpdatedBy = process.UpdatedBy
+                });
+            }
+        }
+
+        entity.DomainEvents = disbursement.DomainEvents.ToList();
+    }
+
+    public static void UpdateDisbursementProcessEntityFromDomain(DisbursementEntity entity, Disbursement disbursement)
+    {
+        entity.Status = disbursement.Status;
+        entity.SubmittedAt = disbursement.SubmittedAt;
+        entity.ProcessedAt = disbursement.ProcessedAt;
+        entity.ProcessedByUserId = disbursement.ProcessedByUserId;
+        entity.UpdatedAt = disbursement.UpdatedAt;
+        entity.UpdatedBy = disbursement.UpdatedBy;
+
+        
+        if (disbursement.Processes.Count > 0)
+        {
+            var existingProcessIds = entity.Processes.Select(p => p.Id).ToHashSet();
+            var newProcesses = disbursement.Processes.Where(p => !existingProcessIds.Contains(p.Id));
+
+            foreach (var process in newProcesses)
+            {
+                entity.Processes.Add(new DisbursementProcessEntity
+                {
                     Status = process.Status,
                     CreatedByUserId = process.CreatedByUserId,
                     Comment = process.Comment,

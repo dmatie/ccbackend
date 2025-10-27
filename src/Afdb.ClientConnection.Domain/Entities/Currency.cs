@@ -22,6 +22,7 @@ public sealed class Currency : BaseEntity
         if (string.IsNullOrWhiteSpace(loadParam.Symbol))
             throw new ArgumentException("Symbol cannot be empty");
 
+        Id= loadParam.Id;
         Code = loadParam.Code.ToUpper();
         Name = loadParam.Name;
         Symbol = loadParam.Symbol;

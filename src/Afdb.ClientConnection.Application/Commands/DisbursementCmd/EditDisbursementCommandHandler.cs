@@ -4,6 +4,7 @@ using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Domain.EntitiesParams;
 using Afdb.ClientConnection.Domain.Enums;
+using Afdb.ClientConnection.Domain.ValueObjects;
 using AutoMapper;
 using MediatR;
 
@@ -13,6 +14,7 @@ public sealed class EditDisbursementCommandHandler(
     IDisbursementRepository disbursementRepository,
     IDisbursementTypeRepository disbursementTypeRepository,
     ICurrentUserService currentUserService,
+    IUserRepository userRepository,
     ICurrencyRepository currencyRepository,
     IFileValidationService fileValidationService,
     IDisbursementDocumentService disbursementDocumentService,
@@ -21,6 +23,7 @@ public sealed class EditDisbursementCommandHandler(
     private readonly IDisbursementRepository _disbursementRepository = disbursementRepository;
     private readonly IDisbursementTypeRepository _disbursementTypeRepository = disbursementTypeRepository;
     private readonly ICurrentUserService _currentUserService = currentUserService;
+    private readonly IUserRepository _userRepository = userRepository;
     private readonly ICurrencyRepository _currencyRepository = currencyRepository;
     private readonly IFileValidationService _fileValidationService = fileValidationService;
     private readonly IDisbursementDocumentService _disbursementDocumentService = disbursementDocumentService;
@@ -33,14 +36,7 @@ public sealed class EditDisbursementCommandHandler(
             await _fileValidationService.ValidateAndThrowAsync(request.Documents, "Documents");
         }
 
-        var disbursement = await _disbursementRepository.GetByIdAsync(request.Id, new DisbursementLoadParam
-        {
-            IncludeDisbursementA1 = true,
-            IncludeDisbursementA2 = true,
-            IncludeDisbursementA3 = true,
-            IncludeDisbursementB1 = true,
-            IncludeDisbursementDocuments = true
-        });
+        var disbursement = await _disbursementRepository.GetByIdAsync(request.Id, cancellationToken);
 
         if (disbursement == null)
             throw new NotFoundException($"ERR.Disbursement.NotFound:{request.Id}");
@@ -66,26 +62,20 @@ public sealed class EditDisbursementCommandHandler(
         if (!DisbursementTypeCode.IsValid(disbursementType.Code))
             throw new ArgumentException("ERR.Disbursement.DisbursementTypeCodeNotExist");
 
-        disbursement.SapCodeProject = request.SapCodeProject;
-        disbursement.LoanGrantNumber = request.LoanGrantNumber;
-        disbursement.DisbursementTypeId = request.DisbursementTypeId;
-        disbursement.DisbursementType = disbursementType;
-        disbursement.CurrencyId = request.CurrencyId;
-        disbursement.UpdatedBy = _currentUserService.Email;
-        disbursement.UpdatedOn = DateTime.UtcNow;
+        bool userExit = await _userRepository.EmailExistsAsync(_currentUserService.Email);
+        if(!userExit)
+             throw new NotFoundException("ERR.General.UserNotFound");
+
+        disbursement.ResetFormData();
 
         var newA1 = request.DisbursementA1 != null ? MapFormA1Data(request) : null;
         var newA2 = request.DisbursementA2 != null ? MapFormA2Data(request) : null;
         var newA3 = request.DisbursementA3 != null ? MapFormA3Data(request) : null;
         var newB1 = request.DisbursementB1 != null ? MapFormB1Data(request) : null;
 
-        await _disbursementRepository.UpdateWithRelatedEntitiesAsync(
-            disbursement,
-            newA1,
-            newA2,
-            newA3,
-            newB1,
-            cancellationToken);
+        disbursement.SetFormDataForEdit(disbursementType.Code, newA1, newA2, newA3, newB1);
+
+        await _disbursementRepository.UpdateAsync(disbursement, cancellationToken);
 
         if (request.Documents != null && request.Documents.Count > 0)
         {
@@ -95,16 +85,7 @@ public sealed class EditDisbursementCommandHandler(
                 cancellationToken);
         }
 
-        var updatedDisbursement = await _disbursementRepository.GetByIdAsync(disbursement.Id, new DisbursementLoadParam
-        {
-            IncludeDisbursementA1 = true,
-            IncludeDisbursementA2 = true,
-            IncludeDisbursementA3 = true,
-            IncludeDisbursementB1 = true,
-            IncludeDisbursementDocuments = true,
-            IncludeDisbursementType = true,
-            IncludeCurrency = true
-        });
+        var updatedDisbursement = await _disbursementRepository.GetByIdAsync(disbursement.Id, cancellationToken);
 
         return new EditDisbursementResponse
         {

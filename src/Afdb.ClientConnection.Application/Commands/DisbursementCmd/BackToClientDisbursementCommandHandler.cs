@@ -26,7 +26,7 @@ public sealed class BackToClientDisbursementCommandHandler(
 
         disbursement.BackToClient(user, request.Comment);
 
-        var updatedDisbursement = await _disbursementRepository.UpdateAsync(disbursement, cancellationToken);
+        var updatedDisbursement = await _disbursementRepository.UpdateProcessAsync(disbursement, cancellationToken);
 
         return new BackToClientDisbursementResponse
         {
