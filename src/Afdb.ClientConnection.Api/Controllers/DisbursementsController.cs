@@ -64,6 +64,29 @@ public class DisbursementsController(IMediator mediator) : ControllerBase
         return Ok(result);
     }
 
+    [HttpPost("{id}/resubmit")]
+    [Authorize(Policy = "ExternalUsers")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ReSubmitDisbursementResponse>> ReSubmitDisbursement(
+        Guid id,
+        [FromForm] string comment,
+        [FromForm] List<IFormFile>? additionalDocuments,
+        CancellationToken cancellationToken = default)
+    {
+        var command = new ReSubmitDisbursementCommand
+        {
+            DisbursementId = id,
+            Comment = comment,
+            AdditionalDocuments = additionalDocuments
+        };
+        var result = await _mediator.Send(command, cancellationToken);
+        return Ok(result);
+    }
+
     [HttpPost("{id}/approve")]
     [Authorize(Policy = "InternalUsers")]
     [ProducesResponseType(StatusCodes.Status200OK)]

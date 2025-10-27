@@ -217,6 +217,30 @@ public sealed class Disbursement : AggregateRoot
         AddDomainEvent(new DisbursementSubmittedEvent(Id, RequestNumber, SapCodeProject, LoanGrantNumber));
     }
 
+    public void Resubmit(User user, string comment)
+    {
+        if (Status != DisbursementStatus.BackedToClient)
+            throw new InvalidOperationException("Only backed to client disbursements can be resubmitted");
+
+        if (string.IsNullOrWhiteSpace(comment))
+            throw new ArgumentException("Comment is required when resubmitting a disbursement");
+
+        Status = DisbursementStatus.Submitted;
+        SubmittedAt = DateTime.UtcNow;
+        SetUpdated(user.Email);
+
+        var process = new DisbursementProcess(new DisbursementProcessNewParam
+        {
+            Status = DisbursementStatus.Submitted,
+            ProcessedByUserId = user.Id,
+            Comment = comment,
+            CreatedBy = user.Email
+        });
+        _processes.Add(process);
+
+        AddDomainEvent(new DisbursementReSubmittedEvent(Id, RequestNumber, SapCodeProject, LoanGrantNumber, comment));
+    }
+
     public void Approve(User user)
     {
         if (Status != DisbursementStatus.Submitted)
