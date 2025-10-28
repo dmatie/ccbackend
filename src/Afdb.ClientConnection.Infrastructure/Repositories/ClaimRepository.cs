@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Application.Common.Interfaces;
+using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Domain.Enums;
 using Afdb.ClientConnection.Infrastructure.Data;
@@ -148,4 +148,18 @@ internal sealed class ClaimRepository : IClaimRepository
     }
 
     public async Task<bool> ExistsAsync(Guid id) => await _context.Claims.AnyAsync(c => c.Id == id);
+
+    public async Task<int> CountByStatusAsync(ClaimStatus status, CancellationToken cancellationToken = default)
+    {
+        return await _context.Claims
+            .Where(c => c.Status == (int)status)
+            .CountAsync(cancellationToken);
+    }
+
+    public async Task<int> CountByUserIdAndStatusAsync(Guid userId, ClaimStatus status, CancellationToken cancellationToken = default)
+    {
+        return await _context.Claims
+            .Where(c => c.CreatedByUserId == userId && c.Status == (int)status)
+            .CountAsync(cancellationToken);
+    }
 }

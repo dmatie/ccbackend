@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Application.Common.Interfaces;
+using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Domain.Enums;
 using Afdb.ClientConnection.Infrastructure.Data;
@@ -175,5 +175,19 @@ internal sealed class AccessRequestRepository : IAccessRequestRepository
             await transaction.RollbackAsync();
             throw;
         }
+    }
+
+    public async Task<int> CountByStatusAsync(RequestStatus status, CancellationToken cancellationToken = default)
+    {
+        return await _context.AccessRequests
+            .Where(ar => ar.Status == status)
+            .CountAsync(cancellationToken);
+    }
+
+    public async Task<int> CountProjectsByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        return await _context.AccessRequestProjects
+            .Where(arp => arp.AccessRequest.UserId == userId)
+            .CountAsync(cancellationToken);
     }
 }

@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Domain.Entities;
+using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Domain.Enums;
 
 namespace Afdb.ClientConnection.Application.Common.Interfaces;
@@ -18,4 +18,6 @@ public interface IAccessRequestRepository
     Task<bool> EmailHasStatusRequestAsync(string email, RequestStatus status);
     Task ExecuteInTransactionAsync(Func<Task> action);
     Task<bool> ExistsEmailAsync(string email);
+    Task<int> CountByStatusAsync(RequestStatus status, CancellationToken cancellationToken = default);
+    Task<int> CountProjectsByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
 }

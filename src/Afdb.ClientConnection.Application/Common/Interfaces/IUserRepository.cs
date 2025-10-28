@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Domain.Entities;
+using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Domain.Enums;
 
 namespace Afdb.ClientConnection.Application.Common.Interfaces;
@@ -14,4 +14,5 @@ public interface IUserRepository
     Task<bool> ExistsAsync(Guid id);
     Task<bool> EmailExistsAsync(string email);
     Task<IEnumerable<User>> GetActiveUsersByRolesAsync(List<UserRole> roles);
+    Task<int> CountByRoleAsync(UserRole role, CancellationToken cancellationToken = default);
 }

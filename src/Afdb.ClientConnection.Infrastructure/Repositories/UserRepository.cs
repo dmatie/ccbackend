@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Application.Common.Interfaces;
+using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Domain.Enums;
 using Afdb.ClientConnection.Infrastructure.Data;
@@ -129,6 +129,13 @@ internal sealed class UserRepository : IUserRepository
             UpdatedAt = user.UpdatedAt,
             UpdatedBy = user.UpdatedBy
         };
+    }
+
+    public async Task<int> CountByRoleAsync(UserRole role, CancellationToken cancellationToken = default)
+    {
+        return await _context.Users
+            .Where(u => u.Role == role)
+            .CountAsync(cancellationToken);
     }
 
     private static void UpdateEntityFromDomain(UserEntity entity, User user)

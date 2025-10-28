@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Domain.Entities;
+using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Domain.Enums;
 
 namespace Afdb.ClientConnection.Application.Common.Interfaces;
@@ -13,4 +13,6 @@ public interface IClaimRepository
     Task<IEnumerable<Claim>?> GetByUserIdAsync(Guid userId);
     Task<IEnumerable<Claim>?> GetByUserIdAndStatusAsync(Guid userId, ClaimStatus? status);
     Task UpdateAsync(Claim claim);
+    Task<int> CountByStatusAsync(ClaimStatus status, CancellationToken cancellationToken = default);
+    Task<int> CountByUserIdAndStatusAsync(Guid userId, ClaimStatus status, CancellationToken cancellationToken = default);
 }
