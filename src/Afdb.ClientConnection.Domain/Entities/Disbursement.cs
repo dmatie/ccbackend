@@ -171,6 +171,13 @@ public sealed class Disbursement : AggregateRoot
         }
     }
 
+    public void Edit(User user)
+    {
+        if (Status != DisbursementStatus.Draft && Status != DisbursementStatus.BackedToClient)
+            throw new InvalidOperationException("Only draft or backed to client disbursements can be edited");
+        SetUpdated(user.Email);
+    }
+
     public void SetFormDataForEdit(string DisbursementTypeCode, 
         DisbursementA1? formA1,
         DisbursementA2? formA2,
@@ -194,7 +201,6 @@ public sealed class Disbursement : AggregateRoot
                 break;
         }
     }
-
 
     public void Submit(User user)
     {

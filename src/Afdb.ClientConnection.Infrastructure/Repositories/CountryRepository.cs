@@ -35,7 +35,7 @@ public class CountryRepository : ICountryRepository
     public async Task<IEnumerable<Country>> GetActiveAsync(CancellationToken cancellationToken = default)
     {
         var entities = await _context.Countries
-            .Where(c => c.IsActive)
+            .Where(c => c.IsActive && c.Code != "NOT")
             .OrderBy(c => c.Name)
             .ToListAsync(cancellationToken);
 

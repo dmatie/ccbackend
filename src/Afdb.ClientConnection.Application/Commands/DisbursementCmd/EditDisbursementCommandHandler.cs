@@ -62,10 +62,9 @@ public sealed class EditDisbursementCommandHandler(
         if (!DisbursementTypeCode.IsValid(disbursementType.Code))
             throw new ArgumentException("ERR.Disbursement.DisbursementTypeCodeNotExist");
 
-        bool userExit = await _userRepository.EmailExistsAsync(_currentUserService.Email);
-        if(!userExit)
-             throw new NotFoundException("ERR.General.UserNotFound");
-
+        User? user = await _userRepository.GetByEmailAsync(_currentUserService.Email) ?? 
+            throw new NotFoundException("ERR.General.UserNotFound");
+        
         disbursement.ResetFormData();
 
         var newA1 = request.DisbursementA1 != null ? MapFormA1Data(request) : null;
@@ -73,6 +72,8 @@ public sealed class EditDisbursementCommandHandler(
         var newA3 = request.DisbursementA3 != null ? MapFormA3Data(request) : null;
         var newB1 = request.DisbursementB1 != null ? MapFormB1Data(request) : null;
 
+        disbursement.Edit(user);
+       
         disbursement.SetFormDataForEdit(disbursementType.Code, newA1, newA2, newA3, newB1);
 
         await _disbursementRepository.UpdateAsync(disbursement, cancellationToken);

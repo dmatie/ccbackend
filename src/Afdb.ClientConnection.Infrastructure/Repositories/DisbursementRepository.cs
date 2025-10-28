@@ -1,5 +1,6 @@
 using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Domain.Entities;
+using Afdb.ClientConnection.Domain.Enums;
 using Afdb.ClientConnection.Infrastructure.Data;
 using Afdb.ClientConnection.Infrastructure.Data.Mapping;
 using Microsoft.EntityFrameworkCore;
@@ -24,12 +25,16 @@ internal sealed class DisbursementRepository : IDisbursementRepository
     {
         var entity = await _context.Disbursements
             .Include(d => d.DisbursementType)
+            .Include(d => d.Currency)
             .Include(d => d.CreatedByUser)
             .Include(d => d.ProcessedByUser)
-            .Include(d => d.DisbursementA1)
-            .Include(d => d.DisbursementA2)
-            .Include(d => d.DisbursementA3)
-            .Include(d => d.DisbursementB1)
+            .Include(d => d.DisbursementA1).ThenInclude(a1 => a1.BeneficiaryCountry)
+            .Include(d => d.DisbursementA1).ThenInclude(a1 => a1.CorrespondentBankCountry)
+            .Include(d => d.DisbursementA1).ThenInclude(a1 => a1.SignatoryCountry)
+            .Include(d => d.DisbursementA2).ThenInclude(a2 => a2.GoodOrginCountry)
+            .Include(d => d.DisbursementA3).ThenInclude(a3 => a3.GoodOrginCountry)
+            .Include(d => d.DisbursementB1).ThenInclude(b1 => b1.BeneficiaryCountry)
+            .Include(d => d.DisbursementB1).ThenInclude(b1 => b1.ExecutingAgencyCountry)
             .Include(d => d.Processes.OrderBy(c => c.CreatedAt)).ThenInclude(p => p.CreatedByUser)
             .Include(d => d.Documents)
             .FirstOrDefaultAsync(d => d.Id == id, cancellationToken);
@@ -58,15 +63,11 @@ internal sealed class DisbursementRepository : IDisbursementRepository
     {
         var entities = await _context.Disbursements
             .Include(d => d.DisbursementType)
+            .Include(d => d.Currency)
             .Include(d => d.CreatedByUser)
             .Include(d => d.ProcessedByUser)
-            .Include(d => d.DisbursementA1)
-            .Include(d => d.DisbursementA2)
-            .Include(d => d.DisbursementA3)
-            .Include(d => d.DisbursementB1)
-            .Include(d => d.Processes.OrderBy(c => c.CreatedAt)).ThenInclude(p => p.CreatedByUser)
-            .Include(d => d.Documents)
             .OrderByDescending(d => d.CreatedAt)
+            .Where(d => d.Status != DisbursementStatus.Draft)
             .ToListAsync(cancellationToken);
 
         return entities.Select(DomainMappings.MapDisbursementToDomain).ToList();
@@ -76,14 +77,8 @@ internal sealed class DisbursementRepository : IDisbursementRepository
     {
         var entities = await _context.Disbursements
             .Include(d => d.DisbursementType)
+            .Include(d => d.Currency)
             .Include(d => d.CreatedByUser)
-            .Include(d => d.ProcessedByUser)
-            .Include(d => d.DisbursementA1)
-            .Include(d => d.DisbursementA2)
-            .Include(d => d.DisbursementA3)
-            .Include(d => d.DisbursementB1)
-            .Include(d => d.Processes.OrderBy(c => c.CreatedAt)).ThenInclude(p => p.CreatedByUser)
-            .Include(d => d.Documents)
             .Where(d => d.CreatedByUserId == userId)
             .OrderByDescending(d => d.CreatedAt)
             .ToListAsync(cancellationToken);
