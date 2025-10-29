@@ -1,4 +1,5 @@
-﻿using Afdb.ClientConnection.Application.Common.Interfaces;
+using Afdb.ClientConnection.Application.Common.Interfaces;
+using Afdb.ClientConnection.Application.DTOs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Graph;
@@ -215,6 +216,58 @@ internal sealed class GraphService(GraphServiceClient graphClient, IConfiguratio
             logger.LogError(ex, "Erreur lors de la récupération des utilisateurs du groupe AD : {GroupName}", groupName);
 
             throw new InvalidOperationException($"ERR.General.AdGroupFectching");
+        }
+    }
+
+    public async Task<List<AzureAdUserDto>> SearchUsersAsync(string searchQuery, int maxResults = 10, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(searchQuery))
+            {
+                logger.LogWarning("Search query is empty or null");
+                return [];
+            }
+
+            logger.LogInformation("Searching Azure AD users with query: {SearchQuery}, MaxResults: {MaxResults}",
+                searchQuery, maxResults);
+
+            var users = await graphClient.Users
+                .GetAsync(requestConfiguration =>
+                {
+                    requestConfiguration.QueryParameters.Search = $"\"displayName:{searchQuery}\" OR \"mail:{searchQuery}\" OR \"userPrincipalName:{searchQuery}\"";
+                    requestConfiguration.QueryParameters.Select = new[] { "id", "displayName", "mail", "userPrincipalName", "jobTitle", "department" };
+                    requestConfiguration.QueryParameters.Top = maxResults;
+                    requestConfiguration.QueryParameters.Orderby = new[] { "displayName" };
+                    requestConfiguration.Headers.Add("ConsistencyLevel", "eventual");
+                }, cancellationToken);
+
+            if (users?.Value == null || !users.Value.Any())
+            {
+                logger.LogInformation("No users found for query: {SearchQuery}", searchQuery);
+                return [];
+            }
+
+            var result = users.Value
+                .Select(user => new AzureAdUserDto
+                {
+                    Id = user.Id ?? string.Empty,
+                    DisplayName = user.DisplayName ?? string.Empty,
+                    Email = user.Mail ?? user.UserPrincipalName ?? string.Empty,
+                    JobTitle = user.JobTitle,
+                    Department = user.Department
+                })
+                .Where(dto => !string.IsNullOrEmpty(dto.Id) && !string.IsNullOrEmpty(dto.Email))
+                .ToList();
+
+            logger.LogInformation("Found {Count} users for query: {SearchQuery}", result.Count, searchQuery);
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error searching users in Azure AD with query: {SearchQuery}", searchQuery);
+            throw new InvalidOperationException($"Error searching users in Azure AD: {ex.Message}", ex);
         }
     }
 }

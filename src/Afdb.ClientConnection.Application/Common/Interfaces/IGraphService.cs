@@ -1,4 +1,6 @@
-﻿namespace Afdb.ClientConnection.Application.Common.Interfaces;
+using Afdb.ClientConnection.Application.DTOs;
+
+namespace Afdb.ClientConnection.Application.Common.Interfaces;
 
 public interface IGraphService
 {
@@ -9,4 +11,5 @@ public interface IGraphService
     Task<List<string>> GetFifcAdmin(CancellationToken cancellationToken = default);
     Task<List<string>> GetFifcDOs(CancellationToken cancellationToken = default);
     Task<List<string>> GetFifcDAs(CancellationToken cancellationToken = default);
+    Task<List<AzureAdUserDto>> SearchUsersAsync(string searchQuery, int maxResults = 10, CancellationToken cancellationToken = default);
 }
