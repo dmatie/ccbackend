@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Application.Common.Interfaces;
+using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Infrastructure.Data;
 using Afdb.ClientConnection.Infrastructure.Data.Mapping;
@@ -51,4 +51,25 @@ internal sealed class CountryAdminRepository : ICountryAdminRepository
 
     public async Task<bool> ExistsAsync(Guid userId, Guid countryId) =>
         await _context.CountryAdmins.AnyAsync(c => c.UserId == userId && c.CountryId == countryId);
+
+    public async Task<CountryAdmin> AddAsync(CountryAdmin countryAdmin, CancellationToken cancellationToken = default)
+    {
+        var entity = EntityMappings.MapCountryAdminToEntity(countryAdmin);
+        await _context.CountryAdmins.AddAsync(entity, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
+
+        var savedEntity = await _context.CountryAdmins
+            .Include(c => c.Country)
+            .Include(c => c.User)
+            .FirstAsync(c => c.Id == entity.Id, cancellationToken);
+
+        return DomainMappings.MapCountryAdminToDomain(savedEntity);
+    }
+
+    public async Task AddRangeAsync(List<CountryAdmin> countryAdmins, CancellationToken cancellationToken = default)
+    {
+        var entities = countryAdmins.Select(EntityMappings.MapCountryAdminToEntity).ToList();
+        await _context.CountryAdmins.AddRangeAsync(entities, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
+    }
 }

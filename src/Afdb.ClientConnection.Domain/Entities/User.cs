@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Domain.Common;
+using Afdb.ClientConnection.Domain.Common;
 using Afdb.ClientConnection.Domain.Enums;
 
 namespace Afdb.ClientConnection.Domain.Entities;
@@ -90,4 +90,5 @@ public sealed class User : AggregateRoot
     public bool IsInternal => Role != UserRole.ExternalUser;
     public bool IsExternal => Role == UserRole.ExternalUser;
     public bool HasEntraIdAccount => !string.IsNullOrWhiteSpace(EntraIdObjectId);
+    public bool RequiresCountryAssignment => Role == UserRole.DO || Role == UserRole.DA;
 }

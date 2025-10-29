@@ -5,7 +5,7 @@ namespace Afdb.ClientConnection.Domain.Entities;
 
 public sealed class CountryAdmin : BaseEntity
 {
-    public Guid CoutryId { get; private set; }
+    public Guid CountryId { get; private set; }
     public Guid UserId { get; private set; }
     public bool IsActive { get; private set; }
     public User User { get; private set; } = default!;
@@ -15,7 +15,7 @@ public sealed class CountryAdmin : BaseEntity
 
     public CountryAdmin(CountryAdminNewParam newParam)
     {
-        CoutryId = newParam.CountryId;
+        CountryId = newParam.CountryId;
         UserId = newParam.UserId;
         IsActive = newParam.IsActive;
     }
@@ -28,7 +28,7 @@ public sealed class CountryAdmin : BaseEntity
         UpdatedBy = loadParam.UpdatedBy;
         Country = loadParam.Country;
         User = loadParam.User;
-        CoutryId = loadParam.CountryId;
+        CountryId = loadParam.CountryId;
         UserId = loadParam.UserId;
         IsActive = loadParam.IsActive;
     }

@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Domain.Entities;
+using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Infrastructure.Data.Entities;
 
 namespace Afdb.ClientConnection.Infrastructure.Data.Mapping;
@@ -72,5 +72,20 @@ internal static partial  class EntityMappings
         }
 
         entity.DomainEvents = accessRequest.DomainEvents.ToList();
+    }
+
+    public static CountryAdminEntity MapCountryAdminToEntity(CountryAdmin countryAdmin)
+    {
+        return new CountryAdminEntity
+        {
+            Id = countryAdmin.Id,
+            CountryId = countryAdmin.CountryId,
+            UserId = countryAdmin.UserId,
+            IsActive = true,
+            CreatedAt = countryAdmin.CreatedAt,
+            CreatedBy = countryAdmin.CreatedBy,
+            UpdatedAt = countryAdmin.UpdatedAt,
+            UpdatedBy = countryAdmin.UpdatedBy
+        };
     }
 }

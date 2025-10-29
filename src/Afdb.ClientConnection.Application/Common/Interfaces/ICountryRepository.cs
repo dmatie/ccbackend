@@ -8,4 +8,6 @@ public interface ICountryRepository
     Task<IEnumerable<Country>> GetAllAsync(CancellationToken cancellationToken = default);
     Task<IEnumerable<Country>> GetActiveAsync(CancellationToken cancellationToken = default);
     Task<Country?> GetDefaultCountryAsync(CancellationToken cancellationToken = default);
+    Task<List<Country>> GetByIdsAsync(List<Guid> ids, CancellationToken cancellationToken = default);
+    Task<bool> AllExistAsync(List<Guid> ids, CancellationToken cancellationToken = default);
 }
