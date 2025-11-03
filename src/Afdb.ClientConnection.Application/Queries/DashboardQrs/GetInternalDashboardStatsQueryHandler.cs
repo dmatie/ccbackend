@@ -12,6 +12,7 @@ public sealed class GetInternalDashboardStatsQueryHandler : IRequestHandler<GetI
     private readonly IClaimRepository _claimRepository;
     private readonly IDisbursementRepository _disbursementRepository;
     private readonly IUserRepository _userRepository;
+    private readonly IUserContextService _userContextService;
     private readonly ILogger<GetInternalDashboardStatsQueryHandler> _logger;
 
     public GetInternalDashboardStatsQueryHandler(
@@ -19,12 +20,14 @@ public sealed class GetInternalDashboardStatsQueryHandler : IRequestHandler<GetI
         IClaimRepository claimRepository,
         IDisbursementRepository disbursementRepository,
         IUserRepository userRepository,
+        IUserContextService userContextService,
         ILogger<GetInternalDashboardStatsQueryHandler> logger)
     {
         _accessRequestRepository = accessRequestRepository;
         _claimRepository = claimRepository;
         _disbursementRepository = disbursementRepository;
         _userRepository = userRepository;
+        _userContextService = userContextService;
         _logger = logger;
     }
 
@@ -32,9 +35,11 @@ public sealed class GetInternalDashboardStatsQueryHandler : IRequestHandler<GetI
     {
         _logger.LogInformation("Fetching internal dashboard statistics");
 
+        var userContext = _userContextService.GetUserContext();
+
         var pendingAccessRequests = await _accessRequestRepository.CountByStatusAsync(RequestStatus.Pending, cancellationToken);
-        var pendingClaims = await _claimRepository.CountByStatusAsync(ClaimStatus.Submitted, cancellationToken);
-        var pendingDisbursements = await _disbursementRepository.CountByStatusAsync(DisbursementStatus.Submitted, cancellationToken);
+        var pendingClaims = await _claimRepository.CountByStatusAsync(userContext, ClaimStatus.Submitted, cancellationToken);
+        var pendingDisbursements = await _disbursementRepository.CountByStatusAsync(userContext, DisbursementStatus.Submitted, cancellationToken);
         var totalUsers = await _userRepository.CountByRoleAsync([UserRole.Admin, UserRole.DA, UserRole.DO], cancellationToken);
 
         _logger.LogInformation(

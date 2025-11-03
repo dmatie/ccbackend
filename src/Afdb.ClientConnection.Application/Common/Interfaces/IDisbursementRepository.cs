@@ -16,5 +16,6 @@ public interface IDisbursementRepository
     Task<string> GenerateRequestNumberAsync(CancellationToken cancellationToken = default);
     Task<Disbursement> UpdateProcessAsync(Disbursement disbursement, CancellationToken cancellationToken = default);
     Task<int> CountByStatusAsync(DisbursementStatus status, CancellationToken cancellationToken = default);
+    Task<int> CountByStatusAsync(UserContext userContext, DisbursementStatus status, CancellationToken cancellationToken = default);
     Task<int> CountByUserIdAndStatusAsync(Guid userId, DisbursementStatus status, CancellationToken cancellationToken = default);
 }

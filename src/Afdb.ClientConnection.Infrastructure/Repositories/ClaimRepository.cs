@@ -1,4 +1,5 @@
 using Afdb.ClientConnection.Application.Common.Interfaces;
+using Afdb.ClientConnection.Application.Common.Models;
 using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Domain.Enums;
 using Afdb.ClientConnection.Infrastructure.Data;
@@ -28,13 +29,21 @@ internal sealed class ClaimRepository : IClaimRepository
         return entity == null ? null : DomainMappings.MapClaimToDomain(entity);
     }
 
-    public async Task<IEnumerable<Claim>?> GetAllAsync()
+    public async Task<IEnumerable<Claim>?> GetAllAsync(UserContext userContext)
     {
-        var entities = await _context.Claims
+        var query = _context.Claims
             .Include(c => c.ClaimType)
             .Include(c => c.Country)
             .Include(c => c.User)
             .Include(c => c.Processes).ThenInclude(pr => pr.User)
+            .AsQueryable();
+
+        if (userContext.RequiresCountryFilter)
+        {
+            query = query.Where(c => userContext.CountryIds.Contains(c.CountryId));
+        }
+
+        var entities = await query
             .OrderByDescending(c => c.CreatedAt)
             .ToListAsync();
 
@@ -154,6 +163,19 @@ internal sealed class ClaimRepository : IClaimRepository
         return await _context.Claims
             .Where(c => c.Status == status)
             .CountAsync(cancellationToken);
+    }
+
+    public async Task<int> CountByStatusAsync(UserContext userContext, ClaimStatus status, CancellationToken cancellationToken = default)
+    {
+        var query = _context.Claims
+            .Where(c => c.Status == status);
+
+        if (userContext.RequiresCountryFilter)
+        {
+            query = query.Where(c => userContext.CountryIds.Contains(c.CountryId));
+        }
+
+        return await query.CountAsync(cancellationToken);
     }
 
     public async Task<int> CountByUserIdAndStatusAsync(Guid userId, ClaimStatus status, CancellationToken cancellationToken = default)

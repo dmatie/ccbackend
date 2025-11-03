@@ -194,6 +194,19 @@ internal sealed class DisbursementRepository : IDisbursementRepository
             .CountAsync(cancellationToken);
     }
 
+    public async Task<int> CountByStatusAsync(UserContext userContext, DisbursementStatus status, CancellationToken cancellationToken = default)
+    {
+        var query = _context.Disbursements
+            .Where(d => d.Status == status);
+
+        if (userContext.RequiresCountryFilter)
+        {
+            query = query.Where(d => userContext.CountryIds.Contains(d.CountryId));
+        }
+
+        return await query.CountAsync(cancellationToken);
+    }
+
     public async Task<int> CountByUserIdAndStatusAsync(Guid userId, DisbursementStatus status, CancellationToken cancellationToken = default)
     {
         return await _context.Disbursements
