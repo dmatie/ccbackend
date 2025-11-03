@@ -1,24 +1,20 @@
 using Afdb.ClientConnection.Application.Common.Interfaces;
+using Afdb.ClientConnection.Application.Common.Models;
 using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Domain.Enums;
 using Afdb.ClientConnection.Infrastructure.Data;
 using Afdb.ClientConnection.Infrastructure.Data.Mapping;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Afdb.ClientConnection.Infrastructure.Repositories;
 
 internal sealed class DisbursementRepository : IDisbursementRepository
 {
     private readonly ClientConnectionDbContext _context;
-    private readonly ILogger<DisbursementRepository> _logger;
 
-
-    public DisbursementRepository(ClientConnectionDbContext context,
-        ILogger<DisbursementRepository> logger)
+    public DisbursementRepository(ClientConnectionDbContext context)
     {
         _context = context;
-        _logger = logger;
     }
 
     public async Task<Disbursement?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
@@ -26,51 +22,54 @@ internal sealed class DisbursementRepository : IDisbursementRepository
         var entity = await _context.Disbursements
             .Include(d => d.DisbursementType)
             .Include(d => d.Currency)
-            .Include(d => d.CreatedByUser)
-            .Include(d => d.ProcessedByUser)
-            .Include(d => d.DisbursementA1).ThenInclude(a1 => a1.BeneficiaryCountry)
-            .Include(d => d.DisbursementA1).ThenInclude(a1 => a1.CorrespondentBankCountry)
-            .Include(d => d.DisbursementA1).ThenInclude(a1 => a1.SignatoryCountry)
-            .Include(d => d.DisbursementA2).ThenInclude(a2 => a2.GoodOrginCountry)
-            .Include(d => d.DisbursementA3).ThenInclude(a3 => a3.GoodOrginCountry)
-            .Include(d => d.DisbursementB1).ThenInclude(b1 => b1.BeneficiaryCountry)
-            .Include(d => d.DisbursementB1).ThenInclude(b1 => b1.ExecutingAgencyCountry)
-            .Include(d => d.Processes.OrderBy(c => c.CreatedAt)).ThenInclude(p => p.CreatedByUser)
-            .Include(d => d.Documents)
+            .Include(d => d.User)
+            .Include(d => d.DisbursementProcesses)
+            .Include(d => d.DisbursementDocuments)
+            .Include(d => d.DisbursementA1)
+            .Include(d => d.DisbursementA2)
+            .Include(d => d.DisbursementA3)
+            .Include(d => d.DisbursementB1)
             .FirstOrDefaultAsync(d => d.Id == id, cancellationToken);
 
-        return entity == null ? null : DomainMappings.MapDisbursementToDomain(entity);
+        return entity != null ? DomainMappings.MapDisbursementToDomain(entity) : null;
     }
 
     public async Task<Disbursement?> GetByRequestNumberAsync(string requestNumber, CancellationToken cancellationToken = default)
     {
         var entity = await _context.Disbursements
             .Include(d => d.DisbursementType)
-            .Include(d => d.CreatedByUser)
-            .Include(d => d.ProcessedByUser)
+            .Include(d => d.Currency)
+            .Include(d => d.User)
+            .Include(d => d.DisbursementProcesses)
+            .Include(d => d.DisbursementDocuments)
             .Include(d => d.DisbursementA1)
             .Include(d => d.DisbursementA2)
             .Include(d => d.DisbursementA3)
             .Include(d => d.DisbursementB1)
-            .Include(d => d.Processes.OrderBy(c => c.CreatedAt)).ThenInclude(p => p.CreatedByUser)
-            .Include(d => d.Documents)
             .FirstOrDefaultAsync(d => d.RequestNumber == requestNumber, cancellationToken);
 
-        return entity == null ? null : DomainMappings.MapDisbursementToDomain(entity);
+        return entity != null ? DomainMappings.MapDisbursementToDomain(entity) : null;
     }
 
-    public async Task<IEnumerable<Disbursement>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Disbursement>> GetAllAsync(UserContext userContext, CancellationToken cancellationToken = default)
     {
-        var entities = await _context.Disbursements
+        var query = _context.Disbursements
             .Include(d => d.DisbursementType)
             .Include(d => d.Currency)
-            .Include(d => d.CreatedByUser)
-            .Include(d => d.ProcessedByUser)
+            .Include(d => d.User)
+            .Include(d => d.DisbursementProcesses)
+            .AsQueryable();
+
+        if (userContext.RequiresCountryFilter)
+        {
+            query = query.Where(d => userContext.CountryIds.Contains(d.CountryId));
+        }
+
+        var entities = await query
             .OrderByDescending(d => d.CreatedAt)
-            .Where(d => d.Status != DisbursementStatus.Draft)
             .ToListAsync(cancellationToken);
 
-        return entities.Select(DomainMappings.MapDisbursementToDomain).ToList();
+        return entities.Select(DomainMappings.MapDisbursementToDomain);
     }
 
     public async Task<IEnumerable<Disbursement>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
@@ -78,196 +77,114 @@ internal sealed class DisbursementRepository : IDisbursementRepository
         var entities = await _context.Disbursements
             .Include(d => d.DisbursementType)
             .Include(d => d.Currency)
-            .Include(d => d.CreatedByUser)
-            .Where(d => d.CreatedByUserId == userId)
+            .Include(d => d.User)
+            .Include(d => d.DisbursementProcesses)
+            .Where(d => d.UserId == userId)
             .OrderByDescending(d => d.CreatedAt)
             .ToListAsync(cancellationToken);
 
-        return entities.Select(DomainMappings.MapDisbursementToDomain).ToList();
+        return entities.Select(DomainMappings.MapDisbursementToDomain);
     }
 
     public async Task<Disbursement> AddAsync(Disbursement disbursement, CancellationToken cancellationToken = default)
     {
         var entity = EntityMappings.MapDisbursementToEntity(disbursement);
-        entity.DomainEvents = disbursement.DomainEvents.ToList();
-
-        _context.Disbursements.Add(entity);
+        await _context.Disbursements.AddAsync(entity, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
 
-        var entityWithRelations = await _context.Disbursements
+        var savedEntity = await _context.Disbursements
             .Include(d => d.DisbursementType)
-            .Include(d => d.CreatedByUser)
-            .Include(d => d.ProcessedByUser)
+            .Include(d => d.Currency)
+            .Include(d => d.User)
+            .Include(d => d.DisbursementProcesses)
+            .Include(d => d.DisbursementDocuments)
             .Include(d => d.DisbursementA1)
             .Include(d => d.DisbursementA2)
             .Include(d => d.DisbursementA3)
             .Include(d => d.DisbursementB1)
-            .Include(d => d.Processes.OrderBy(c => c.CreatedAt)).ThenInclude(p => p.CreatedByUser)
-            .Include(d => d.Documents)
-            .FirstOrDefaultAsync(d => d.Id == entity.Id, cancellationToken);
+            .FirstAsync(d => d.Id == entity.Id, cancellationToken);
 
-        return entityWithRelations != null
-            ? DomainMappings.MapDisbursementToDomain(entityWithRelations)
-            : DomainMappings.MapDisbursementToDomain(entity);
+        return DomainMappings.MapDisbursementToDomain(savedEntity);
     }
 
     public async Task<Disbursement> UpdateAsync(Disbursement disbursement, CancellationToken cancellationToken = default)
     {
-        using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+        var entity = await _context.Disbursements
+            .Include(d => d.DisbursementDocuments)
+            .Include(d => d.DisbursementA1)
+            .Include(d => d.DisbursementA2)
+            .Include(d => d.DisbursementA3)
+            .Include(d => d.DisbursementB1)
+            .FirstOrDefaultAsync(d => d.Id == disbursement.Id, cancellationToken);
 
-        try
-        {
-            var entity = await _context.Disbursements
-                        .Include(d => d.Processes)
-                        .Include(d => d.Documents)
-                        .Include(d => d.DisbursementA1)
-                        .Include(d => d.DisbursementA2)
-                        .Include(d => d.DisbursementA3)
-                        .Include(d => d.DisbursementB1)
-                        .AsTracking()
-                        .FirstOrDefaultAsync(d => d.Id == disbursement.Id, cancellationToken);
+        if (entity == null)
+            throw new InvalidOperationException($"Disbursement with ID {disbursement.Id} not found");
 
-            if (entity != null)
-            {
-                entity.DomainEvents = disbursement.DomainEvents.ToList();
+        EntityMappings.UpdateDisbursementEntity(entity, disbursement);
+        await _context.SaveChangesAsync(cancellationToken);
 
-                if (entity.DisbursementA1 != null)
-                {
-                    _context.DisbursementA1.Remove(entity.DisbursementA1);
-                    entity.DisbursementA1 = null;
-                }
+        var updatedEntity = await _context.Disbursements
+            .Include(d => d.DisbursementType)
+            .Include(d => d.Currency)
+            .Include(d => d.User)
+            .Include(d => d.DisbursementProcesses)
+            .Include(d => d.DisbursementDocuments)
+            .Include(d => d.DisbursementA1)
+            .Include(d => d.DisbursementA2)
+            .Include(d => d.DisbursementA3)
+            .Include(d => d.DisbursementB1)
+            .FirstAsync(d => d.Id == entity.Id, cancellationToken);
 
-                if (entity.DisbursementA2 != null)
-                {
-                    _context.DisbursementA2.Remove(entity.DisbursementA2);
-                    entity.DisbursementA2 = null;
-                }
-
-                if (entity.DisbursementA3 != null)
-                {
-                    _context.DisbursementA3.Remove(entity.DisbursementA3);
-                    entity.DisbursementA3 = null;
-                }
-
-                if (entity.DisbursementB1 != null)
-                {
-                    _context.DisbursementB1.Remove(entity.DisbursementB1);
-                    entity.DisbursementB1 = null;
-                }
-
-                await _context.SaveChangesAsync(cancellationToken);
-
-
-                EntityMappings.UpdateDisbursementEntityFromDomain(entity, disbursement);
-                await _context.SaveChangesAsync(cancellationToken);
-                await transaction.CommitAsync(cancellationToken);
-
-                _logger.LogInformation(
-                "Disbursement {DisbursementId} updated with related entities",
-                disbursement.Id);
-
-                var entityWithRelations = await _context.Disbursements
-                    .Include(d => d.DisbursementType)
-                    .Include(d => d.CreatedByUser)
-                    .Include(d => d.ProcessedByUser)
-                    .Include(d => d.DisbursementA1)
-                    .Include(d => d.DisbursementA2)
-                    .Include(d => d.DisbursementA3)
-                    .Include(d => d.DisbursementB1)
-                    .Include(d => d.Processes.OrderBy(c => c.CreatedAt)).ThenInclude(p => p.CreatedByUser)
-                    .Include(d => d.Documents)
-                    .FirstOrDefaultAsync(d => d.Id == entity.Id, cancellationToken);
-
-                return entityWithRelations != null
-                    ? DomainMappings.MapDisbursementToDomain(entityWithRelations)
-                    : DomainMappings.MapDisbursementToDomain(entity);
-            }
-
-            return disbursement;
-        }
-        catch (Exception ex)
-        {
-            await transaction.RollbackAsync(cancellationToken);
-            _logger.LogError(
-                ex,
-                "Error updating Disbursement {DisbursementId} with related entities",
-                disbursement.Id);
-            throw;
-        }
+        return DomainMappings.MapDisbursementToDomain(updatedEntity);
     }
 
     public async Task<Disbursement> UpdateProcessAsync(Disbursement disbursement, CancellationToken cancellationToken = default)
     {
         var entity = await _context.Disbursements
-                    .Include(d => d.Processes)
-                    .Include(d => d.Documents)
-                    .Include(d => d.DisbursementA1)
-                    .Include(d => d.DisbursementA2)
-                    .Include(d => d.DisbursementA3)
-                    .Include(d => d.DisbursementB1)
-                    .AsTracking()
-                    .FirstOrDefaultAsync(d => d.Id == disbursement.Id, cancellationToken);
+            .Include(d => d.DisbursementProcesses)
+            .FirstOrDefaultAsync(d => d.Id == disbursement.Id, cancellationToken);
 
-        if (entity != null)
-        {
-            entity.DomainEvents = disbursement.DomainEvents.ToList();
+        if (entity == null)
+            throw new InvalidOperationException($"Disbursement with ID {disbursement.Id} not found");
 
-            EntityMappings.UpdateDisbursementProcessEntityFromDomain(entity, disbursement);
-            await _context.SaveChangesAsync(cancellationToken);
+        EntityMappings.UpdateDisbursementProcessEntity(entity, disbursement);
+        await _context.SaveChangesAsync(cancellationToken);
 
-            var entityWithRelations = await _context.Disbursements
-                .Include(d => d.DisbursementType)
-                .Include(d => d.CreatedByUser)
-                .Include(d => d.ProcessedByUser)
-                .Include(d => d.DisbursementA1)
-                .Include(d => d.DisbursementA2)
-                .Include(d => d.DisbursementA3)
-                .Include(d => d.DisbursementB1)
-                .Include(d => d.Processes.OrderBy(c => c.CreatedAt)).ThenInclude(p => p.CreatedByUser)
-                .Include(d => d.Documents)
-                .FirstOrDefaultAsync(d => d.Id == entity.Id, cancellationToken);
+        var updatedEntity = await _context.Disbursements
+            .Include(d => d.DisbursementType)
+            .Include(d => d.Currency)
+            .Include(d => d.User)
+            .Include(d => d.DisbursementProcesses)
+            .Include(d => d.DisbursementDocuments)
+            .Include(d => d.DisbursementA1)
+            .Include(d => d.DisbursementA2)
+            .Include(d => d.DisbursementA3)
+            .Include(d => d.DisbursementB1)
+            .FirstAsync(d => d.Id == entity.Id, cancellationToken);
 
-            return entityWithRelations != null
-                ? DomainMappings.MapDisbursementToDomain(entityWithRelations)
-                : DomainMappings.MapDisbursementToDomain(entity);
-        }
-
-        return disbursement;
+        return DomainMappings.MapDisbursementToDomain(updatedEntity);
     }
-
 
     public async Task<string> GenerateRequestNumberAsync(CancellationToken cancellationToken = default)
     {
-        var currentYear = DateTime.UtcNow.Year;
-        var prefix = $"DIS-{currentYear}-";
+        var year = DateTime.UtcNow.Year;
+        var prefix = $"DR-{year}-";
 
-        // Utilisation d'une transaction pour garantir l'unicité
-        using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable, cancellationToken);
-
-        var numbers = await _context.Disbursements
+        var lastRequestNumber = await _context.Disbursements
             .Where(d => d.RequestNumber.StartsWith(prefix))
-            .Select(d => d.RequestNumber.Replace(prefix, ""))
-            .ToListAsync(cancellationToken);
+            .OrderByDescending(d => d.RequestNumber)
+            .Select(d => d.RequestNumber)
+            .FirstOrDefaultAsync(cancellationToken);
 
-        int lastNumber = 0;
-        foreach (var num in numbers)
+        if (lastRequestNumber == null)
         {
-            if (int.TryParse(num, out var n) && n > lastNumber)
-                lastNumber = n;
+            return $"{prefix}0001";
         }
 
-        var newRequestNumber = $"{prefix}{lastNumber + 1}";
+        var lastNumber = int.Parse(lastRequestNumber.Substring(prefix.Length));
+        var newNumber = lastNumber + 1;
 
-        // Vérification qu'il n'existe pas déjà (très rare mais possible en cas de course)
-        var exists = await _context.Disbursements.AnyAsync(d => d.RequestNumber == newRequestNumber, cancellationToken);
-        if (exists)
-        {
-            // Relancer la génération (récursif ou boucle)
-            return await GenerateRequestNumberAsync(cancellationToken);
-        }
-
-        await transaction.CommitAsync(cancellationToken);
-        return newRequestNumber;
+        return $"{prefix}{newNumber:D4}";
     }
 
     public async Task<int> CountByStatusAsync(DisbursementStatus status, CancellationToken cancellationToken = default)
@@ -280,7 +197,7 @@ internal sealed class DisbursementRepository : IDisbursementRepository
     public async Task<int> CountByUserIdAndStatusAsync(Guid userId, DisbursementStatus status, CancellationToken cancellationToken = default)
     {
         return await _context.Disbursements
-            .Where(d => d.CreatedByUserId == userId && d.Status == status)
+            .Where(d => d.UserId == userId && d.Status == status)
             .CountAsync(cancellationToken);
     }
 }

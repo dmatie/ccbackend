@@ -122,6 +122,7 @@ app.UseHttpsRedirection();
 app.UseCors("DefaultPolicy");
 
 app.UseAuthentication();
+app.UseUserContext();
 app.UseAuthorization();
 
 // Add custom exception handling middleware

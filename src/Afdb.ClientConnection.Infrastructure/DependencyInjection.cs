@@ -51,6 +51,7 @@ public static class DependencyInjection
         // Services
         services.AddScoped<IAuditService, AuditService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
+        services.AddScoped<IUserContextService, UserContextService>();
         services.AddScoped<IServiceBusService, ServiceBusService>();
         services.AddScoped<IReferenceService, ReferenceService>();
         services.AddScoped<IOtpCodeRepository, OtpCodeRepository>();
