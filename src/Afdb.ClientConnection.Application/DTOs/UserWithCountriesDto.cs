@@ -7,6 +7,7 @@ public sealed record UserWithCountriesDto
     public string FirstName { get; init; } = string.Empty;
     public string LastName { get; init; } = string.Empty;
     public string FullName { get; init; } = string.Empty;
+    public string OrganizationName { get; init; } = string.Empty;
     public string Role { get; init; } = string.Empty;
     public bool IsActive { get; init; }
     public string? EntraIdObjectId { get; init; }

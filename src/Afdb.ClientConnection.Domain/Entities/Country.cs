@@ -1,15 +1,32 @@
 using Afdb.ClientConnection.Domain.Common;
+using Afdb.ClientConnection.Domain.EntitiesParams;
 
 namespace Afdb.ClientConnection.Domain.Entities;
 
 public sealed class Country : BaseEntity
 {
+    private readonly List<CountryAdmin> _countries = new();
     public string Name { get; private set; }
     public string NameFr { get; private set; }
     public string Code { get; private set; }
     public bool IsActive { get; private set; }
+    public ICollection<CountryAdmin> CountryAdmins => _countries;
 
     private Country() { } // For EF Core
+
+    public Country( CountryLoadParam loadParam)
+    {
+        Id= loadParam.Id;
+        Name = loadParam.Name;
+        NameFr = loadParam.NameFr;
+        Code = loadParam.Code;
+        IsActive = loadParam.IsActive;
+        CreatedAt = loadParam.CreatedAt;
+        CreatedBy = loadParam.CreatedBy;
+        UpdatedAt = loadParam.UpdatedAt;
+        UpdatedBy = loadParam.UpdatedBy;
+        _countries = loadParam.CountryAdmins;
+    }
 
     public Country(Guid id, string name, string nameFr, string code, string createdBy = "System")
     {

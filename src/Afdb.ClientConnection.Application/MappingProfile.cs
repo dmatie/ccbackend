@@ -39,8 +39,23 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
             .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive));
 
+        CreateMap<CountryAdmin, CountryAdminDto>()
+            .ForMember(dest => dest.UserFirstName, opt => opt.MapFrom(src => src.User != null ? src.User.FirstName:null))
+            .ForMember(dest => dest.UserLastName, opt => opt.MapFrom(src => src.User != null ? src.User.LastName : null))
+            .ForMember(dest => dest.UserEmail, opt => opt.MapFrom(src => src.User != null ? src.User.Email : null))
+            .ForMember(dest => dest.UserFullName, opt => opt.MapFrom(src => src.User != null ? src.User.FullName : null))
+            .ForMember(dest => dest.CounrtyCode, opt => opt.MapFrom(src => src.Country != null ? src.Country.Code : null))
+            .ForMember(dest => dest.CountryNameFr, opt => opt.MapFrom(src => src.Country != null ? src.Country.NameFr : null))
+            .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Country != null ? src.Country.Name : null));
+
         CreateMap<User, UserDto>()
             .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
+            .ForMember(dest => dest.OrganizationName, opt => opt.MapFrom(src => src.OrganizationName));
+
+
+        CreateMap<User, UserWithCountriesDto>()
+            .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
+            .ForMember(dest => dest.Countries, opt => opt.MapFrom(src => src.FullName))
             .ForMember(dest => dest.OrganizationName, opt => opt.MapFrom(src => src.OrganizationName));
 
         CreateMap<AccessRequestProject, AccessRequestProjectDto>()
@@ -117,5 +132,8 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.DisbursementA2, opt => opt.MapFrom(src => src.DisbursementA2))
             .ForMember(dest => dest.DisbursementA3, opt => opt.MapFrom(src => src.DisbursementA3))
             .ForMember(dest => dest.DisbursementB1, opt => opt.MapFrom(src => src.DisbursementB1));
+
+        CreateMap<AzureAdUserDetails, AzureAdUserDetailsDto>();
+
     }
 }

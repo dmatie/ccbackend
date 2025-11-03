@@ -184,10 +184,10 @@ internal sealed class AccessRequestRepository : IAccessRequestRepository
             .CountAsync(cancellationToken);
     }
 
-    public async Task<int> CountProjectsByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
+    public async Task<int> CountProjectsByUserIdAsync(string email, CancellationToken cancellationToken = default)
     {
-        return await _context.AccessRequestProjects
-            .Where(arp => arp.AccessRequest.UserId == userId)
+        return await _context.AccessRequestProject
+            .Where(arp => arp.AccessRequest.Email == email)
             .CountAsync(cancellationToken);
     }
 }

@@ -19,5 +19,5 @@ public interface IAccessRequestRepository
     Task ExecuteInTransactionAsync(Func<Task> action);
     Task<bool> ExistsEmailAsync(string email);
     Task<int> CountByStatusAsync(RequestStatus status, CancellationToken cancellationToken = default);
-    Task<int> CountProjectsByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
+    Task<int> CountProjectsByUserIdAsync(string email, CancellationToken cancellationToken = default);
 }

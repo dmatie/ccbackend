@@ -35,10 +35,11 @@ public sealed class GetInternalDashboardStatsQueryHandler : IRequestHandler<GetI
         var pendingAccessRequests = await _accessRequestRepository.CountByStatusAsync(RequestStatus.Pending, cancellationToken);
         var pendingClaims = await _claimRepository.CountByStatusAsync(ClaimStatus.Submitted, cancellationToken);
         var pendingDisbursements = await _disbursementRepository.CountByStatusAsync(DisbursementStatus.Submitted, cancellationToken);
-        var totalUsers = await _userRepository.CountByRoleAsync(UserRole.Internal, cancellationToken);
+        var totalUsers = await _userRepository.CountByRoleAsync([UserRole.Admin, UserRole.DA, UserRole.DO], cancellationToken);
 
         _logger.LogInformation(
-            "Internal dashboard stats - PendingAccessRequests: {PendingAccessRequests}, PendingClaims: {PendingClaims}, PendingDisbursements: {PendingDisbursements}, TotalUsers: {TotalUsers}",
+            "Internal dashboard stats - PendingAccessRequests: {PendingAccessRequests}, " +
+            "PendingClaims: {PendingClaims}, PendingDisbursements: {PendingDisbursements}, TotalUsers: {TotalUsers}",
             pendingAccessRequests,
             pendingClaims,
             pendingDisbursements,

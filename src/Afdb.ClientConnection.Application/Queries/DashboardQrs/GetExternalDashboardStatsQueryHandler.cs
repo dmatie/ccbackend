@@ -39,12 +39,14 @@ public sealed class GetExternalDashboardStatsQueryHandler : IRequestHandler<GetE
         var user = await _userRepository.GetByEmailAsync(_currentUserService.Email)
             ?? throw new NotFoundException("ERR.General.UserNotFound");
 
-        var activeProjects = await _accessRequestRepository.CountProjectsByUserIdAsync(user.Id, cancellationToken);
-        var activeDisbursementRequests = await _disbursementRepository.CountByUserIdAndStatusAsync(user.Id, DisbursementStatus.Submitted, cancellationToken);
+        var activeProjects = await _accessRequestRepository.CountProjectsByUserIdAsync(user.Email, cancellationToken);
+        var activeDisbursementRequests = await _disbursementRepository
+            .CountByUserIdAndStatusAsync(user.Id, DisbursementStatus.Submitted, cancellationToken);
         var pendingClaims = await _claimRepository.CountByUserIdAndStatusAsync(user.Id, ClaimStatus.Submitted, cancellationToken);
 
         _logger.LogInformation(
-            "External dashboard stats for user {UserId} - ActiveProjects: {ActiveProjects}, ActiveDisbursementRequests: {ActiveDisbursementRequests}, PendingClaims: {PendingClaims}",
+            "External dashboard stats for user {UserId} - ActiveProjects: {ActiveProjects}, " +
+            "ActiveDisbursementRequests: {ActiveDisbursementRequests}, PendingClaims: {PendingClaims}",
             user.Id,
             activeProjects,
             activeDisbursementRequests,

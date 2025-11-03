@@ -42,8 +42,8 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Creat
         }
 
         // Vérifier si l'utilisateur existe déjà par email
-        var existingUserByEmail = await _userRepository.GetByEmailAsync(request.Email);
-        if (existingUserByEmail != null)
+        bool existingUserByEmail = await _userRepository.EmailExistsAsync(request.Email);
+        if (existingUserByEmail)
         {
             throw new ValidationException(new[] {
                 new FluentValidation.Results.ValidationFailure("Email", "ERR.User.EmailAlreadyExists")

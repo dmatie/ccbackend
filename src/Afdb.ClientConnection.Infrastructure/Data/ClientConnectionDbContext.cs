@@ -13,6 +13,7 @@ public class ClientConnectionDbContext(DbContextOptions<ClientConnectionDbContex
 
     public DbSet<UserEntity> Users { get; set; } = null!;
     public DbSet<AccessRequestEntity> AccessRequests { get; set; } = null!;
+    public DbSet<AccessRequestProjectEntity> AccessRequestProject { get; set; } = null!;
     public DbSet<AuditLogEntity> AuditLogs { get; set; } = null!;
     public DbSet<FunctionEntity> Functions { get; set; } = null!;
     public DbSet<CountryAdminEntity> CountryAdmins { get; set; } = null!;

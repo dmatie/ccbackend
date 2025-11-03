@@ -14,4 +14,5 @@ public sealed record UserDto
     public string? EntraIdObjectId { get; init;}
     public string? OrganizationName { get; init;}
     public DateTime CreatedAt { get; init;}
+    public List<CountryAdminDto>? Countries { get; init;} = [];
 }

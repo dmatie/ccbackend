@@ -1,10 +1,13 @@
 using Afdb.ClientConnection.Domain.Common;
+using Afdb.ClientConnection.Domain.EntitiesParams;
 using Afdb.ClientConnection.Domain.Enums;
 
 namespace Afdb.ClientConnection.Domain.Entities;
 
 public sealed class User : AggregateRoot
 {
+    private readonly List<CountryAdmin> _countries = [];
+
     public string Email { get; private set; }
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
@@ -15,6 +18,7 @@ public sealed class User : AggregateRoot
 
     // Navigation properties
     public ICollection<AccessRequest> AccessRequests { get; private set; } = new List<AccessRequest>();
+    public ICollection<CountryAdmin> Countries => _countries;
 
     private User() { } // For EF Core
 
@@ -40,6 +44,40 @@ public sealed class User : AggregateRoot
         OrganizationName = organizationName;
         CreatedBy = createdBy;
     }
+
+    public User(UserNewParam newParam)
+    {
+        Email = newParam.Email;
+        FirstName = newParam.FirstName;
+        LastName = newParam.LastName;
+        Role = newParam.Role;
+        IsActive = true;
+        EntraIdObjectId = newParam.EntraIdObjectId;
+        OrganizationName = newParam.OrganizationName;
+        CreatedBy = newParam.CreatedBy;
+        CreatedAt = DateTime.UtcNow;
+        _countries = newParam.Countries ?? [];
+    }
+
+    public User(UserLoadParam loadParam)
+    {
+        Id = loadParam.Id;
+        Email = loadParam.Email;
+        FirstName = loadParam.FirstName;
+        LastName = loadParam.LastName;
+        Role = loadParam.Role;
+        IsActive = loadParam.IsActive;
+        EntraIdObjectId = loadParam.EntraIdObjectId;
+        OrganizationName = loadParam.OrganizationName;
+        CreatedBy = loadParam.CreatedBy;
+        CreatedAt = DateTime.UtcNow;
+        _countries = loadParam.Countries ?? [];
+        CreatedAt = loadParam.CreatedAt;
+        CreatedBy = loadParam.CreatedBy;
+        UpdatedAt = loadParam.UpdatedAt;
+        UpdatedBy = loadParam.UpdatedBy;
+    }
+
 
     // Constructor pour utilisateurs externes (après création du compte invité)
     public static User CreateExternalUser(string email, string firstName, string lastName,

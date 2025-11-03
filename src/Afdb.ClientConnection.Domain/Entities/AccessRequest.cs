@@ -28,7 +28,6 @@ public sealed class AccessRequest : AggregateRoot
     public Guid? BusinessProfileId { get; private set; }
     public Guid? FinancingTypeId { get; private set; }
 
-
     public string[] ApproversEmail { get; private set; }
 
     // Navigation properties
@@ -42,7 +41,7 @@ public sealed class AccessRequest : AggregateRoot
 
     private AccessRequest() { } // For EF Core
 
-    public AccessRequest( AccessRequestNewParam newParam )
+    public AccessRequest(AccessRequestNewParam newParam)
     {
         if (string.IsNullOrWhiteSpace(newParam.Email))
             throw new ArgumentException("Email cannot be empty");
@@ -98,8 +97,12 @@ public sealed class AccessRequest : AggregateRoot
         Country = loadParam.Country;
         BusinessProfile = loadParam.BusinessProfile;
         FinancingType = loadParam.FinancingType;
-        Status = RequestStatus.Pending;
-        RequestedDate = DateTime.UtcNow;
+        Status = loadParam.Status;
+        ProcessedById = loadParam.ProcessedById;
+        ProcessedDate = loadParam.ProcessedDate;
+        ProcessingComments = loadParam.ProcessingComments;
+        ProcessedBy = loadParam.ProcessedBy;
+        RequestedDate = loadParam.RequestedDate;
         CreatedBy = loadParam.CreatedBy;
         ApproversEmail = loadParam.ApproversEmail ?? [];
         _projects = loadParam.Projects;
@@ -117,7 +120,7 @@ public sealed class AccessRequest : AggregateRoot
         SetUpdated(updatedBy);
 
         // Add domain event for guest account creation
-        if(isFromApplication)
+        if (isFromApplication)
             AddDomainEvent(new AccessRequestApprovedEvent(Id, Email, FirstName, LastName));
     }
 
@@ -136,7 +139,7 @@ public sealed class AccessRequest : AggregateRoot
         SetUpdated(updatedBy);
 
         // Add domain event for rejection notification
-        if(isFromApplication)
+        if (isFromApplication)
             AddDomainEvent(new AccessRequestRejectedEvent(Id, Email, FirstName, LastName, rejectionReason));
     }
 
@@ -180,7 +183,7 @@ public sealed class AccessRequest : AggregateRoot
         SetUpdated(updatedBy);
     }
 
-    public void Update(AccessRequestNewParam updateParam )
+    public void Update(AccessRequestNewParam updateParam)
     {
         if (!string.IsNullOrWhiteSpace(updateParam.FirstName))
             FirstName = updateParam.FirstName;
@@ -205,7 +208,6 @@ public sealed class AccessRequest : AggregateRoot
         // Add domain event for Teams approval process with actual entity names
         AddDomainEvent(new AccessRequestCreatedEvent(Id, Email, FirstName, LastName,
              Function?.Name, BusinessProfile?.Name, Country?.Name, FinancingType?.Name, Status.ToString(), ApproversEmail));
-
     }
 
     public string FullName => $"{FirstName} {LastName}";

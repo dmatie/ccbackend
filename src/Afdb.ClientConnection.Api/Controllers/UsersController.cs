@@ -15,6 +15,19 @@ public class UsersController(IMediator mediator) : ControllerBase
     private readonly IMediator _mediator = mediator;
 
     /// <summary>
+    /// Lister les utilisateurs Interneuniquemet (Admin uniquement)
+    /// </summary>
+    [HttpGet("InternalUsers")]
+    [Authorize(Policy = "AdminOnly")]
+    public async Task<ActionResult<IEnumerable<UserDto>>> GetInternalUsers(
+        [FromQuery] GetInternaUsersQuery query, CancellationToken cancellationToken = default)
+    {
+        var result = await _mediator.Send(query, cancellationToken);
+        return Ok(result);
+    }
+
+
+    /// <summary>
     /// Lister les utilisateurs avec filtres (Admin uniquement)
     /// </summary>
     [HttpGet]
@@ -98,34 +111,19 @@ public class UsersController(IMediator mediator) : ControllerBase
     /// <summary>
     /// Enregistrer un utilisateur avec assignation de pays (Admin uniquement)
     /// </summary>
-    [HttpPost("register-with-countries")]
+    [HttpPost("AddInternal")]
     [Authorize(Policy = "AdminOnly")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<UserWithCountriesDto>> RegisterUserWithCountries(
-        [FromBody] CreateUserWithCountriesRequest request,
+    public async Task<ActionResult<CreateUserInternalUserResponse>> RegisterUserWithCountries(
+        [FromBody] CreateUserInternalUserCommand command,
         CancellationToken cancellationToken = default)
     {
-        if (!Enum.TryParse<UserRole>(request.Role, true, out var role))
-        {
-            return BadRequest(new { error = $"Invalid role: {request.Role}. Must be Admin, DO, or DA" });
-        }
-
-        var command = new CreateUserWithCountriesCommand
-        {
-            Email = request.Email,
-            Role = role,
-            CountryIds = request.CountryIds
-        };
-
         var result = await _mediator.Send(command, cancellationToken);
 
-        return CreatedAtAction(
-            nameof(GetUserByEmail),
-            new { email = result.Email },
-            result);
+        return Ok(result);
     }
 }

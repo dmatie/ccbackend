@@ -20,6 +20,8 @@ public static class DependencyInjection
         // Configuration Settings
         services.Configure<SharePointSettings>(configuration.GetSection(SharePointSettings.SectionName));
         services.Configure<FileUploadSettings>(configuration.GetSection(FileUploadSettings.SectionName));
+        services.Configure<AzureAdSettings>(configuration.GetSection(AzureAdSettings.SectionName));
+        services.Configure<GraphSettings>(configuration.GetSection(GraphSettings.SectionName));
 
         // Database
         services.AddDbContext<ClientConnectionDbContext>((serviceProvider, options) =>

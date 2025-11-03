@@ -152,14 +152,14 @@ internal sealed class ClaimRepository : IClaimRepository
     public async Task<int> CountByStatusAsync(ClaimStatus status, CancellationToken cancellationToken = default)
     {
         return await _context.Claims
-            .Where(c => c.Status == (int)status)
+            .Where(c => c.Status == status)
             .CountAsync(cancellationToken);
     }
 
     public async Task<int> CountByUserIdAndStatusAsync(Guid userId, ClaimStatus status, CancellationToken cancellationToken = default)
     {
         return await _context.Claims
-            .Where(c => c.CreatedByUserId == userId && c.Status == (int)status)
+            .Where(c => c.UserId == userId && c.Status == status)
             .CountAsync(cancellationToken);
     }
 }
