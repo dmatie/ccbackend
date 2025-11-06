@@ -260,4 +260,49 @@ internal sealed class PowerAutomateService : IPowerAutomateService
             throw new InvalidOperationException("An error occurred while sending notification to PowerAutomate", ex);
         }
     }
+
+    public async Task TriggerNotificationFlowAsync(object payload, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(payload);
+
+        var url = _configuration["PowerAutomate:NotificationFlowUrl"];
+
+        if (string.IsNullOrWhiteSpace(url))
+        {
+            _logger.LogWarning("PowerAutomate:NotificationFlowUrl is not configured. Skipping notification.");
+            return;
+        }
+
+        try
+        {
+            _logger.LogInformation("Triggering PowerAutomate notification flow");
+
+            var response = await _httpClient.PostAsJsonAsync(url, payload, _jsonOptions, cancellationToken);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync(cancellationToken);
+                _logger.LogError(
+                    "PowerAutomate notification flow failed. StatusCode: {StatusCode}, Error: {Error}",
+                    response.StatusCode,
+                    errorContent);
+            }
+            else
+            {
+                _logger.LogInformation("Successfully triggered PowerAutomate notification flow");
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogError(
+                ex,
+                "HTTP error while triggering PowerAutomate notification flow");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(
+                ex,
+                "Unexpected error while triggering PowerAutomate notification flow");
+        }
+    }
 }

@@ -7,4 +7,5 @@ public interface IPowerAutomateService
     Task NotifyClaimCreatedAsync(ClaimCreatedEvent claimCreatedEvent);
     Task NotifyClaimResponseAddedAsync(ClaimProcessAddedEvent claimResponseAddedEvent);
     Task NotifyOtpCreatedAsync(string customerEmail, string code);
+    Task TriggerNotificationFlowAsync(object payload, CancellationToken cancellationToken = default);
 }
