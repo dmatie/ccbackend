@@ -9,12 +9,12 @@ public interface IClaimRepository
     Task<Claim> AddAsync(Claim claim);
     Task<bool> ExistsAsync(Guid id);
     Task<IEnumerable<Claim>?> GetAllAsync(UserContext userContext);
-    Task<IEnumerable<Claim>?> GetAllByStatusAsync(ClaimStatus? status);
+    Task<IEnumerable<Claim>?> GetAllByStatusAsync(ClaimStatus? status, UserContext userContext);
     Task<Claim?> GetByIdAsync(Guid id);
     Task<IEnumerable<Claim>?> GetByUserIdAsync(Guid userId);
     Task<IEnumerable<Claim>?> GetByUserIdAndStatusAsync(Guid userId, ClaimStatus? status);
     Task UpdateAsync(Claim claim);
-    Task<int> CountByStatusAsync(ClaimStatus status, CancellationToken cancellationToken = default);
-    Task<int> CountByStatusAsync(UserContext userContext, ClaimStatus status, CancellationToken cancellationToken = default);
+    Task<int> CountByStatusAsync(List<ClaimStatus> status, CancellationToken cancellationToken = default);
+    Task<int> CountByStatusAsync(UserContext userContext, List<ClaimStatus> status, CancellationToken cancellationToken = default);
     Task<int> CountByUserIdAndStatusAsync(Guid userId, ClaimStatus status, CancellationToken cancellationToken = default);
 }

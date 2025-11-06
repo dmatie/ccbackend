@@ -9,14 +9,18 @@ namespace Afdb.ClientConnection.Application.Queries.AccessRequestQrs;
 public sealed class GetAccessRequestsQueryHandler(
     IAccessRequestRepository accessRequestRepository,
     ICurrentUserService currentUserService,
+    IUserContextService userContextService,
     IMapper mapper) : IRequestHandler<GetAccessRequestsQuery, GetAccessRequestsResponse>
 {
     private readonly IAccessRequestRepository _accessRequestRepository = accessRequestRepository;
     private readonly ICurrentUserService _currentUserService = currentUserService;
     private readonly IMapper _mapper = mapper;
+    private readonly IUserContextService _userContextService = userContextService;
 
     public async Task<GetAccessRequestsResponse> Handle(GetAccessRequestsQuery request, CancellationToken cancellationToken)
     {
+        var userContext = _userContextService.GetUserContext();
+
         // Seuls les Admin et DO peuvent lister les demandes
         if (!_currentUserService.IsInRole("Admin") && !_currentUserService.IsInRole("DO"))
         {
@@ -28,11 +32,11 @@ public sealed class GetAccessRequestsQueryHandler(
         // Filtrer par statut si spécifié
         if (request.Status.HasValue)
         {
-            accessRequests = await _accessRequestRepository.GetByStatusAsync(request.Status.Value);
+            accessRequests = await _accessRequestRepository.GetByStatusAsync(userContext, request.Status.Value);
         }
         else
         {
-            accessRequests = await _accessRequestRepository.GetAllAsync();
+            accessRequests = await _accessRequestRepository.GetAllAsync(userContext);
         }
 
         // Filtrer par email si spécifié

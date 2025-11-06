@@ -52,6 +52,10 @@ internal sealed class CountryAdminRepository : ICountryAdminRepository
     public async Task<bool> ExistsAsync(Guid userId, Guid countryId) =>
         await _context.CountryAdmins.AnyAsync(c => c.UserId == userId && c.CountryId == countryId);
 
+    public async Task<bool> ExistsAsync(Guid userId, List<Guid> countryIds) =>
+        await _context.CountryAdmins.AnyAsync(c => c.UserId == userId && countryIds.Contains(c.CountryId));
+
+
     public async Task<CountryAdmin> AddAsync(CountryAdmin countryAdmin, CancellationToken cancellationToken = default)
     {
         var entity = EntityMappings.MapCountryAdminToEntity(countryAdmin);

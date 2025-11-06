@@ -39,6 +39,13 @@ public sealed class CreateUserInternalUserCommandHandler : IRequestHandler<Creat
 
     public async Task<CreateUserInternalUserResponse> Handle(CreateUserInternalUserCommand command, CancellationToken cancellationToken)
     {
+
+        // Vérifier que l'utilisateur actuel peut approuver
+        if (!_currentUserService.IsInRole("Admin"))
+        {
+            throw new ForbiddenAccessException("ERR.General.NotAuthorize");
+        }
+
         var currentUser = _currentUserService.UserId ?? "System";
 
         var existingUser = await _userRepository.GetByEmailAsync(command.Email);
@@ -81,7 +88,7 @@ public sealed class CreateUserInternalUserCommandHandler : IRequestHandler<Creat
 
         var azureAdUser = await _graphService.GetAzureAdUserDetailsAsync(command.Email, cancellationToken) ??
                throw new ValidationException(new[] {
-                    new FluentValidation.Results.ValidationFailure("Email", "ERR.User.EmainNotExistInAd")
+                    new FluentValidation.Results.ValidationFailure("Email", "ERR.User.EmailNotExistInAd")
                 });
 
 

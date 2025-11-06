@@ -1,3 +1,4 @@
+using Afdb.ClientConnection.Application.Common.Models;
 using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Domain.Enums;
 
@@ -8,9 +9,9 @@ public interface IAccessRequestRepository
     Task<AccessRequest?> GetByIdAsync(Guid id);
     Task<AccessRequest?> GetByEmailAsync(string email);
     Task<AccessRequest?> GetByEmailAndStatusAsync(string email, RequestStatus status);
-    Task<IEnumerable<AccessRequest>> GetAllAsync();
-    Task<IEnumerable<AccessRequest>> GetByStatusAsync(RequestStatus status);
-    Task<IEnumerable<AccessRequest>> GetPendingRequestsAsync();
+    Task<IEnumerable<AccessRequest>> GetAllAsync(UserContext userContext);
+    Task<IEnumerable<AccessRequest>> GetByStatusAsync(UserContext userContext, RequestStatus status);
+    Task<IEnumerable<AccessRequest>> GetPendingRequestsAsync(UserContext userContext);
     Task<AccessRequest> AddAsync(AccessRequest accessRequest);
     Task UpdateAsync(AccessRequest accessRequest);
     Task<bool> ExistsAsync(Guid id);
@@ -19,5 +20,6 @@ public interface IAccessRequestRepository
     Task ExecuteInTransactionAsync(Func<Task> action);
     Task<bool> ExistsEmailAsync(string email);
     Task<int> CountByStatusAsync(RequestStatus status, CancellationToken cancellationToken = default);
+    Task<int> CountByStatusAsync(UserContext userContext, RequestStatus status, CancellationToken cancellationToken = default);
     Task<int> CountProjectsByUserIdAsync(string email, CancellationToken cancellationToken = default);
 }

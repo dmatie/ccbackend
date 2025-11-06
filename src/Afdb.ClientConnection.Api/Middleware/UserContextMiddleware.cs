@@ -31,27 +31,20 @@ public sealed class UserContextMiddleware
 
         try
         {
-            var userIdString = currentUserService.UserId;
+            string email = currentUserService.Email;
 
-            if (string.IsNullOrEmpty(userIdString))
+            if (string.IsNullOrEmpty(email))
             {
                 _logger.LogWarning("User authenticated but UserId is null");
                 await _next(context);
                 return;
             }
 
-            if (!Guid.TryParse(userIdString, out var userId))
-            {
-                _logger.LogWarning("Invalid UserId format: {UserId}", userIdString);
-                await _next(context);
-                return;
-            }
-
-            var user = await userRepository.GetByIdAsync(userId);
+            var user = await userRepository.GetByEmailAsync(email);
 
             if (user == null)
             {
-                _logger.LogWarning("User not found in database: {UserId}", userId);
+                _logger.LogWarning("User not found in database: {UserId}", email);
                 await _next(context);
                 return;
             }
@@ -60,7 +53,7 @@ public sealed class UserContextMiddleware
             if (user.RequiresCountryAssignment)
             {
                 var countryAdmins = await countryAdminRepository
-                    .GetByUserIdAsync(userId, context.RequestAborted);
+                    .GetByUserIdAsync(user.Id, context.RequestAborted);
 
                 if (countryAdmins != null)
                 {
@@ -73,7 +66,7 @@ public sealed class UserContextMiddleware
                 _logger.LogInformation(
                     "Loaded {CountryCount} countries for user {UserId} with role {Role}",
                     countryIds.Count,
-                    userId,
+                    user.Id,
                     user.Role);
             }
 

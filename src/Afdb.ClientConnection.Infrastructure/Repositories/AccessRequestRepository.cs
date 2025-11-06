@@ -1,4 +1,5 @@
 using Afdb.ClientConnection.Application.Common.Interfaces;
+using Afdb.ClientConnection.Application.Common.Models;
 using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Domain.Enums;
 using Afdb.ClientConnection.Infrastructure.Data;
@@ -63,22 +64,32 @@ internal sealed class AccessRequestRepository : IAccessRequestRepository
     }
 
 
-    public async Task<IEnumerable<AccessRequest>> GetAllAsync()
+    public async Task<IEnumerable<AccessRequest>> GetAllAsync(UserContext userContext)
     {
-        var entities = await _context.AccessRequests
+
+
+        var query = _context.AccessRequests
             .Include(ar => ar.ProcessedBy)
             .Include(ar => ar.Function)
             .Include(ar => ar.Country)
             .Include(ar => ar.BusinessProfile)
             .Include(ar => ar.FinancingType)
             .Include(ar => ar.Projects)
+            .AsQueryable();
+
+        if (userContext.RequiresCountryFilter)
+        {
+            query = query.Where(c => c.CountryEntityId != null && userContext.CountryIds.Contains(c.CountryEntityId.Value));
+        }
+
+        var entities = await query
             .OrderByDescending(ar => ar.CreatedAt)
             .ToListAsync();
 
         return entities.Select(DomainMappings.MapToDomain);
     }
 
-    public async Task<IEnumerable<AccessRequest>> GetByStatusAsync(RequestStatus status)
+    public async Task<IEnumerable<AccessRequest>> GetByStatusAsync(UserContext userContext, RequestStatus status)
     {
         var entities = await _context.AccessRequests
             .Include(ar => ar.ProcessedBy)
@@ -93,9 +104,9 @@ internal sealed class AccessRequestRepository : IAccessRequestRepository
         return entities.Select(DomainMappings.MapToDomain);
     }
 
-    public async Task<IEnumerable<AccessRequest>> GetPendingRequestsAsync()
+    public async Task<IEnumerable<AccessRequest>> GetPendingRequestsAsync(UserContext userContext)
     {
-        return await GetByStatusAsync(RequestStatus.Pending);
+        return await GetByStatusAsync(userContext, RequestStatus.Pending);
     }
 
     public async Task<AccessRequest> AddAsync(AccessRequest accessRequest)
@@ -106,7 +117,7 @@ internal sealed class AccessRequestRepository : IAccessRequestRepository
 
         _context.AccessRequests.Add(entity);
         await _context.SaveChangesAsync();
-        
+
         // Charger l'entité avec les relations pour mettre à jour l'événement
         var entityWithRelations = await _context.AccessRequests
             .Include(ar => ar.Function)
@@ -115,7 +126,7 @@ internal sealed class AccessRequestRepository : IAccessRequestRepository
             .Include(ar => ar.FinancingType)
             .Include(ar => ar.Projects)
             .FirstOrDefaultAsync(ar => ar.Id == entity.Id);
-            
+
         if (entityWithRelations != null)
         {
             var domainEntity = DomainMappings.MapToDomain(entityWithRelations);
@@ -129,7 +140,7 @@ internal sealed class AccessRequestRepository : IAccessRequestRepository
     {
         var entity = await _context.AccessRequests.Include(ar => ar.Projects)
             .FirstOrDefaultAsync(ar => ar.Id == accessRequest.Id);
-        
+
         if (entity != null)
         {
             entity.Projects.Clear();
@@ -182,6 +193,18 @@ internal sealed class AccessRequestRepository : IAccessRequestRepository
         return await _context.AccessRequests
             .Where(ar => ar.Status == status)
             .CountAsync(cancellationToken);
+    }
+
+    public async Task<int> CountByStatusAsync(UserContext userContext, RequestStatus status, CancellationToken cancellationToken = default)
+    {
+        var query = _context.AccessRequests
+            .Where(ar => ar.Status == status)
+            .AsQueryable();
+        if (userContext.RequiresCountryFilter)
+        {
+            query = query.Where(c => c.CountryEntityId != null && userContext.CountryIds.Contains(c.CountryEntityId.Value));
+        }
+        return await query.CountAsync(cancellationToken);
     }
 
     public async Task<int> CountProjectsByUserIdAsync(string email, CancellationToken cancellationToken = default)

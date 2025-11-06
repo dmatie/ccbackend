@@ -124,6 +124,28 @@ public sealed class User : AggregateRoot
         SetUpdated(updatedBy);
     }
 
+    public void AddCountries(List<CountryAdmin> countries, string updateBy)
+    {
+        ArgumentNullException.ThrowIfNull(countries);
+
+        List<Guid> existingCountryIds = [.. _countries.Select(ca => ca.CountryId)];
+
+        if(countries.Any(c=> existingCountryIds.Contains(c.CountryId) ))
+            throw new InvalidOperationException("Country already assigned to user.");
+
+        _countries.AddRange(countries);
+        SetUpdated(updateBy); 
+    }
+
+    public void RemoveCountry(Guid countryAdminId, string updateBy)
+    {
+        var countryToRemove = _countries.FirstOrDefault(ca => ca.Id == countryAdminId)
+            ?? throw new InvalidOperationException("Country not assigned to user.");
+
+        _countries.Remove(countryToRemove);
+        SetUpdated(updateBy); 
+    }
+
     public string FullName => $"{FirstName} {LastName}";
     public bool IsInternal => Role != UserRole.ExternalUser;
     public bool IsExternal => Role == UserRole.ExternalUser;

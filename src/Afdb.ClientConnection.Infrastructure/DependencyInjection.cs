@@ -64,6 +64,14 @@ public static class DependencyInjection
             client.DefaultRequestHeaders.Add("Accept", "application/json");
         });
 
+        // HttpClient for PowerAutomateService
+        services.AddHttpClient<ISapService, SapService>(client =>
+        {
+            client.Timeout = TimeSpan.FromSeconds(30);
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+        });
+
+
 
         // Service Bus
         services.AddScoped<ServiceBusClient>(provider =>

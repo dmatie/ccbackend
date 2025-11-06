@@ -1,5 +1,6 @@
 ﻿using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Application.DTOs;
+using Afdb.ClientConnection.Domain.Entities;
 using System.Text.Json;
 
 namespace Afdb.ClientConnection.Infrastructure.Services;
@@ -29,9 +30,13 @@ internal sealed class SapServiceMock : ISapService
     public Task<IEnumerable<ProjectDto>> GetProjectsAsync(CancellationToken cancellationToken = default)
         => Task.FromResult<IEnumerable<ProjectDto>>(_projects);
 
-    public Task<ProjectDto?> GetProjectAsync(string sapId, CancellationToken cancellationToken = default)
-        => Task.FromResult(_projects.FirstOrDefault(p => p.SapCode == sapId));
-
-    public Task<IEnumerable<ProjectDto>> GetProjectsByCountryAsync(string countryCode, CancellationToken cancellationToken = default)
-        => Task.FromResult(_projects.Where(p => string.Equals(p.CountryCode, countryCode, StringComparison.OrdinalIgnoreCase)));
+    public Task<List<SapProjectData>> GetProjectsByCountryAsync(string countryCode, CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(_projects.Select(p => new SapProjectData {
+            projectDescription = p.ProjectName,
+            ProjectCode = p.SapCode,
+            ProjectTitle = p.ProjectName,
+            CountryCode = p.CountryCode })
+         .Where(p => string.Equals(p.CountryCode, countryCode, StringComparison.OrdinalIgnoreCase)).ToList());
+    }
 }

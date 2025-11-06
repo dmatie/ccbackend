@@ -5,6 +5,7 @@ using Afdb.ClientConnection.Domain.Enums;
 using Afdb.ClientConnection.Infrastructure.Data;
 using Afdb.ClientConnection.Infrastructure.Data.Mapping;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Afdb.ClientConnection.Infrastructure.Repositories;
 
@@ -53,8 +54,7 @@ internal sealed class ClaimRepository : IClaimRepository
         return [.. entities.Select(DomainMappings.MapClaimToDomain)];
     }
 
-
-    public async Task<IEnumerable<Claim>?> GetAllByStatusAsync(ClaimStatus? status)
+    public async Task<IEnumerable<Claim>?> GetAllByStatusAsync(ClaimStatus? status, UserContext userContext)
     {
 
         var query = _context.Claims
@@ -66,6 +66,11 @@ internal sealed class ClaimRepository : IClaimRepository
 
         if (status.HasValue)
             query = query.Where(c => c.Status == status.Value);
+
+        if (userContext.RequiresCountryFilter)
+        {
+            query = query.Where(c => userContext.CountryIds.Contains(c.CountryId));
+        }
 
         var entities = await query
             .OrderByDescending(c => c.CreatedAt)
@@ -158,17 +163,17 @@ internal sealed class ClaimRepository : IClaimRepository
 
     public async Task<bool> ExistsAsync(Guid id) => await _context.Claims.AnyAsync(c => c.Id == id);
 
-    public async Task<int> CountByStatusAsync(ClaimStatus status, CancellationToken cancellationToken = default)
+    public async Task<int> CountByStatusAsync(List<ClaimStatus> status, CancellationToken cancellationToken = default)
     {
         return await _context.Claims
-            .Where(c => c.Status == status)
+            .Where(c => status.Contains(c.Status))
             .CountAsync(cancellationToken);
     }
 
-    public async Task<int> CountByStatusAsync(UserContext userContext, ClaimStatus status, CancellationToken cancellationToken = default)
+    public async Task<int> CountByStatusAsync(UserContext userContext, List<ClaimStatus> status, CancellationToken cancellationToken = default)
     {
         var query = _context.Claims
-            .Where(c => c.Status == status);
+            .Where(c => status.Contains(c.Status));
 
         if (userContext.RequiresCountryFilter)
         {

@@ -19,5 +19,10 @@ public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
 
         builder.Property(e => e.Role)
             .HasConversion<string>();
+
+        builder.HasMany(e => e.CountryAdmins)
+            .WithOne(ca => ca.User)
+            .HasForeignKey(ca => ca.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

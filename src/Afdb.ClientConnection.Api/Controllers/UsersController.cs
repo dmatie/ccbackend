@@ -1,7 +1,9 @@
 using Afdb.ClientConnection.Application.Commands.UserCmd;
 using Afdb.ClientConnection.Application.DTOs;
 using Afdb.ClientConnection.Application.Queries.UserQrs;
+using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Domain.Enums;
+using Humanizer;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +15,20 @@ namespace Afdb.ClientConnection.Api.Controllers;
 public class UsersController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
+
+    /// <summary>
+    /// Récupérer l'utilisateur par son Identifiant BD
+    /// </summary>
+    [HttpGet("{id}")]
+    [Authorize("AdminOnly")]
+    public async Task<ActionResult<GetUserResponse>> GetUser(
+        Guid id, CancellationToken cancellationToken = default)
+    {
+        var query = new GetUserQuery { Id = id };
+        var result = await _mediator.Send(query, cancellationToken);
+        return Ok(result);
+    }
+
 
     /// <summary>
     /// Lister les utilisateurs Interneuniquemet (Admin uniquement)
@@ -113,17 +129,41 @@ public class UsersController(IMediator mediator) : ControllerBase
     /// </summary>
     [HttpPost("AddInternal")]
     [Authorize(Policy = "AdminOnly")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<CreateUserInternalUserResponse>> RegisterUserWithCountries(
         [FromBody] CreateUserInternalUserCommand command,
         CancellationToken cancellationToken = default)
     {
         var result = await _mediator.Send(command, cancellationToken);
 
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Désactiver un utilisateur (Admin uniquement)
+    /// </summary>
+    [HttpPost("{id}/deactivate")]
+    [Authorize(Policy = "AdminOnly")]
+    public async Task<ActionResult<bool>> DeactivateUser([FromRoute] Guid id)
+    {
+        // Récupère l'utilisateur courant pour UpdatedBy
+        var result = await _mediator.Send(new DeactivateUserCommand(id));
+        return Ok(result);
+    }
+
+    [HttpPost("{id}/addCountries")]
+    [Authorize(Policy = "AdminOnly")]
+    public async Task<ActionResult<bool>> AddCountriesToUser([FromRoute]Guid id, [FromBody] AddCountryToUserCommand command)
+    {
+        var result = await _mediator.Send(command);
+       return Ok(result);
+    }
+
+    [HttpDelete("{id}/countries/{countryId}")]
+    [Authorize(Policy = "AdminOnly")]
+    public async Task<ActionResult<bool>> RemoveCountryFromUser([FromRoute]Guid id, [FromRoute] Guid countryId)
+    {
+        var command = new RemoveCountryFromUserCommand(id, countryId);
+        var result = await _mediator.Send(command);
         return Ok(result);
     }
 }

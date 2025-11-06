@@ -58,16 +58,31 @@ internal partial class EntityMappings
         entity.UpdatedAt = source.UpdatedAt;
         entity.UpdatedBy = source.UpdatedBy;
 
-        if (source.Countries.Count > 0)
+        // Synchronisation des pays (CountryAdmins)
+        var sourceIds = source.Countries.Select(ca => ca.Id).ToHashSet();
+        var entityIds = entity.CountryAdmins.Select(ca => ca.Id).ToHashSet();
+
+        // Suppression des pays retirés
+        var toRemove = entity.CountryAdmins.Where(ca => !sourceIds.Contains(ca.Id)).ToList();
+        foreach (var item in toRemove)
         {
-            var existingIds = entity.CountryAdmins.Select(p => p.Id).ToHashSet();
+            entity.CountryAdmins.Remove(item);
+        }
 
-            var itemsToAdd = source.Countries.Where(item => !existingIds.Contains(item.Id)).ToList();
-
-            foreach (var item in itemsToAdd)
+        // Ajout des nouveaux pays
+        var toAdd = source.Countries.Where(ca => !entityIds.Contains(ca.Id)).ToList();
+        foreach (var item in toAdd)
+        {
+            entity.CountryAdmins.Add(new()
             {
-                entity.CountryAdmins.Add(MapCountryAdminToEntity(item));
-            }
+                CountryId = item.CountryId,
+                UserId = source.Id,
+                IsActive = item.IsActive,
+                CreatedAt = item.CreatedAt,
+                CreatedBy = item.CreatedBy,
+                UpdatedAt = item.UpdatedAt,
+                UpdatedBy = item.UpdatedBy
+            });
         }
 
         entity.DomainEvents = source.DomainEvents.ToList();

@@ -17,8 +17,8 @@ public sealed class GetAllClaimsQueryHandler : IRequestHandler<GetAllClaimsQuery
         IMapper mapper)
     {
         _claimRepository = claimRepository;
-        _userContextService = userContextService;
         _mapper = mapper;
+        _userContextService = userContextService;
     }
 
     public async Task<GetAllClaimsResponse> Handle(GetAllClaimsQuery request, CancellationToken cancellationToken)
@@ -26,9 +26,8 @@ public sealed class GetAllClaimsQueryHandler : IRequestHandler<GetAllClaimsQuery
         var userContext = _userContextService.GetUserContext();
 
         var claims = request.Status.HasValue
-            ? await _claimRepository.GetAllByStatusAsync(request.Status.Value)
+            ? await _claimRepository.GetAllByStatusAsync(request.Status.Value, userContext)
             : await _claimRepository.GetAllAsync(userContext);
-
 
         List<ClaimDto> result = new();
 

@@ -13,16 +13,14 @@ namespace Afdb.ClientConnection.Infrastructure.Repositories;
 internal sealed class UserRepository : IUserRepository
 {
     private readonly ClientConnectionDbContext _context;
-    private readonly IMapper _mapper;
     private ILogger<UserRepository> _logger;
     private readonly IGraphService _graphService;
 
 
     public UserRepository(ClientConnectionDbContext context, 
-        IMapper mapper, IGraphService graphService, ILogger<UserRepository> logger)
+        IGraphService graphService, ILogger<UserRepository> logger)
     {
         _context = context;
-        _mapper = mapper;
         _graphService = graphService;
         _logger = logger;
     }
@@ -30,15 +28,31 @@ internal sealed class UserRepository : IUserRepository
     public async Task<User?> GetByIdAsync(Guid id)
     {
         var entity = await _context.Users
+            .Include(u => u.CountryAdmins).ThenInclude(ca => ca.Country)
             .FirstOrDefaultAsync(u => u.Id == id);
 
-        return entity == null ? null : DomainMappings.MapUserToDomain(entity);
+        if (entity == null) 
+        {
+            return null;
+        }
+
+        User user = DomainMappings.MapUserToDomain(entity);
+        
+        foreach (var countryAdmin in user.Countries)
+        {
+            CountryAdminEntity? entityCountry = entity.CountryAdmins.FirstOrDefault(c=>c.CountryId==countryAdmin.CountryId);
+            if (entityCountry != null)
+                countryAdmin.SetCountry(DomainMappings.MapCountry(entityCountry.Country));
+        }
+
+
+        return user;
     }
 
     public async Task<User?> GetByEmailAsync(string email)
     {
         var entity = await _context.Users
-            .FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
+            .FirstOrDefaultAsync(u => u.Email.ToLower().Equals(email.ToLower()));
 
         return entity == null ? null : DomainMappings.MapUserToDomain(entity);
     }
@@ -77,19 +91,12 @@ internal sealed class UserRepository : IUserRepository
             .Where(u => u.IsActive && roles.Contains(u.Role))
             .ToListAsync();
 
-        List<User> users = new();
-        foreach (var entity in entities)
-        {
-            var user = DomainMappings.MapUserToDomain(entity);
-            users.Add(user);
-        }
-
         return entities.Select(DomainMappings.MapUserToDomain);
     }
 
     public async Task<User> AddAsync(User user, CancellationToken cancellationToken = default)
     {
-        var entity = MapToEntity(user);
+        var entity = EntityMappings.MapUserToEntity(user);
         _context.Users.Add(entity);
         await _context.SaveChangesAsync(cancellationToken);
         return DomainMappings.MapUserToDomain(entity);
@@ -132,10 +139,14 @@ internal sealed class UserRepository : IUserRepository
 
     public async Task UpdateAsync(User user)
     {
-        var entity = await _context.Users.FindAsync(user.Id);
+        var entity = await _context.Users
+            .Include(u => u.CountryAdmins)
+            .AsTracking()
+            .FirstOrDefaultAsync(u=>u.Id== user.Id);
+
         if (entity != null)
         {
-            UpdateEntityFromDomain(entity, user);
+            EntityMappings.UpdateUserEntityFromDomain(entity, user);
             await _context.SaveChangesAsync();
         }
     }
@@ -150,42 +161,10 @@ internal sealed class UserRepository : IUserRepository
         return await _context.Users.AnyAsync(u => u.Email.ToLower() == email.ToLower());
     }
 
-    private static UserEntity MapToEntity(User user)
-    {
-        return new UserEntity
-        {
-            Id = user.Id,
-            Email = user.Email,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            Role = user.Role,
-            IsActive = user.IsActive,
-            EntraIdObjectId = user.EntraIdObjectId,
-            OrganizationName = user.OrganizationName,
-            CreatedAt = user.CreatedAt,
-            CreatedBy = user.CreatedBy,
-            UpdatedAt = user.UpdatedAt,
-            UpdatedBy = user.UpdatedBy
-        };
-    }
-
     public async Task<int> CountByRoleAsync(List<UserRole> roles, CancellationToken cancellationToken = default)
     {
         return await _context.Users
             .Where(u => roles.Contains(u.Role))
             .CountAsync(cancellationToken);
-    }
-
-    private static void UpdateEntityFromDomain(UserEntity entity, User user)
-    {
-        entity.Email = user.Email;
-        entity.FirstName = user.FirstName;
-        entity.LastName = user.LastName;
-        entity.Role = user.Role;
-        entity.IsActive = user.IsActive;
-        entity.EntraIdObjectId = user.EntraIdObjectId;
-        entity.OrganizationName = user.OrganizationName;
-        entity.UpdatedAt = user.UpdatedAt;
-        entity.UpdatedBy = user.UpdatedBy;
     }
 }

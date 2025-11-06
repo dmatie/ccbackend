@@ -34,6 +34,7 @@ internal static partial class DomainMappings
             Id = entity.Id,
             CountryId = entity.CountryId,
             UserId = entity.UserId,
+            IsActive = entity.IsActive,
             CreatedBy = entity.CreatedBy,
             CreatedAt = entity.CreatedAt,
             UpdatedAt = entity.UpdatedAt,

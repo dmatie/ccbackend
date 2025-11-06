@@ -34,12 +34,16 @@ public sealed class GetInternalDashboardStatsQueryHandler : IRequestHandler<GetI
     public async Task<InternalDashboardStatsDto> Handle(GetInternalDashboardStatsQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Fetching internal dashboard statistics");
-
         var userContext = _userContextService.GetUserContext();
 
-        var pendingAccessRequests = await _accessRequestRepository.CountByStatusAsync(RequestStatus.Pending, cancellationToken);
-        var pendingClaims = await _claimRepository.CountByStatusAsync(userContext, ClaimStatus.Submitted, cancellationToken);
-        var pendingDisbursements = await _disbursementRepository.CountByStatusAsync(userContext, DisbursementStatus.Submitted, cancellationToken);
+        var pendingAccessRequests = await _accessRequestRepository.CountByStatusAsync(userContext, RequestStatus.Pending, cancellationToken);
+
+        var pendingClaims = await _claimRepository.CountByStatusAsync(userContext,
+            [ClaimStatus.Submitted, ClaimStatus.InProgress], cancellationToken);
+
+        var pendingDisbursements = await _disbursementRepository
+            .CountByStatusAsync(userContext, DisbursementStatus.Submitted, cancellationToken);
+
         var totalUsers = await _userRepository.CountByRoleAsync([UserRole.Admin, UserRole.DA, UserRole.DO], cancellationToken);
 
         _logger.LogInformation(
