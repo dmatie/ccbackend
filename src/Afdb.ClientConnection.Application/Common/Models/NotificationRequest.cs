@@ -10,6 +10,10 @@ public sealed record NotificationRequest
 
     public string? RecipientName { get; init; }
 
+    public string[]? AdditionalRecipients { get; init; }
+
+    public string[]? CcRecipients { get; init; }
+
     public Dictionary<string, object> Data { get; init; } = new();
 
     public string Language { get; init; } = "en";

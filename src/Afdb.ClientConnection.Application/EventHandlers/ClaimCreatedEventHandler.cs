@@ -43,9 +43,7 @@ public sealed class ClaimCreatedEventHandler : INotificationHandler<ClaimCreated
 
         await SendNotificationToAuthorAsync(notification, claimData, cancellationToken);
 
-        await SendNotificationsToAssignedUsersAsync(notification, claimData, cancellationToken);
-
-        await SendNotificationsToCcUsersAsync(notification, claimData, cancellationToken);
+        await SendNotificationToAssignedAndCcUsersAsync(notification, claimData, cancellationToken);
 
         _logger.LogInformation(
             "Successfully processed all notifications for ClaimId: {ClaimId}",
@@ -73,63 +71,67 @@ public sealed class ClaimCreatedEventHandler : INotificationHandler<ClaimCreated
             notification.AuthorEmail);
     }
 
-    private async Task SendNotificationsToAssignedUsersAsync(
+    private async Task SendNotificationToAssignedAndCcUsersAsync(
         ClaimCreatedEvent notification,
         Dictionary<string, object> claimData,
         CancellationToken cancellationToken)
     {
-        if (notification.AssignToEmail == null || notification.AssignToEmail.Length == 0)
+        if ((notification.AssignToEmail == null || notification.AssignToEmail.Length == 0) &&
+            (notification.AssignCcEmail == null || notification.AssignCcEmail.Length == 0))
         {
-            _logger.LogInformation("No assigned users to notify for ClaimId: {ClaimId}", notification.ClaimId);
+            _logger.LogInformation(
+                "No assigned or CC users to notify for ClaimId: {ClaimId}",
+                notification.ClaimId);
             return;
         }
 
-        foreach (var assignedEmail in notification.AssignToEmail)
+        var assignToList = notification.AssignToEmail ?? Array.Empty<string>();
+        var ccList = notification.AssignCcEmail ?? Array.Empty<string>();
+
+        if (assignToList.Length == 0 && ccList.Length > 0)
         {
+            _logger.LogWarning(
+                "No assigned users but CC users exist for ClaimId: {ClaimId}. Using first CC as recipient.",
+                notification.ClaimId);
+
             await _notificationService.SendNotificationAsync(
                 new NotificationRequest
                 {
                     EventType = NotificationEventType.ClaimCreated,
-                    Recipient = assignedEmail,
-                    RecipientName = assignedEmail,
+                    Recipient = ccList[0],
+                    RecipientName = ccList[0],
+                    AdditionalRecipients = null,
+                    CcRecipients = ccList.Length > 1 ? ccList.Skip(1).ToArray() : null,
                     Language = "en",
                     Data = claimData
                 },
                 cancellationToken);
 
             _logger.LogInformation(
-                "Notification sent to assigned user: {AssignedEmail}",
-                assignedEmail);
-        }
-    }
-
-    private async Task SendNotificationsToCcUsersAsync(
-        ClaimCreatedEvent notification,
-        Dictionary<string, object> claimData,
-        CancellationToken cancellationToken)
-    {
-        if (notification.AssignCcEmail == null || notification.AssignCcEmail.Length == 0)
-        {
-            _logger.LogInformation("No CC users to notify for ClaimId: {ClaimId}", notification.ClaimId);
+                "Notification sent to CC users (first as recipient): {CcCount} recipients",
+                ccList.Length);
             return;
         }
 
-        foreach (var ccEmail in notification.AssignCcEmail)
-        {
-            await _notificationService.SendNotificationAsync(
-                new NotificationRequest
-                {
-                    EventType = NotificationEventType.ClaimCreated,
-                    Recipient = ccEmail,
-                    RecipientName = ccEmail,
-                    Language = "en",
-                    Data = claimData
-                },
-                cancellationToken);
+        var primaryRecipient = assignToList[0];
+        var additionalRecipients = assignToList.Length > 1 ? assignToList.Skip(1).ToArray() : null;
 
-            _logger.LogInformation(
-                "Notification sent to CC user: {CcEmail}",
-                ccEmail);
-        }
+        await _notificationService.SendNotificationAsync(
+            new NotificationRequest
+            {
+                EventType = NotificationEventType.ClaimCreated,
+                Recipient = primaryRecipient,
+                RecipientName = primaryRecipient,
+                AdditionalRecipients = additionalRecipients,
+                CcRecipients = ccList.Length > 0 ? ccList : null,
+                Language = "en",
+                Data = claimData
+            },
+            cancellationToken);
+
+        _logger.LogInformation(
+            "Notification sent to assigned users: {AssignedCount} To, {CcCount} CC",
+            assignToList.Length,
+            ccList.Length);
     }
 }

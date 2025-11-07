@@ -33,6 +33,8 @@ public sealed class NotificationService : INotificationService
                 eventType = request.EventType.ToString(),
                 recipient = request.Recipient,
                 recipientName = request.RecipientName,
+                additionalRecipients = request.AdditionalRecipients,
+                ccRecipients = request.CcRecipients,
                 language = request.Language,
                 data = request.Data,
                 timestamp = DateTime.UtcNow
