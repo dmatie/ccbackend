@@ -17,5 +17,7 @@ public enum NotificationEventType
 
     AccessRequestCreated,
     AccessRequestApproved,
-    AccessRequestRejected
+    AccessRequestRejected,
+
+    OtpCreated
 }
