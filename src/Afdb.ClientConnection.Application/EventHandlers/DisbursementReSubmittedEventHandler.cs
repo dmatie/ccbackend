@@ -1,3 +1,6 @@
+using Afdb.ClientConnection.Application.Common.Enums;
+using Afdb.ClientConnection.Application.Common.Interfaces;
+using Afdb.ClientConnection.Application.Common.Models;
 using Afdb.ClientConnection.Domain.Events;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -6,36 +9,55 @@ namespace Afdb.ClientConnection.Application.EventHandlers;
 
 public sealed class DisbursementReSubmittedEventHandler : INotificationHandler<DisbursementReSubmittedEvent>
 {
+    private readonly INotificationService _notificationService;
     private readonly ILogger<DisbursementReSubmittedEventHandler> _logger;
 
-    public DisbursementReSubmittedEventHandler(ILogger<DisbursementReSubmittedEventHandler> logger)
+    public DisbursementReSubmittedEventHandler(
+        INotificationService notificationService,
+        ILogger<DisbursementReSubmittedEventHandler> logger)
     {
+        _notificationService = notificationService;
         _logger = logger;
     }
 
     public async Task Handle(DisbursementReSubmittedEvent notification, CancellationToken cancellationToken)
     {
-        try
-        {
-            _logger.LogInformation(
-                "Handling DisbursementReSubmittedEvent for DisbursementId: {DisbursementId}, RequestNumber: {RequestNumber}, Comment: {Comment}",
-                notification.DisbursementId,
-                notification.RequestNumber,
-                notification.Comment);
+        _logger.LogInformation(
+            "Handling DisbursementReSubmittedEvent for DisbursementId: {DisbursementId}, RequestNumber: {RequestNumber}, Comment: {Comment}",
+            notification.DisbursementId,
+            notification.RequestNumber,
+            notification.Comment);
 
-            _logger.LogInformation(
-                "Successfully handled DisbursementReSubmittedEvent for DisbursementId: {DisbursementId}",
-                notification.DisbursementId);
-
-            await Task.CompletedTask;
-        }
-        catch (Exception ex)
+        var disbursementData = new Dictionary<string, object>
         {
-            _logger.LogError(
-                ex,
-                "Error handling DisbursementReSubmittedEvent for DisbursementId: {DisbursementId}",
-                notification.DisbursementId);
-            throw;
-        }
+            ["disbursementId"] = notification.DisbursementId,
+            ["requestNumber"] = notification.RequestNumber,
+            ["sapCodeProject"] = notification.SapCodeProject,
+            ["loanGrantNumber"] = notification.LoanGrantNumber,
+            ["disbursementTypeCode"] = notification.DisbursementTypeCode,
+            ["disbursementTypeName"] = notification.DisbursementTypeName,
+            ["comment"] = notification.Comment,
+            ["createdByFirstName"] = notification.CreatedByFirstName,
+            ["createdByLastName"] = notification.CreatedByLastName,
+            ["createdByEmail"] = notification.CreatedByEmail,
+            ["resubmittedDate"] = DateTime.UtcNow.ToString("yyyy-MM-dd"),
+            ["resubmittedTime"] = DateTime.UtcNow.ToString("HH:mm")
+        };
+
+        await _notificationService.SendNotificationAsync(
+            new NotificationRequest
+            {
+                EventType = NotificationEventType.DisbursementReSubmitted,
+                Recipient = notification.CreatedByEmail,
+                RecipientName = $"{notification.CreatedByFirstName} {notification.CreatedByLastName}",
+                Language = "fr",
+                Data = disbursementData
+            },
+            cancellationToken);
+
+        _logger.LogInformation(
+            "Successfully notified disbursement creator about resubmission: DisbursementId={DisbursementId}, Recipient={CreatedByEmail}",
+            notification.DisbursementId,
+            notification.CreatedByEmail);
     }
 }

@@ -1,4 +1,5 @@
 using Afdb.ClientConnection.Domain.Common;
+using Afdb.ClientConnection.Domain.Entities;
 
 namespace Afdb.ClientConnection.Domain.Events;
 
@@ -9,15 +10,37 @@ public sealed class DisbursementBackedToClientEvent : DomainEvent
     public string SapCodeProject { get; }
     public string LoanGrantNumber { get; }
     public string Comment { get; }
-    public Guid CreatedByUserId { get; }
+    public string CreatedByFirstName { get; }
+    public string CreatedByLastName { get; }
+    public string CreatedByEmail { get; }
+    public string ProcessedByFirstName { get; }
+    public string ProcessedByLastName { get; }
+    public string ProcessedByEmail { get; }
+    public string DisbursementTypeCode { get; }
+    public string DisbursementTypeName { get; }
 
-    public DisbursementBackedToClientEvent(Guid disbursementId, string requestNumber, string sapCodeProject, string loanGrantNumber, string comment, Guid createdByUserId)
+    public DisbursementBackedToClientEvent(
+        Guid disbursementId,
+        string requestNumber,
+        string sapCodeProject,
+        string loanGrantNumber,
+        string comment,
+        User createdByUser,
+        User processedByUser,
+        DisbursementType disbursementType)
     {
         DisbursementId = disbursementId;
         RequestNumber = requestNumber;
         SapCodeProject = sapCodeProject;
         LoanGrantNumber = loanGrantNumber;
         Comment = comment;
-        CreatedByUserId = createdByUserId;
+        CreatedByFirstName = createdByUser.FirstName;
+        CreatedByLastName = createdByUser.LastName;
+        CreatedByEmail = createdByUser.Email;
+        ProcessedByFirstName = processedByUser.FirstName;
+        ProcessedByLastName = processedByUser.LastName;
+        ProcessedByEmail = processedByUser.Email;
+        DisbursementTypeCode = disbursementType.Code;
+        DisbursementTypeName = disbursementType.Name;
     }
 }

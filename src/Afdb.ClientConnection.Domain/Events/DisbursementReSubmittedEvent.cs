@@ -1,4 +1,5 @@
 using Afdb.ClientConnection.Domain.Common;
+using Afdb.ClientConnection.Domain.Entities;
 
 namespace Afdb.ClientConnection.Domain.Events;
 
@@ -9,18 +10,30 @@ public sealed class DisbursementReSubmittedEvent : DomainEvent
     public string SapCodeProject { get; }
     public string LoanGrantNumber { get; }
     public string Comment { get; }
+    public string CreatedByFirstName { get; }
+    public string CreatedByLastName { get; }
+    public string CreatedByEmail { get; }
+    public string DisbursementTypeCode { get; }
+    public string DisbursementTypeName { get; }
 
     public DisbursementReSubmittedEvent(
         Guid disbursementId,
         string requestNumber,
         string sapCodeProject,
         string loanGrantNumber,
-        string comment)
+        string comment,
+        User createdByUser,
+        DisbursementType disbursementType)
     {
         DisbursementId = disbursementId;
         RequestNumber = requestNumber;
         SapCodeProject = sapCodeProject;
         LoanGrantNumber = loanGrantNumber;
         Comment = comment;
+        CreatedByFirstName = createdByUser.FirstName;
+        CreatedByLastName = createdByUser.LastName;
+        CreatedByEmail = createdByUser.Email;
+        DisbursementTypeCode = disbursementType.Code;
+        DisbursementTypeName = disbursementType.Name;
     }
 }

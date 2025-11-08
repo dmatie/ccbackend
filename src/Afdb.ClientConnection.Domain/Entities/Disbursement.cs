@@ -220,7 +220,7 @@ public sealed class Disbursement : AggregateRoot
         });
         _processes.Add(process);
 
-        AddDomainEvent(new DisbursementSubmittedEvent(Id, RequestNumber, SapCodeProject, LoanGrantNumber));
+        AddDomainEvent(new DisbursementSubmittedEvent(Id, RequestNumber, SapCodeProject, LoanGrantNumber, CreatedByUser!, DisbursementType!));
     }
 
     public void Resubmit(User user, string comment)
@@ -244,7 +244,7 @@ public sealed class Disbursement : AggregateRoot
         });
         _processes.Add(process);
 
-        AddDomainEvent(new DisbursementReSubmittedEvent(Id, RequestNumber, SapCodeProject, LoanGrantNumber, comment));
+        AddDomainEvent(new DisbursementReSubmittedEvent(Id, RequestNumber, SapCodeProject, LoanGrantNumber, comment, CreatedByUser!, DisbursementType!));
     }
 
     public void Approve(User user)
@@ -266,7 +266,7 @@ public sealed class Disbursement : AggregateRoot
         });
         _processes.Add(process);
 
-        AddDomainEvent(new DisbursementApprovedEvent(Id, RequestNumber, SapCodeProject, LoanGrantNumber));
+        AddDomainEvent(new DisbursementApprovedEvent(Id, RequestNumber, SapCodeProject, LoanGrantNumber, CreatedByUser!, user, DisbursementType!));
     }
 
     public void Reject(User user, string comment)
@@ -291,7 +291,7 @@ public sealed class Disbursement : AggregateRoot
         });
         _processes.Add(process);
 
-        AddDomainEvent(new DisbursementRejectedEvent(Id, RequestNumber, SapCodeProject, LoanGrantNumber, comment));
+        AddDomainEvent(new DisbursementRejectedEvent(Id, RequestNumber, SapCodeProject, LoanGrantNumber, comment, CreatedByUser!, user, DisbursementType!));
     }
 
     public void BackToClient(User user, string comment)
@@ -316,7 +316,7 @@ public sealed class Disbursement : AggregateRoot
         });
         _processes.Add(process);
 
-        AddDomainEvent(new DisbursementBackedToClientEvent(Id, RequestNumber, SapCodeProject, LoanGrantNumber, comment, CreatedByUserId));
+        AddDomainEvent(new DisbursementBackedToClientEvent(Id, RequestNumber, SapCodeProject, LoanGrantNumber, comment, CreatedByUser!, user, DisbursementType!));
     }
 
     public void AddDocument(DisbursementDocument document)
