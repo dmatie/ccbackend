@@ -330,8 +330,145 @@ Chaque template est prêt à être copié dans SharePoint.
 
 ---
 
-**Note**: Les templates 3 à 8 suivent la même structure.
-Pour les voir tous, consultez les fichiers individuels dans le dossier `EmailTemplates/`.
+# 3. DisbursementSubmitted
+
+**EventHandler**: `DisbursementSubmittedEventHandler`
+**Emails envoyés**: 1 (Créateur)
+
+## Variables disponibles
+```
+{{recipientName}}, {{data.disbursementId}}, {{data.requestNumber}}, {{data.sapCodeProject}},
+{{data.loanGrantNumber}}, {{data.disbursementTypeCode}}, {{data.disbursementTypeName}},
+{{data.submittedDate}}, {{data.submittedTime}}
+```
+
+## 📧 Template FR
+
+### Config SharePoint
+- **TemplateKey**: `DisbursementSubmitted`
+- **Language**: `fr`
+- **Subject**: `Demande de décaissement soumise - {{data.requestNumber}}`
+
+### HTML Body
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body{font-family:'Segoe UI',sans-serif;line-height:1.6;color:#333;margin:0;padding:0}
+        .container{max-width:600px;margin:0 auto;padding:20px;background:#f5f5f5}
+        .header{background:linear-gradient(135deg,#43e97b 0%,#38f9d7 100%);color:white;padding:30px;text-align:center;border-radius:8px 8px 0 0}
+        .content{background:#ffffff;padding:30px;border:1px solid #e0e0e0;border-top:none}
+        .info-box{background:#f8f9fa;padding:20px;border-left:4px solid #43e97b;margin:20px 0;border-radius:4px}
+        .info-row{margin:10px 0;display:flex}
+        .label{font-weight:600;color:#555;min-width:150px}
+        .value{color:#333;flex:1}
+        .footer{background:#f8f9fa;padding:20px;text-align:center;font-size:12px;color:#666;border-radius:0 0 8px 8px}
+        .button{display:inline-block;padding:12px 30px;background:#43e97b;color:white;text-decoration:none;border-radius:5px;margin:20px 0}
+        .status-badge{display:inline-block;padding:5px 15px;background:#ffc107;color:#333;border-radius:20px;font-size:14px;font-weight:600}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 style="margin:0;font-size:28px">📤 Décaissement Soumis</h1>
+            <p style="margin:10px 0 0 0;opacity:0.9">Votre demande est en cours d'examen</p>
+        </div>
+        <div class="content">
+            <p>Bonjour <strong>{{recipientName}}</strong>,</p>
+            <p>Nous confirmons la soumission de votre demande de décaissement. Elle est actuellement en attente d'approbation.</p>
+            <div class="info-box">
+                <h3 style="margin-top:0;color:#2e7d32">💰 Détails du décaissement</h3>
+                <div class="info-row"><span class="label">Numéro de demande :</span><span class="value"><strong>{{data.requestNumber}}</strong></span></div>
+                <div class="info-row"><span class="label">Type :</span><span class="value">{{data.disbursementTypeName}} ({{data.disbursementTypeCode}})</span></div>
+                <div class="info-row"><span class="label">Code SAP Projet :</span><span class="value">{{data.sapCodeProject}}</span></div>
+                <div class="info-row"><span class="label">Numéro Prêt/Don :</span><span class="value">{{data.loanGrantNumber}}</span></div>
+                <div class="info-row"><span class="label">Date de soumission :</span><span class="value">{{data.submittedDate}} à {{data.submittedTime}}</span></div>
+                <div class="info-row"><span class="label">Statut :</span><span class="value"><span class="status-badge">En attente d'approbation</span></span></div>
+            </div>
+            <h4 style="color:#2e7d32;margin-top:30px">🔔 Prochaines étapes</h4>
+            <ul style="line-height:1.8">
+                <li>Votre demande sera examinée par notre équipe dans les meilleurs délais</li>
+                <li>Vous recevrez une notification dès qu'une décision sera prise</li>
+                <li>En cas de besoin de clarifications, nous vous contacterons</li>
+            </ul>
+            <div style="text-align:center;margin-top:30px">
+                <a href="https://clientconnection.afdb.org/disbursements/{{data.disbursementId}}" class="button">Suivre ma demande</a>
+            </div>
+        </div>
+        <div class="footer">
+            <p><strong>Client Connection</strong> | African Development Bank</p>
+            <p>Cet email a été envoyé automatiquement. Merci de ne pas y répondre.</p>
+        </div>
+    </div>
+</body>
+</html>
+```
+
+## 📧 Template EN
+
+### Config SharePoint
+- **TemplateKey**: `DisbursementSubmitted`
+- **Language**: `en`
+- **Subject**: `Disbursement request submitted - {{data.requestNumber}}`
+
+### HTML Body
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body{font-family:'Segoe UI',sans-serif;line-height:1.6;color:#333;margin:0;padding:0}
+        .container{max-width:600px;margin:0 auto;padding:20px;background:#f5f5f5}
+        .header{background:linear-gradient(135deg,#43e97b 0%,#38f9d7 100%);color:white;padding:30px;text-align:center;border-radius:8px 8px 0 0}
+        .content{background:#ffffff;padding:30px;border:1px solid #e0e0e0;border-top:none}
+        .info-box{background:#f8f9fa;padding:20px;border-left:4px solid #43e97b;margin:20px 0;border-radius:4px}
+        .info-row{margin:10px 0;display:flex}
+        .label{font-weight:600;color:#555;min-width:150px}
+        .value{color:#333;flex:1}
+        .footer{background:#f8f9fa;padding:20px;text-align:center;font-size:12px;color:#666;border-radius:0 0 8px 8px}
+        .button{display:inline-block;padding:12px 30px;background:#43e97b;color:white;text-decoration:none;border-radius:5px;margin:20px 0}
+        .status-badge{display:inline-block;padding:5px 15px;background:#ffc107;color:#333;border-radius:20px;font-size:14px;font-weight:600}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 style="margin:0;font-size:28px">📤 Disbursement Submitted</h1>
+            <p style="margin:10px 0 0 0;opacity:0.9">Your request is under review</p>
+        </div>
+        <div class="content">
+            <p>Hello <strong>{{recipientName}}</strong>,</p>
+            <p>We confirm the submission of your disbursement request. It is currently pending approval.</p>
+            <div class="info-box">
+                <h3 style="margin-top:0;color:#2e7d32">💰 Disbursement Details</h3>
+                <div class="info-row"><span class="label">Request number:</span><span class="value"><strong>{{data.requestNumber}}</strong></span></div>
+                <div class="info-row"><span class="label">Type:</span><span class="value">{{data.disbursementTypeName}} ({{data.disbursementTypeCode}})</span></div>
+                <div class="info-row"><span class="label">SAP Project Code:</span><span class="value">{{data.sapCodeProject}}</span></div>
+                <div class="info-row"><span class="label">Loan/Grant Number:</span><span class="value">{{data.loanGrantNumber}}</span></div>
+                <div class="info-row"><span class="label">Submission date:</span><span class="value">{{data.submittedDate}} at {{data.submittedTime}}</span></div>
+                <div class="info-row"><span class="label">Status:</span><span class="value"><span class="status-badge">Pending approval</span></span></div>
+            </div>
+            <h4 style="color:#2e7d32;margin-top:30px">🔔 Next Steps</h4>
+            <ul style="line-height:1.8">
+                <li>Your request will be reviewed by our team as soon as possible</li>
+                <li>You will receive a notification once a decision is made</li>
+                <li>We will contact you if clarifications are needed</li>
+            </ul>
+            <div style="text-align:center;margin-top:30px">
+                <a href="https://clientconnection.afdb.org/disbursements/{{data.disbursementId}}" class="button">Track my request</a>
+            </div>
+        </div>
+        <div class="footer">
+            <p><strong>Client Connection</strong> | African Development Bank</p>
+            <p>This is an automated email. Please do not reply.</p>
+        </div>
+    </div>
+</body>
+</html>
+```
 
 ---
 
