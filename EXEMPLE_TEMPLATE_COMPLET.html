@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Exemple Template - DisbursementApproved</title>
+</head>
+<body>
+
+<!--
+═══════════════════════════════════════════════════════════════════
+EXEMPLE DE TEMPLATE COMPLET
+═══════════════════════════════════════════════════════════════════
+
+Template: DisbursementApproved (FR)
+TemplateKey: DisbursementApproved
+Language: fr
+Target: Créateur du disbursement
+
+Sujet: ✅ Demande de décaissement approuvée - {{data.requestNumber}}
+
+Variables disponibles:
+• {{recipientName}} - Nom complet du destinataire
+• {{data.disbursementId}} - ID du disbursement
+• {{data.requestNumber}} - Numéro de demande
+• {{data.sapCodeProject}} - Code SAP projet
+• {{data.loanGrantNumber}} - Numéro Prêt/Don
+• {{data.disbursementTypeCode}} - Code type (A1, A2, A3, B1)
+• {{data.disbursementTypeName}} - Nom du type
+• {{data.createdByFirstName}} - Prénom créateur
+• {{data.createdByLastName}} - Nom créateur
+• {{data.createdByEmail}} - Email créateur
+• {{data.approvedByFirstName}} - Prénom approbateur
+• {{data.approvedByLastName}} - Nom approbateur
+• {{data.approvedByEmail}} - Email approbateur
+• {{data.approvedDate}} - Date (yyyy-MM-dd)
+• {{data.approvedTime}} - Heure (HH:mm)
+
+═══════════════════════════════════════════════════════════════════
+CODE HTML À COPIER DANS SHAREPOINT:
+═══════════════════════════════════════════════════════════════════
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            line-height: 1.6; 
+            color: #333; 
+        }
+        .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            padding: 20px; 
+        }
+        .header { 
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); 
+            color: white; 
+            padding: 30px; 
+            text-align: center; 
+            border-radius: 8px 8px 0 0; 
+        }
+        .content { 
+            background: #ffffff; 
+            padding: 30px; 
+            border: 1px solid #e0e0e0; 
+            border-top: none; 
+        }
+        .info-box { 
+            background: #f8f9fa; 
+            padding: 20px; 
+            border-left: 4px solid #11998e; 
+            margin: 20px 0; 
+            border-radius: 4px; 
+        }
+        .success-box { 
+            background: #e8f5e9; 
+            padding: 20px; 
+            border-left: 4px solid #4caf50; 
+            margin: 20px 0; 
+            border-radius: 4px; 
+        }
+        .info-row { 
+            margin: 10px 0; 
+            display: flex; 
+        }
+        .label { 
+            font-weight: 600; 
+            color: #555; 
+            min-width: 150px; 
+        }
+        .value { 
+            color: #333; 
+            flex: 1; 
+        }
+        .footer { 
+            background: #f8f9fa; 
+            padding: 20px; 
+            text-align: center; 
+            font-size: 12px; 
+            color: #666; 
+            border-radius: 0 0 8px 8px; 
+        }
+        .button { 
+            display: inline-block; 
+            padding: 12px 30px; 
+            background: #11998e; 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 5px; 
+            margin: 20px 0; 
+        }
+        .status-badge { 
+            display: inline-block; 
+            padding: 5px 15px; 
+            background: #4caf50; 
+            color: white; 
+            border-radius: 20px; 
+            font-size: 14px; 
+            font-weight: 600; 
+        }
+        .celebration { 
+            font-size: 48px; 
+            text-align: center; 
+            margin: 20px 0; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="celebration">🎉</div>
+            <h1 style="margin: 0; font-size: 28px;">Décaissement Approuvé</h1>
+            <p style="margin: 10px 0 0 0; opacity: 0.9;">Félicitations ! Votre demande a été approuvée</p>
+        </div>
+        
+        <div class="content">
+            <p>Bonjour <strong>{{recipientName}}</strong>,</p>
+            
+            <p>Excellente nouvelle ! Nous avons le plaisir de vous informer que votre demande de décaissement a été <strong>approuvée</strong>.</p>
+            
+            <div class="success-box">
+                <h3 style="margin-top: 0; color: #2e7d32; text-align: center;">
+                    ✅ DEMANDE APPROUVÉE
+                </h3>
+                <p style="text-align: center; margin: 10px 0 0 0; font-size: 18px; color: #1b5e20;">
+                    Le traitement de votre décaissement va maintenant être effectué
+                </p>
+            </div>
+            
+            <div class="info-box">
+                <h3 style="margin-top: 0; color: #00695c;">💰 Détails du décaissement</h3>
+                
+                <div class="info-row">
+                    <span class="label">Numéro de demande :</span>
+                    <span class="value"><strong>{{data.requestNumber}}</strong></span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="label">Type :</span>
+                    <span class="value">{{data.disbursementTypeName}} ({{data.disbursementTypeCode}})</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="label">Code SAP Projet :</span>
+                    <span class="value">{{data.sapCodeProject}}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="label">Numéro Prêt/Don :</span>
+                    <span class="value">{{data.loanGrantNumber}}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="label">Approuvé par :</span>
+                    <span class="value">{{data.approvedByFirstName}} {{data.approvedByLastName}}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="label">Date d'approbation :</span>
+                    <span class="value">{{data.approvedDate}} à {{data.approvedTime}}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="label">Statut :</span>
+                    <span class="value"><span class="status-badge">Approuvé</span></span>
+                </div>
+            </div>
+            
+            <h4 style="color: #00695c; margin-top: 30px;">🔔 Prochaines étapes</h4>
+            <ul style="line-height: 1.8;">
+                <li>Le département financier va procéder au traitement de votre décaissement</li>
+                <li>Les fonds seront transférés selon les modalités convenues</li>
+                <li>Vous pouvez suivre le statut du traitement dans votre tableau de bord</li>
+                <li>Une confirmation vous sera envoyée une fois le traitement finalisé</li>
+            </ul>
+            
+            <div style="background: #e3f2fd; padding: 15px; border-left: 4px solid #2196f3; margin: 20px 0; border-radius: 4px;">
+                <p style="margin: 0;"><strong>📄 Documents :</strong></p>
+                <p style="margin: 10px 0 0 0;">Tous les documents relatifs à ce décaissement sont disponibles dans votre espace.</p>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="https://[URL_APP]/disbursements/{{data.disbursementId}}" class="button">Voir ma demande</a>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><strong>Client Connection</strong> | African Development Bank</p>
+            <p>Cet email a été envoyé automatiquement. Merci de ne pas y répondre.</p>
+            <p style="margin-top: 10px;">Pour toute question, contactez-nous à <a href="mailto:support@afdb.org">support@afdb.org</a></p>
+        </div>
+    </div>
+</body>
+</html>
+
+<!--
+═══════════════════════════════════════════════════════════════════
+FIN DU TEMPLATE
+═══════════════════════════════════════════════════════════════════
+
+INSTRUCTIONS D'UTILISATION:
+
+1. Copier tout le code HTML ci-dessus
+2. Coller dans SharePoint:
+   - TemplateKey: DisbursementApproved
+   - Language: fr
+   - Subject: ✅ Demande de décaissement approuvée - {{data.requestNumber}}
+   - Body: [Code HTML ci-dessus]
+
+3. Remplacer [URL_APP] par l'URL réelle de votre application
+
+4. Power Automate remplacera automatiquement toutes les variables {{xxx}}
+
+═══════════════════════════════════════════════════════════════════
+-->
+
+</body>
+</html>

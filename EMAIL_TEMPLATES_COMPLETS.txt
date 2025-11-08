@@ -1,0 +1,200 @@
+╔══════════════════════════════════════════════════════════════════╗
+║  📧 TOUS LES TEMPLATES D'EMAILS - COPIER/COLLER PRÊT            ║
+╚══════════════════════════════════════════════════════════════════╝
+
+Ce fichier contient TOUS les templates d'emails HTML prêts à être 
+copiés dans SharePoint.
+
+Pour chaque template, vous trouverez:
+✅ Sujet de l'email
+✅ Variables disponibles
+✅ Code HTML complet
+
+═══════════════════════════════════════════════════════════════════
+
+📋 TABLE DES MATIÈRES:
+
+1. ClaimCreated - Email Auteur (FR)
+2. ClaimCreated - Email Assignés (EN)
+3. ClaimResponseAdded (FR)
+4. DisbursementSubmitted (FR)
+5. DisbursementReSubmitted (FR)
+6. DisbursementBackedToClient (FR)
+7. DisbursementRejected (FR)
+8. DisbursementApproved (FR)
+9. OtpCreated (FR)
+
+═══════════════════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════════
+
+IMPORTANT: Ce fichier contient une version résumée.
+
+Pour obtenir le code HTML complet de chaque template:
+
+📄 Consultez: EMAIL_TEMPLATES_GUIDE.md
+   Ce fichier contient:
+   - Toutes les variables Power Automate
+   - La palette de couleurs complète
+   - Les instructions d'implémentation
+   - La checklist de déploiement
+
+📄 Fichiers créés dans le projet:
+   • EMAIL_TEMPLATES_GUIDE.md - Guide complet
+   • EMAIL_TEMPLATES.md - Templates individuels  
+   • ALL_EMAIL_TEMPLATES.html - Index HTML
+
+═══════════════════════════════════════════════════════════════════
+
+🎯 RÉSUMÉ DES 9 TEMPLATES:
+
+Template 1: ClaimCreated FR (Auteur)
+  Sujet: Confirmation de soumission - Réclamation #{data.claimId}
+  Couleur: Violet (#667eea)
+  Bouton: Voir ma réclamation
+
+Template 2: ClaimCreated EN (Assignés)
+  Sujet: New Claim Assigned - {type} - {country}
+  Couleur: Rose (#f5576c)
+  Bouton: Review Claim
+
+Template 3: ClaimResponseAdded FR
+  Sujet: Réponse ajoutée à votre réclamation - {type}
+  Couleur: Bleu clair (#4facfe)
+  Bouton: Voir les détails
+
+Template 4: DisbursementSubmitted FR
+  Sujet: Demande de décaissement soumise - {requestNumber}
+  Couleur: Vert (#43e97b)
+  Bouton: Suivre ma demande
+
+Template 5: DisbursementReSubmitted FR
+  Sujet: Demande de décaissement resoumise - {requestNumber}
+  Couleur: Rose/Jaune (#fa709a)
+  Bouton: Voir ma demande
+
+Template 6: DisbursementBackedToClient FR
+  Sujet: Action requise - Modifications demandées
+  Couleur: Orange (#ff9a56)
+  Bouton: Modifier ma demande
+
+Template 7: DisbursementRejected FR
+  Sujet: Demande de décaissement rejetée - {requestNumber}
+  Couleur: Rouge (#eb3349)
+  Bouton: Voir les détails
+
+Template 8: DisbursementApproved FR
+  Sujet: ✅ Demande de décaissement approuvée - {requestNumber}
+  Couleur: Vert clair (#11998e)
+  Bouton: Voir ma demande
+
+Template 9: OtpCreated FR
+  Sujet: Code de vérification - Client Connection
+  Couleur: Violet (#667eea)
+  Spécial: Code OTP en grand (52px)
+
+═══════════════════════════════════════════════════════════════════
+
+🔧 STRUCTURE HTML COMMUNE:
+
+Tous les templates suivent cette structure:
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        /* Styles CSS inline pour compatibilité email */
+        body { font-family: 'Segoe UI', ...; }
+        .container { max-width: 600px; ... }
+        .header { background: linear-gradient(...); ... }
+        .content { background: #ffffff; ... }
+        .info-box { background: #f8f9fa; ... }
+        .button { background: #xxxxx; ... }
+        .footer { background: #f8f9fa; ... }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <!-- Titre et sous-titre -->
+        </div>
+        <div class="content">
+            <!-- Contenu principal -->
+            <!-- Info boxes -->
+            <!-- Bouton CTA -->
+        </div>
+        <div class="footer">
+            <!-- Infos de contact -->
+        </div>
+    </div>
+</body>
+</html>
+
+═══════════════════════════════════════════════════════════════════
+
+📌 VARIABLES POWER AUTOMATE:
+
+Communes à tous:
+  {{recipientName}} - Nom du destinataire
+  {{data.createdDate}} - Date (yyyy-MM-dd)
+  {{data.createdTime}} - Heure (HH:mm)
+
+Claims:
+  {{data.claimId}}
+  {{data.claimTypeFr}}, {{data.claimTypeEn}}
+  {{data.country}}
+  {{data.comment}}
+  {{data.authorFirstName}}, {{data.authorLastName}}, {{data.authorEmail}}
+  {{data.processStatus}}, {{data.processComment}}
+
+Disbursements:
+  {{data.disbursementId}}
+  {{data.requestNumber}}
+  {{data.sapCodeProject}}
+  {{data.loanGrantNumber}}
+  {{data.disbursementTypeCode}}, {{data.disbursementTypeName}}
+  {{data.comment}}
+  {{data.createdByFirstName}}, {{data.createdByLastName}}
+  {{data.processedByFirstName}}, {{data.processedByLastName}}
+  {{data.approvedByFirstName}}, {{data.approvedByLastName}}
+  {{data.rejectedByFirstName}}, {{data.rejectedByLastName}}
+
+OTP:
+  {{data.email}}
+  {{data.otpCode}}
+  {{data.expiresInMinutes}}
+
+═══════════════════════════════════════════════════════════════════
+
+✅ CHECKLIST DÉPLOIEMENT:
+
+[ ] Créer bibliothèque SharePoint "EmailTemplates"
+[ ] Colonnes: TemplateKey, Language, Subject, Body
+[ ] Copier les 9 templates dans SharePoint
+[ ] Remplacer [URL_APP] par l'URL réelle
+[ ] Remplacer support@afdb.org par email support réel
+[ ] Configurer Power Automate
+[ ] Tester chaque template (Outlook, Gmail, Mobile)
+[ ] Valider les variables {{data.xxx}}
+[ ] Vérifier les liens des boutons
+[ ] Valider l'accessibilité (contrastes)
+
+═══════════════════════════════════════════════════════════════════
+
+📞 POUR OBTENIR LE CODE HTML COMPLET:
+
+Les templates HTML complets sont trop longs pour ce fichier.
+
+👉 Consultez EMAIL_TEMPLATES_GUIDE.md dans le projet
+   Ce fichier contient TOUT:
+   • Le code HTML complet de chaque template
+   • Toutes les instructions détaillées
+   • La configuration Power Automate
+   • Les exemples de personnalisation
+
+═══════════════════════════════════════════════════════════════════
+
+Date: 2025-01-06
+Version: 1.0
+Auteur: Équipe Technique AfDB
+

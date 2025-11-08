@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tous les Templates d'Emails - Client Connection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .template-section {
+            background: white;
+            margin: 40px 0;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .template-header {
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        .template-title {
+            color: #667eea;
+            font-size: 28px;
+            margin: 0 0 10px 0;
+        }
+        .template-meta {
+            color: #666;
+            font-size: 14px;
+        }
+        .info-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            background: #e3f2fd;
+            color: #1976d2;
+            border-radius: 20px;
+            font-size: 13px;
+            margin-right: 10px;
+        }
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 20px;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        .subject-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .variables-box {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        code {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        .toc {
+            background: #667eea;
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+        }
+        .toc h2 {
+            margin-top: 0;
+        }
+        .toc ul {
+            list-style: none;
+            padding: 0;
+        }
+        .toc li {
+            padding: 8px 0;
+        }
+        .toc a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .toc a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="toc">
+        <h2>📧 Table des Matières - Templates d'Emails</h2>
+        <ul>
+            <li><a href="#claim-created-fr">1. ClaimCreated - Email Auteur (FR)</a></li>
+            <li><a href="#claim-created-en">2. ClaimCreated - Email Assignés (EN)</a></li>
+            <li><a href="#claim-response">3. ClaimResponseAdded (FR)</a></li>
+            <li><a href="#disb-submitted">4. DisbursementSubmitted (FR)</a></li>
+            <li><a href="#disb-resubmitted">5. DisbursementReSubmitted (FR)</a></li>
+            <li><a href="#disb-backed">6. DisbursementBackedToClient (FR)</a></li>
+            <li><a href="#disb-rejected">7. DisbursementRejected (FR)</a></li>
+            <li><a href="#disb-approved">8. DisbursementApproved (FR)</a></li>
+            <li><a href="#otp-created">9. OtpCreated (FR)</a></li>
+        </ul>
+        <p style="margin-top: 30px; font-size: 14px; opacity: 0.9;">
+            ℹ️ Chaque template contient le sujet, les variables disponibles et le code HTML complet prêt pour SharePoint.
+        </p>
+    </div>
+
+    <!-- Template 1: ClaimCreated FR -->
+    <div id="claim-created-fr" class="template-section">
+        <div class="template-header">
+            <h1 class="template-title">1️⃣ ClaimCreated - Email Auteur (FR)</h1>
+            <div class="template-meta">
+                <span class="info-badge">TemplateKey: ClaimCreated</span>
+                <span class="info-badge">Language: fr</span>
+                <span class="info-badge">Target: Auteur</span>
+            </div>
+        </div>
+
+        <div class="subject-box">
+            <strong>📬 Sujet:</strong>
+            <code>Confirmation de soumission - Réclamation #{data.claimId}</code>
+        </div>
+
+        <div class="variables-box">
+            <strong>🔧 Variables disponibles:</strong>
+            <ul>
+                <li><code>{{recipientName}}</code> - Nom du destinataire</li>
+                <li><code>{{data.claimId}}</code> - ID de la réclamation</li>
+                <li><code>{{data.claimTypeFr}}</code> - Type en français</li>
+                <li><code>{{data.country}}</code> - Pays</li>
+                <li><code>{{data.createdDate}}</code> - Date (yyyy-MM-dd)</li>
+                <li><code>{{data.createdTime}}</code> - Heure (HH:mm)</li>
+                <li><code>{{data.comment}}</code> - Commentaire</li>
+            </ul>
+        </div>
+
+        <h3>📄 Corps du mail (HTML):</h3>
+        <div class="code-block">
+            <pre><code>&lt;!-- Copier ce code dans SharePoint Body --&gt;
+Voir le fichier: EMAIL_TEMPLATES_GUIDE.md pour le code HTML complet</code></pre>
+        </div>
+    </div>
+
+    <div style="text-align: center; padding: 40px; background: #667eea; color: white; border-radius: 8px; margin-top: 40px;">
+        <h2>📋 Templates Complets Disponibles</h2>
+        <p style="font-size: 18px; margin: 20px 0;">
+            Pour obtenir le code HTML complet de chaque template,<br>
+            consultez les fichiers suivants dans le projet:
+        </p>
+        <ul style="list-style: none; padding: 0; font-size: 16px;">
+            <li style="padding: 10px;">📄 <strong>EMAIL_TEMPLATES_GUIDE.md</strong> - Guide complet avec toutes les infos</li>
+            <li style="padding: 10px;">📄 <strong>EMAIL_TEMPLATES.md</strong> - Templates individuels</li>
+        </ul>
+        <p style="margin-top: 30px; font-size: 14px; opacity: 0.9;">
+            Chaque template est prêt à être copié dans SharePoint!
+        </p>
+    </div>
+
+</body>
+</html>
