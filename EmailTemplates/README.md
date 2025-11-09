@@ -94,7 +94,7 @@ Pour chaque fichier `.html`:
 ### 3. Personnaliser les URLs
 
 Dans TOUS les templates, remplacer:
-- `https://clientconnection.afdb.org` → URL réelle de votre application
+- `https://support@afdb.org.afdb.org` → URL réelle de votre application
 - `support@afdb.org` → Email support réel
 
 ---
