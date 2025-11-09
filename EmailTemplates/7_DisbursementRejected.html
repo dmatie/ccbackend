@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"></head>
+<body style="font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;line-height:1.6;color:#333;margin:0;padding:0;background:#f5f5f5">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f5f5f5;padding:20px">
+<tr><td align="center">
+<table width="650" cellpadding="0" cellspacing="0" border="0" style="max-width:650px">
+
+<tr><td style="background:linear-gradient(135deg,#eb3349 0%,#f45c43 100%);color:white;padding:30px;text-align:center;border-radius:8px 8px 0 0">
+<h1 style="margin:0;font-size:28px;color:white">❌ Disbursement Rejected / Décaissement Rejeté</h1>
+<p style="margin:5px 0 0 0;opacity:0.9;font-size:16px;color:white">Your request could not be approved / Votre demande n'a pas pu être approuvée</p>
+</td></tr>
+
+<tr><td style="background:#ffffff;padding:30px;border-left:1px solid #e0e0e0;border-right:1px solid #e0e0e0;border-top:1px solid #e0e0e0">
+<div style="display:inline-block;padding:4px 12px;background:#eb3349;color:white;border-radius:15px;font-size:12px;font-weight:600;margin-bottom:15px">🇬🇧 ENGLISH</div>
+<p style="margin:0 0 15px 0">Hello <strong>{{recipientName}}</strong>,</p>
+<p style="margin:0 0 15px 0">We regret to inform you that your disbursement request has been rejected after review.</p>
+
+<table width="100%" cellpadding="20" style="background:#f8f9fa;border-left:4px solid #eb3349;margin:20px 0;border-radius:4px">
+<tr><td>
+<h3 style="margin-top:0;color:#c62828;font-size:18px">💰 Disbursement Details</h3>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Request number:</span> <span style="color:#333"><strong>{{data.requestNumber}}</strong></span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Type:</span> <span style="color:#333">{{data.disbursementTypeName}} ({{data.disbursementTypeCode}})</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">SAP Project Code:</span> <span style="color:#333">{{data.sapCodeProject}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Loan/Grant Number:</span> <span style="color:#333">{{data.loanGrantNumber}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Rejected by:</span> <span style="color:#333">{{data.rejectedByFirstName}} {{data.rejectedByLastName}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Rejection date:</span> <span style="color:#333">{{data.rejectedDate}} at {{data.rejectedTime}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Status:</span> <span style="display:inline-block;padding:5px 15px;background:#d32f2f;color:white;border-radius:20px;font-size:14px;font-weight:600">Rejected</span></div>
+</td></tr></table>
+
+<table width="100%" cellpadding="20" style="background:#ffebee;border-left:4px solid #d32f2f;margin:20px 0;border-radius:4px">
+<tr><td>
+<h4 style="margin-top:0;color:#c62828">📝 Reason for rejection:</h4>
+<p style="margin:0;line-height:1.8;background:white;padding:15px;border-radius:4px">{{data.rejectionComment}}</p>
+</td></tr></table>
+
+<h4 style="color:#c62828;margin-top:30px;font-size:16px">🔄 What to do next?</h4>
+<ul style="line-height:1.8;padding-left:20px">
+<li>Carefully review the rejection reasons above</li>
+<li>If you believe there's an error, contact the manager</li>
+<li>If you wish to submit a new request, make sure to address the mentioned issues</li>
+<li>Don't hesitate to ask for clarifications if needed</li>
+</ul>
+
+<div style="text-align:center;margin-top:30px">
+<a href="https://clientconnection.afdb.org/disbursements/{{data.disbursementId}}" style="display:inline-block;padding:12px 30px;background:#eb3349;color:white;text-decoration:none;border-radius:5px">View details</a>
+</div>
+</td></tr>
+
+<tr><td style="background:#e0e0e0;height:20px;border-left:1px solid #e0e0e0;border-right:1px solid #e0e0e0;text-align:center">
+<span style="background:white;padding:5px 15px;font-size:12px;color:#666;font-weight:600;border:2px solid #e0e0e0;border-radius:20px">• • •</span>
+</td></tr>
+
+<tr><td style="background:#ffffff;padding:30px;border-left:1px solid #e0e0e0;border-right:1px solid #e0e0e0;border-bottom:1px solid #e0e0e0">
+<div style="display:inline-block;padding:4px 12px;background:#eb3349;color:white;border-radius:15px;font-size:12px;font-weight:600;margin-bottom:15px">🇫🇷 FRANÇAIS</div>
+<p style="margin:0 0 15px 0">Bonjour <strong>{{recipientName}}</strong>,</p>
+<p style="margin:0 0 15px 0">Nous regrettons de vous informer que votre demande de décaissement a été rejetée après examen.</p>
+
+<table width="100%" cellpadding="20" style="background:#f8f9fa;border-left:4px solid #eb3349;margin:20px 0;border-radius:4px">
+<tr><td>
+<h3 style="margin-top:0;color:#c62828;font-size:18px">💰 Détails du décaissement</h3>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Numéro de demande :</span> <span style="color:#333"><strong>{{data.requestNumber}}</strong></span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Type :</span> <span style="color:#333">{{data.disbursementTypeName}} ({{data.disbursementTypeCode}})</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Code SAP Projet :</span> <span style="color:#333">{{data.sapCodeProject}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Numéro Prêt/Don :</span> <span style="color:#333">{{data.loanGrantNumber}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Rejeté par :</span> <span style="color:#333">{{data.rejectedByFirstName}} {{data.rejectedByLastName}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Date de rejet :</span> <span style="color:#333">{{data.rejectedDate}} à {{data.rejectedTime}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Statut :</span> <span style="display:inline-block;padding:5px 15px;background:#d32f2f;color:white;border-radius:20px;font-size:14px;font-weight:600">Rejeté</span></div>
+</td></tr></table>
+
+<table width="100%" cellpadding="20" style="background:#ffebee;border-left:4px solid #d32f2f;margin:20px 0;border-radius:4px">
+<tr><td>
+<h4 style="margin-top:0;color:#c62828">📝 Motif du rejet :</h4>
+<p style="margin:0;line-height:1.8;background:white;padding:15px;border-radius:4px">{{data.rejectionComment}}</p>
+</td></tr></table>
+
+<h4 style="color:#c62828;margin-top:30px;font-size:16px">🔄 Que faire ensuite ?</h4>
+<ul style="line-height:1.8;padding-left:20px">
+<li>Examinez attentivement les raisons du rejet ci-dessus</li>
+<li>Si vous pensez qu'il y a une erreur, contactez le responsable</li>
+<li>Si vous souhaitez soumettre une nouvelle demande, assurez-vous de corriger les problèmes mentionnés</li>
+<li>N'hésitez pas à demander des clarifications si nécessaire</li>
+</ul>
+
+<div style="text-align:center;margin-top:30px">
+<a href="https://clientconnection.afdb.org/disbursements/{{data.disbursementId}}" style="display:inline-block;padding:12px 30px;background:#eb3349;color:white;text-decoration:none;border-radius:5px">Voir les détails</a>
+</div>
+</td></tr>
+
+<tr><td style="background:#f8f9fa;padding:20px;text-align:center;font-size:12px;color:#666;border-radius:0 0 8px 8px;border:1px solid #e0e0e0;border-top:none">
+<p style="margin:0 0 10px 0"><strong>Client Connection</strong> | African Development Bank</p>
+<p style="margin:0">For questions / Pour toute question : <a href="mailto:{{data.rejectedByEmail}}" style="color:#eb3349">{{data.rejectedByEmail}}</a></p>
+</td></tr>
+
+</table>
+</td></tr></table>
+</body>
+</html>
