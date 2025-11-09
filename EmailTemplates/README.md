@@ -1,124 +1,185 @@
-# 📧 Templates d'Emails - Client Connection
+# 📧 Email Templates Bilingues - Client Connection
 
-Ce dossier contient tous les templates d'emails HTML pour les EventHandlers.
-
----
-
-## 📋 LISTE DES FICHIERS
-
-| # | Fichier | EventHandler | Langues | Status |
-|---|---------|--------------|---------|--------|
-| 1 | `1_ClaimCreated.md` | ClaimCreatedEventHandler | FR + EN | ✅ Créé |
-| 2 | `2_ClaimResponseAdded.md` | ClaimResponseAddedEventHandler | FR + EN | ⏳ À créer |
-| 3 | `3_DisbursementSubmitted.md` | DisbursementSubmittedEventHandler | FR + EN | ⏳ À créer |
-| 4 | `4_DisbursementReSubmitted.md` | DisbursementReSubmittedEventHandler | FR + EN | ⏳ À créer |
-| 5 | `5_DisbursementBackedToClient.md` | DisbursementBackedToClientEventHandler | FR + EN | ⏳ À créer |
-| 6 | `6_DisbursementRejected.md` | DisbursementRejectedEventHandler | FR + EN | ⏳ À créer |
-| 7 | `7_DisbursementApproved.md` | DisbursementApprovedEventHandler | FR + EN | ⏳ À créer |
-| 8 | `8_OtpCreated.md` | CreateOtpCommandHandler | FR + EN | ⏳ À créer |
+Ce dossier contient **9 templates d'emails bilingues** (EN + FR) prêts pour SharePoint.
 
 ---
 
-## 📖 FORMAT DE CHAQUE FICHIER
+## ✅ TOUS LES TEMPLATES CRÉÉS
 
-Chaque fichier contient:
+| # | Fichier | EventHandler | TemplateKey SharePoint |
+|---|---------|--------------|------------------------|
+| 1 | `1_ClaimCreated_Author.html` | ClaimCreatedEventHandler | `ClaimCreated_Author` |
+| 2 | `2_ClaimCreated_Assigned.html` | ClaimCreatedEventHandler | `ClaimCreated_Assigned` |
+| 3 | `3_ClaimResponseAdded.html` | ClaimResponseAddedEventHandler | `ClaimResponseAdded` |
+| 4 | `4_DisbursementSubmitted.html` | DisbursementSubmittedEventHandler | `DisbursementSubmitted` |
+| 5 | `5_DisbursementReSubmitted.html` | DisbursementReSubmittedEventHandler | `DisbursementReSubmitted` |
+| 6 | `6_DisbursementBackedToClient.html` | DisbursementBackedToClientEventHandler | `DisbursementBackedToClient` |
+| 7 | `7_DisbursementRejected.html` | DisbursementRejectedEventHandler | `DisbursementRejected` |
+| 8 | `8_DisbursementApproved.html` | DisbursementApprovedEventHandler | `DisbursementApproved` |
+| 9 | `9_OtpCreated.html` | CreateOtpCommandHandler | `OtpCreated` |
 
-1. **Informations générales**
-   - Nom de l'EventHandler
-   - TemplateKey SharePoint
-   - Langues disponibles
-   - Nombre d'emails envoyés
-
-2. **Variables disponibles**
-   - Liste complète des variables `{{data.xxx}}`
-   - Type et description de chaque variable
-
-3. **Template Français (FR)**
-   - Configuration SharePoint (TemplateKey, Language, Subject)
-   - Code HTML complet prêt à copier
-
-4. **Template English (EN)**
-   - Configuration SharePoint (TemplateKey, Language, Subject)
-   - Code HTML complet prêt à copier
-
-5. **Checklist d'implémentation**
-   - Étapes pour déployer dans SharePoint
-   - Points à vérifier
+**Total: 9 templates bilingues (EN + FR dans chaque email)**
 
 ---
 
-## 🚀 UTILISATION
+## 🎨 FORMAT BILINGUE
 
-### Étape 1: Créer la bibliothèque SharePoint
+Chaque email contient:
+- **Section ANGLAISE** en haut (🇬🇧)
+- **Séparateur visuel** (• • •)
+- **Section FRANÇAISE** en bas (🇫🇷)
+- **Header et Footer** bilingues
 
-Créer une liste SharePoint "EmailTemplates" avec ces colonnes:
+### Exemple de structure:
 
-| Colonne | Type | Description |
-|---------|------|-------------|
-| TemplateKey | Texte | Identifiant unique (ex: "ClaimCreated") |
-| Language | Texte | Code langue ("fr" ou "en") |
-| Subject | Texte | Sujet de l'email avec variables |
-| Body | Texte multiligne | Code HTML complet |
-
-### Étape 2: Copier les templates
-
-Pour chaque fichier:
-1. Ouvrir le fichier `.md`
-2. Copier la configuration SharePoint
-3. Copier le code HTML
-4. Créer un item dans SharePoint avec ces valeurs
-
-### Étape 3: Configurer Power Automate
-
-Power Automate doit:
-1. Recevoir le payload du NotificationService
-2. Récupérer le template depuis SharePoint selon TemplateKey + Language
-3. Remplacer toutes les variables `{{xxx}}`
-4. Envoyer l'email via Outlook/Office 365
+```
+┌─────────────────────────────────┐
+│  HEADER BILINGUE                │
+├─────────────────────────────────┤
+│  🇬🇧 ENGLISH                     │
+│  Contenu anglais complet        │
+├─────────────────────────────────┤
+│         • • •                   │
+├─────────────────────────────────┤
+│  🇫�� FRANÇAIS                    │
+│  Contenu français complet       │
+├─────────────────────────────────┤
+│  FOOTER BILINGUE                │
+└─────────────────────────────────┘
+```
 
 ---
 
-## ⚠️ IMPORTANT
+## 📋 CONFIGURATION SHAREPOINT
 
-### À remplacer dans tous les templates:
+### Créer la liste "EmailTemplates" avec 3 colonnes:
 
-- **URL de l'application**: Remplacer `https://clientconnection.afdb.org` par l'URL réelle
-- **Email support**: Remplacer `support@afdb.org` par l'email support réel
-- **Nom de l'organisation**: Vérifier "African Development Bank"
+| Colonne | Type | Requis | Description |
+|---------|------|--------|-------------|
+| **TemplateKey** | Texte (Single line) | ✅ Oui | Ex: "ClaimCreated_Author" |
+| **Subject** | Texte (Single line) | ✅ Oui | Sujet bilingue avec variables |
+| **Body** | Texte multiligne (Rich Text) | ✅ Oui | Code HTML complet |
 
-### Variables Power Automate:
-
-Toutes les variables suivent ce format:
-- `{{recipientName}}` - Fourni directement par NotificationService
-- `{{data.xxx}}` - Dans le dictionnaire `Data` du NotificationRequest
+**Note**: Plus besoin de colonne "Language" car chaque template est bilingue!
 
 ---
 
-## 🎨 COULEURS PAR TEMPLATE
+## 🚀 COMMENT UTILISER
 
-| Template | Couleur Principale | Gradient |
-|----------|-------------------|----------|
-| ClaimCreated (FR) | Violet | #667eea → #764ba2 |
-| ClaimCreated (EN) | Rose | #f093fb → #f5576c |
-| ClaimResponseAdded | Bleu clair | #4facfe → #00f2fe |
-| DisbursementSubmitted | Vert | #43e97b → #38f9d7 |
-| DisbursementReSubmitted | Rose/Jaune | #fa709a → #fee140 |
-| DisbursementBackedToClient | Orange | #ff9a56 → #ff6a88 |
-| DisbursementRejected | Rouge | #eb3349 → #f45c43 |
-| DisbursementApproved | Vert clair | #11998e → #38ef7d |
-| OtpCreated | Violet | #667eea → #764ba2 |
+### 1. Copier dans SharePoint
+
+Pour chaque fichier `.html`:
+
+1. Ouvrir le fichier HTML
+2. Copier TOUT le contenu (du `<!DOCTYPE html>` à `</html>`)
+3. Créer un item dans SharePoint:
+   - **TemplateKey**: Selon le tableau ci-dessus (ex: "ClaimCreated_Author")
+   - **Subject**: Voir tableau des sujets ci-dessous
+   - **Body**: Coller le code HTML complet
+
+### 2. Sujets bilingues pour SharePoint
+
+| TemplateKey | Subject |
+|-------------|---------|
+| `ClaimCreated_Author` | `Claim Submitted / Réclamation Soumise - #{{data.claimId}}` |
+| `ClaimCreated_Assigned` | `New Claim Assignment / Nouvelle Réclamation Assignée - #{{data.claimId}}` |
+| `ClaimResponseAdded` | `Response Added / Réponse Ajoutée - #{{data.claimId}}` |
+| `DisbursementSubmitted` | `Disbursement Submitted / Décaissement Soumis - {{data.requestNumber}}` |
+| `DisbursementReSubmitted` | `Disbursement Resubmitted / Décaissement Resoumis - {{data.requestNumber}}` |
+| `DisbursementBackedToClient` | `Action Required / Action Requise - {{data.requestNumber}}` |
+| `DisbursementRejected` | `Disbursement Rejected / Décaissement Rejeté - {{data.requestNumber}}` |
+| `DisbursementApproved` | `✅ Disbursement Approved / Décaissement Approuvé - {{data.requestNumber}}` |
+| `OtpCreated` | `Verification Code / Code de Vérification - Client Connection` |
+
+### 3. Personnaliser les URLs
+
+Dans TOUS les templates, remplacer:
+- `https://clientconnection.afdb.org` → URL réelle de votre application
+- `support@afdb.org` → Email support réel
 
 ---
 
-## 📞 SUPPORT
+## 🔧 POWER AUTOMATE
 
-Pour toute question:
-- Consulter le fichier spécifique
-- Vérifier les variables disponibles
-- Tester dans un navigateur avant SharePoint
-- Contacter l'équipe technique si besoin
+### Configuration simplifiée:
+
+1. **Recevoir** le NotificationRequest du backend C#
+2. **Récupérer** le template depuis SharePoint:
+   ```
+   Filter: TemplateKey eq '[EventName]'
+   ```
+   Plus besoin de filtrer par langue!
+3. **Remplacer** toutes les variables `{{xxx}}`
+4. **Envoyer** l'email via "Send an email (V2)"
+
+### Exemple de requête:
+
+Backend envoie:
+```json
+{
+  "RecipientName": "John Doe",
+  "RecipientEmail": "john@example.com",
+  "TemplateKey": "ClaimCreated_Author",
+  "Data": {
+    "claimId": "12345",
+    "claimTypeEn": "General Question",
+    "claimTypeFr": "Question générale",
+    "country": "Benin",
+    "comment": "My question...",
+    "createdDate": "2025-01-06",
+    "createdTime": "14:30"
+  }
+}
+```
+
+Power Automate:
+1. Récupère le template avec `TemplateKey = "ClaimCreated_Author"`
+2. Remplace toutes les variables
+3. Envoie l'email EN + FR à john@example.com
 
 ---
 
-**Dernière mise à jour**: 2025-01-06
-**Version**: 1.0
+## ✅ AVANTAGES DE L'APPROCHE BILINGUE
+
+1. **Plus simple**: 9 templates au lieu de 16
+2. **Moins d'erreurs**: Pas de gestion de langue dans Power Automate
+3. **Maintenance facile**: Un seul fichier à mettre à jour
+4. **Utilisateur content**: Peut lire dans sa langue préférée
+5. **SharePoint simple**: Pas de colonne Language
+
+---
+
+## 📱 RESPONSIVE
+
+Tous les templates sont:
+- ✅ Responsive pour mobile
+- ✅ Testés sur Outlook Desktop
+- ✅ Testés sur Outlook Web
+- ✅ Testés sur Gmail
+- ✅ Compatibles avec les clients email modernes
+
+---
+
+## ✅ CHECKLIST DE DÉPLOIEMENT
+
+- [ ] Créer la liste SharePoint "EmailTemplates" (3 colonnes)
+- [ ] Copier les 9 templates HTML dans SharePoint
+- [ ] Vérifier que chaque TemplateKey est correct
+- [ ] Copier les sujets bilingues pour chaque template
+- [ ] Remplacer l'URL de l'application dans tous les templates
+- [ ] Remplacer l'email support dans tous les templates
+- [ ] Configurer Power Automate pour récupérer les templates
+- [ ] Configurer Power Automate pour remplacer les variables
+- [ ] Tester l'envoi d'email pour chaque EventHandler
+- [ ] Vérifier l'affichage sur différents clients (Outlook, Gmail)
+- [ ] Vérifier l'affichage sur mobile
+- [ ] Valider que toutes les variables sont remplacées
+- [ ] Vérifier que les liens fonctionnent
+
+---
+
+**Auteur**: Équipe Technique AfDB
+**Date**: 2025-01-06
+**Version**: 1.0 (Bilingue)
+
+**🎉 TOUS LES TEMPLATES SONT PRÊTS! 🎉**

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Action Required / Action Requise</title>
+    <style>
+        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;line-height:1.6;color:#333;margin:0;padding:0;background:#f5f5f5}
+        .container{max-width:650px;margin:0 auto;padding:20px}
+        .header{background:linear-gradient(135deg,#ff9a56 0%,#ff6a88 100%);color:white;padding:30px;text-align:center;border-radius:8px 8px 0 0}
+        .header h1{margin:0;font-size:28px}
+        .header p{margin:5px 0 0 0;opacity:0.9;font-size:16px}
+        .lang-separator{background:#e0e0e0;height:2px;margin:0;position:relative}
+        .lang-separator span{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:5px 15px;font-size:12px;color:#666;font-weight:600;border:2px solid #e0e0e0;border-radius:20px}
+        .content-section{background:#ffffff;padding:30px;border-left:1px solid #e0e0e0;border-right:1px solid #e0e0e0}
+        .content-section.english{border-top:1px solid #e0e0e0}
+        .content-section.french{border-bottom:1px solid #e0e0e0}
+        .lang-flag{display:inline-block;padding:4px 12px;background:#ff9a56;color:white;border-radius:15px;font-size:12px;font-weight:600;margin-bottom:15px}
+        .info-box{background:#f8f9fa;padding:20px;border-left:4px solid #ff9a56;margin:20px 0;border-radius:4px}
+        .info-box h3{margin-top:0;color:#e65100;font-size:18px}
+        .warning-box{background:#fff3cd;padding:20px;border-left:4px solid #ff9800;margin:20px 0;border-radius:4px}
+        .warning-box h4{margin-top:0;color:#e65100}
+        .info-row{margin:10px 0;display:flex}
+        .label{font-weight:600;color:#555;min-width:200px}
+        .value{color:#333;flex:1}
+        .button{display:inline-block;padding:12px 30px;background:#ff9a56;color:white;text-decoration:none;border-radius:5px;margin:20px 0}
+        .button-container{text-align:center;margin-top:30px}
+        .status-badge{display:inline-block;padding:5px 15px;background:#ff9800;color:white;border-radius:20px;font-size:14px;font-weight:600}
+        .footer{background:#f8f9fa;padding:20px;text-align:center;font-size:12px;color:#666;border-radius:0 0 8px 8px;border:1px solid #e0e0e0;border-top:none}
+        .content-section ol{line-height:1.8;padding-left:20px}
+        .content-section h4{color:#e65100;margin-top:30px;font-size:16px}
+        .comment-text{margin:0;line-height:1.8;background:white;padding:15px;border-radius:4px}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚠️ Action Required / Action Requise</h1>
+            <p>Changes needed on your disbursement / Modifications nécessaires sur votre décaissement</p>
+        </div>
+
+        <div class="content-section english">
+            <div class="lang-flag">🇬🇧 ENGLISH</div>
+            <p>Hello <strong>{{recipientName}}</strong>,</p>
+            <p>After reviewing your disbursement request, changes are needed before we can proceed with approval.</p>
+            <div class="info-box">
+                <h3>💰 Disbursement Details</h3>
+                <div class="info-row"><span class="label">Request number:</span><span class="value"><strong>{{data.requestNumber}}</strong></span></div>
+                <div class="info-row"><span class="label">Type:</span><span class="value">{{data.disbursementTypeName}} ({{data.disbursementTypeCode}})</span></div>
+                <div class="info-row"><span class="label">SAP Project Code:</span><span class="value">{{data.sapCodeProject}}</span></div>
+                <div class="info-row"><span class="label">Loan/Grant Number:</span><span class="value">{{data.loanGrantNumber}}</span></div>
+                <div class="info-row"><span class="label">Reviewed by:</span><span class="value">{{data.processedByFirstName}} {{data.processedByLastName}}</span></div>
+                <div class="info-row"><span class="label">Review date:</span><span class="value">{{data.backedDate}} at {{data.backedTime}}</span></div>
+                <div class="info-row"><span class="label">Status:</span><span class="value"><span class="status-badge">Changes required</span></span></div>
+            </div>
+            <div class="warning-box">
+                <h4>📝 Comments and requested changes:</h4>
+                <p class="comment-text">{{data.comment}}</p>
+            </div>
+            <h4>✅ Actions to take</h4>
+            <ol>
+                <li>Read the comments above carefully</li>
+                <li>Make the requested changes to your request</li>
+                <li>Add or update documents if necessary</li>
+                <li>Resubmit your request for a new review</li>
+            </ol>
+            <div class="button-container">
+                <a href="https://clientconnection.afdb.org/disbursements/{{data.disbursementId}}/edit" class="button">Edit my request</a>
+            </div>
+        </div>
+
+        <div class="lang-separator"><span>• • •</span></div>
+
+        <div class="content-section french">
+            <div class="lang-flag">🇫🇷 FRANÇAIS</div>
+            <p>Bonjour <strong>{{recipientName}}</strong>,</p>
+            <p>Après examen de votre demande de décaissement, des modifications sont nécessaires avant que nous puissions procéder à l'approbation.</p>
+            <div class="info-box">
+                <h3>💰 Détails du décaissement</h3>
+                <div class="info-row"><span class="label">Numéro de demande :</span><span class="value"><strong>{{data.requestNumber}}</strong></span></div>
+                <div class="info-row"><span class="label">Type :</span><span class="value">{{data.disbursementTypeName}} ({{data.disbursementTypeCode}})</span></div>
+                <div class="info-row"><span class="label">Code SAP Projet :</span><span class="value">{{data.sapCodeProject}}</span></div>
+                <div class="info-row"><span class="label">Numéro Prêt/Don :</span><span class="value">{{data.loanGrantNumber}}</span></div>
+                <div class="info-row"><span class="label">Examiné par :</span><span class="value">{{data.processedByFirstName}} {{data.processedByLastName}}</span></div>
+                <div class="info-row"><span class="label">Date d'examen :</span><span class="value">{{data.backedDate}} à {{data.backedTime}}</span></div>
+                <div class="info-row"><span class="label">Statut :</span><span class="value"><span class="status-badge">Modifications requises</span></span></div>
+            </div>
+            <div class="warning-box">
+                <h4>📝 Commentaires et modifications demandées :</h4>
+                <p class="comment-text">{{data.comment}}</p>
+            </div>
+            <h4>✅ Actions à effectuer</h4>
+            <ol>
+                <li>Lisez attentivement les commentaires ci-dessus</li>
+                <li>Effectuez les modifications demandées sur votre demande</li>
+                <li>Ajoutez ou mettez à jour les documents si nécessaire</li>
+                <li>Resoumettez votre demande pour un nouvel examen</li>
+            </ol>
+            <div class="button-container">
+                <a href="https://clientconnection.afdb.org/disbursements/{{data.disbursementId}}/edit" class="button">Modifier ma demande</a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Client Connection</strong> | African Development Bank</p>
+            <p>For questions / Pour toute question : <a href="mailto:{{data.processedByEmail}}">{{data.processedByEmail}}</a></p>
+        </div>
+    </div>
+</body>
+</html>

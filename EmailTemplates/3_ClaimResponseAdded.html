@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Response Added / Réponse Ajoutée</title>
+    <style>
+        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;line-height:1.6;color:#333;margin:0;padding:0;background:#f5f5f5}
+        .container{max-width:650px;margin:0 auto;padding:20px}
+        .header{background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);color:white;padding:30px;text-align:center;border-radius:8px 8px 0 0}
+        .header h1{margin:0;font-size:28px}
+        .header p{margin:5px 0 0 0;opacity:0.9;font-size:16px}
+        .lang-separator{background:#e0e0e0;height:2px;margin:0;position:relative}
+        .lang-separator span{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:5px 15px;font-size:12px;color:#666;font-weight:600;border:2px solid #e0e0e0;border-radius:20px}
+        .content-section{background:#ffffff;padding:30px;border-left:1px solid #e0e0e0;border-right:1px solid #e0e0e0}
+        .content-section.english{border-top:1px solid #e0e0e0}
+        .content-section.french{border-bottom:1px solid #e0e0e0}
+        .lang-flag{display:inline-block;padding:4px 12px;background:#4facfe;color:white;border-radius:15px;font-size:12px;font-weight:600;margin-bottom:15px}
+        .info-box{background:#f8f9fa;padding:20px;border-left:4px solid #4facfe;margin:20px 0;border-radius:4px}
+        .info-box h3{margin-top:0;color:#4facfe;font-size:18px}
+        .response-box{background:#e8f5e9;padding:20px;border-left:4px solid #4caf50;margin:20px 0;border-radius:4px}
+        .response-box h3{margin-top:0;color:#2e7d32;font-size:18px}
+        .info-row{margin:10px 0}
+        .label{font-weight:600;color:#555;display:inline-block;min-width:180px}
+        .value{color:#333}
+        .button{display:inline-block;padding:12px 30px;background:#4facfe;color:white;text-decoration:none;border-radius:5px;margin:20px 0}
+        .button-container{text-align:center;margin-top:30px}
+        .status-badge{display:inline-block;padding:5px 15px;background:#4caf50;color:white;border-radius:20px;font-size:14px}
+        .footer{background:#f8f9fa;padding:20px;text-align:center;font-size:12px;color:#666;border-radius:0 0 8px 8px;border:1px solid #e0e0e0;border-top:none}
+        .response-text{margin:15px 0 0 0;line-height:1.8;background:white;padding:15px;border-radius:4px}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💬 New Response / Nouvelle Réponse</h1>
+            <p>An update regarding your claim / Une mise à jour concernant votre réclamation</p>
+        </div>
+
+        <div class="content-section english">
+            <div class="lang-flag">🇬🇧 ENGLISH</div>
+            <p>Hello <strong>{{recipientName}}</strong>,</p>
+            <p>A response has been added to your claim by our team.</p>
+            <div class="info-box">
+                <h3>📋 Claim Reminder</h3>
+                <div class="info-row"><span class="label">Reference:</span><span class="value">#{{data.claimId}}</span></div>
+                <div class="info-row"><span class="label">Type:</span><span class="value">{{data.claimTypeEn}}</span></div>
+                <div class="info-row"><span class="label">Country:</span><span class="value">{{data.country}}</span></div>
+            </div>
+            <div class="response-box">
+                <h3>✅ Manager's Response</h3>
+                <div class="info-row"><span class="label">Manager:</span><span class="value">{{data.processAuthorFirstName}} {{data.processAuthorLastName}}</span></div>
+                <div class="info-row"><span class="label">Status:</span><span class="value"><span class="status-badge">{{data.processStatus}}</span></span></div>
+                <div class="info-row"><span class="label">Response date:</span><span class="value">{{data.responseDate}} at {{data.responseTime}}</span></div>
+                <hr style="border:none;border-top:1px solid #c8e6c9;margin:20px 0">
+                <p style="margin:0"><strong>💬 Comment:</strong></p>
+                <p class="response-text">{{data.processComment}}</p>
+            </div>
+            <div class="button-container">
+                <a href="https://clientconnection.afdb.org/claims/{{data.claimId}}" class="button">View Details</a>
+            </div>
+        </div>
+
+        <div class="lang-separator"><span>• • •</span></div>
+
+        <div class="content-section french">
+            <div class="lang-flag">🇫🇷 FRANÇAIS</div>
+            <p>Bonjour <strong>{{recipientName}}</strong>,</p>
+            <p>Une réponse a été ajoutée à votre réclamation par notre équipe.</p>
+            <div class="info-box">
+                <h3>📋 Rappel de votre réclamation</h3>
+                <div class="info-row"><span class="label">Référence :</span><span class="value">#{{data.claimId}}</span></div>
+                <div class="info-row"><span class="label">Type :</span><span class="value">{{data.claimTypeFr}}</span></div>
+                <div class="info-row"><span class="label">Pays :</span><span class="value">{{data.country}}</span></div>
+            </div>
+            <div class="response-box">
+                <h3>✅ Réponse du responsable</h3>
+                <div class="info-row"><span class="label">Responsable :</span><span class="value">{{data.processAuthorFirstName}} {{data.processAuthorLastName}}</span></div>
+                <div class="info-row"><span class="label">Statut :</span><span class="value"><span class="status-badge">{{data.processStatus}}</span></span></div>
+                <div class="info-row"><span class="label">Date de réponse :</span><span class="value">{{data.responseDate}} à {{data.responseTime}}</span></div>
+                <hr style="border:none;border-top:1px solid #c8e6c9;margin:20px 0">
+                <p style="margin:0"><strong>💬 Commentaire :</strong></p>
+                <p class="response-text">{{data.processComment}}</p>
+            </div>
+            <div class="button-container">
+                <a href="https://clientconnection.afdb.org/claims/{{data.claimId}}" class="button">Voir les Détails</a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Client Connection</strong> | African Development Bank</p>
+            <p>This is an automated email. Please do not reply. / Cet email a été envoyé automatiquement. Merci de ne pas y répondre.</p>
+        </div>
+    </div>
+</body>
+</html>
