@@ -1,104 +1,94 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Disbursement Resubmitted / Décaissement Resoumis</title>
-    <style>
-        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;line-height:1.6;color:#333;margin:0;padding:0;background:#f5f5f5}
-        .container{max-width:650px;margin:0 auto;padding:20px}
-        .header{background:linear-gradient(135deg,#fa709a 0%,#fee140 100%);color:white;padding:30px;text-align:center;border-radius:8px 8px 0 0}
-        .header h1{margin:0;font-size:28px}
-        .header p{margin:5px 0 0 0;opacity:0.9;font-size:16px}
-        .lang-separator{background:#e0e0e0;height:2px;margin:0;position:relative}
-        .lang-separator span{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:5px 15px;font-size:12px;color:#666;font-weight:600;border:2px solid #e0e0e0;border-radius:20px}
-        .content-section{background:#ffffff;padding:30px;border-left:1px solid #e0e0e0;border-right:1px solid #e0e0e0}
-        .content-section.english{border-top:1px solid #e0e0e0}
-        .content-section.french{border-bottom:1px solid #e0e0e0}
-        .lang-flag{display:inline-block;padding:4px 12px;background:#fa709a;color:white;border-radius:15px;font-size:12px;font-weight:600;margin-bottom:15px}
-        .info-box{background:#f8f9fa;padding:20px;border-left:4px solid #fa709a;margin:20px 0;border-radius:4px}
-        .info-box h3{margin-top:0;color:#d84315;font-size:18px}
-        .info-row{margin:10px 0;display:flex}
-        .label{font-weight:600;color:#555;min-width:200px}
-        .value{color:#333;flex:1}
-        .comment-box{background:#fff3cd;padding:15px;border-left:4px solid #ffc107;margin:20px 0;border-radius:4px}
-        .button{display:inline-block;padding:12px 30px;background:#fa709a;color:white;text-decoration:none;border-radius:5px;margin:20px 0}
-        .button-container{text-align:center;margin-top:30px}
-        .status-badge{display:inline-block;padding:5px 15px;background:#ff9800;color:white;border-radius:20px;font-size:14px;font-weight:600}
-        .footer{background:#f8f9fa;padding:20px;text-align:center;font-size:12px;color:#666;border-radius:0 0 8px 8px;border:1px solid #e0e0e0;border-top:none}
-        .content-section ul{line-height:1.8;padding-left:20px}
-        .content-section h4{color:#d84315;margin-top:30px;font-size:16px}
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🔄 Disbursement Resubmitted / Décaissement Resoumis</h1>
-            <p>Your modified request has been resubmitted / Votre demande modifiée a été resoumise</p>
-        </div>
+<head><meta charset="UTF-8"></head>
+<body style="font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;line-height:1.6;color:#333;margin:0;padding:0;background:#f5f5f5">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f5f5f5;padding:20px">
+<tr><td align="center">
+<table width="650" cellpadding="0" cellspacing="0" border="0" style="max-width:650px">
 
-        <div class="content-section english">
-            <div class="lang-flag">🇬🇧 ENGLISH</div>
-            <p>Hello <strong>{{recipientName}}</strong>,</p>
-            <p>We confirm the resubmission of your disbursement request after modifications. It is under review again.</p>
-            <div class="info-box">
-                <h3>💰 Disbursement Details</h3>
-                <div class="info-row"><span class="label">Request number:</span><span class="value"><strong>{{data.requestNumber}}</strong></span></div>
-                <div class="info-row"><span class="label">Type:</span><span class="value">{{data.disbursementTypeName}} ({{data.disbursementTypeCode}})</span></div>
-                <div class="info-row"><span class="label">SAP Project Code:</span><span class="value">{{data.sapCodeProject}}</span></div>
-                <div class="info-row"><span class="label">Loan/Grant Number:</span><span class="value">{{data.loanGrantNumber}}</span></div>
-                <div class="info-row"><span class="label">Resubmission date:</span><span class="value">{{data.resubmittedDate}} at {{data.resubmittedTime}}</span></div>
-                <div class="info-row"><span class="label">Status:</span><span class="value"><span class="status-badge">Pending approval</span></span></div>
-            </div>
-            <div class="comment-box">
-                <p style="margin:0"><strong>📝 Your resubmission comment:</strong></p>
-                <p style="margin:10px 0 0 0;line-height:1.8">{{data.comment}}</p>
-            </div>
-            <h4>🔔 Next Steps</h4>
-            <ul>
-                <li>Your modified request will be reviewed again</li>
-                <li>We will verify that all comments have been addressed</li>
-                <li>You will receive a notification with the final decision</li>
-            </ul>
-            <div class="button-container">
-                <a href="https://clientconnection.afdb.org/disbursements/{{data.disbursementId}}" class="button">View my request</a>
-            </div>
-        </div>
+<tr><td style="background:linear-gradient(135deg,#fa709a 0%,#fee140 100%);color:white;padding:30px;text-align:center;border-radius:8px 8px 0 0">
+<h1 style="margin:0;font-size:28px;color:white">🔄 Disbursement Resubmitted / Décaissement Resoumis</h1>
+<p style="margin:5px 0 0 0;opacity:0.9;font-size:16px;color:white">Your modified request has been resubmitted / Votre demande modifiée a été resoumise</p>
+</td></tr>
 
-        <div class="lang-separator"><span>• • •</span></div>
+<tr><td style="background:#ffffff;padding:30px;border-left:1px solid #e0e0e0;border-right:1px solid #e0e0e0;border-top:1px solid #e0e0e0">
+<div style="display:inline-block;padding:4px 12px;background:#fa709a;color:white;border-radius:15px;font-size:12px;font-weight:600;margin-bottom:15px">🇬🇧 ENGLISH</div>
+<p style="margin:0 0 15px 0">Hello <strong>{{recipientName}}</strong>,</p>
+<p style="margin:0 0 15px 0">We confirm the resubmission of your disbursement request after modifications. It is under review again.</p>
 
-        <div class="content-section french">
-            <div class="lang-flag">🇫🇷 FRANÇAIS</div>
-            <p>Bonjour <strong>{{recipientName}}</strong>,</p>
-            <p>Nous confirmons la resoumission de votre demande de décaissement après modifications. Elle est à nouveau en cours d'examen.</p>
-            <div class="info-box">
-                <h3>💰 Détails du décaissement</h3>
-                <div class="info-row"><span class="label">Numéro de demande :</span><span class="value"><strong>{{data.requestNumber}}</strong></span></div>
-                <div class="info-row"><span class="label">Type :</span><span class="value">{{data.disbursementTypeName}} ({{data.disbursementTypeCode}})</span></div>
-                <div class="info-row"><span class="label">Code SAP Projet :</span><span class="value">{{data.sapCodeProject}}</span></div>
-                <div class="info-row"><span class="label">Numéro Prêt/Don :</span><span class="value">{{data.loanGrantNumber}}</span></div>
-                <div class="info-row"><span class="label">Date de resoumission :</span><span class="value">{{data.resubmittedDate}} à {{data.resubmittedTime}}</span></div>
-                <div class="info-row"><span class="label">Statut :</span><span class="value"><span class="status-badge">En attente d'approbation</span></span></div>
-            </div>
-            <div class="comment-box">
-                <p style="margin:0"><strong>📝 Votre commentaire de resoumission :</strong></p>
-                <p style="margin:10px 0 0 0;line-height:1.8">{{data.comment}}</p>
-            </div>
-            <h4>🔔 Prochaines étapes</h4>
-            <ul>
-                <li>Votre demande modifiée sera réexaminée</li>
-                <li>Nous vérifierons que toutes les remarques ont été prises en compte</li>
-                <li>Vous recevrez une notification de la décision finale</li>
-            </ul>
-            <div class="button-container">
-                <a href="https://clientconnection.afdb.org/disbursements/{{data.disbursementId}}" class="button">Voir ma demande</a>
-            </div>
-        </div>
+<table width="100%" cellpadding="20" style="background:#f8f9fa;border-left:4px solid #fa709a;margin:20px 0;border-radius:4px">
+<tr><td>
+<h3 style="margin-top:0;color:#d84315;font-size:18px">💰 Disbursement Details</h3>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Request number:</span> <span style="color:#333"><strong>{{data.requestNumber}}</strong></span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Type:</span> <span style="color:#333">{{data.disbursementTypeName}} ({{data.disbursementTypeCode}})</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">SAP Project Code:</span> <span style="color:#333">{{data.sapCodeProject}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Loan/Grant Number:</span> <span style="color:#333">{{data.loanGrantNumber}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Resubmission date:</span> <span style="color:#333">{{data.resubmittedDate}} at {{data.resubmittedTime}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Status:</span> <span style="display:inline-block;padding:5px 15px;background:#ff9800;color:white;border-radius:20px;font-size:14px;font-weight:600">Pending approval</span></div>
+</td></tr></table>
 
-        <div class="footer">
-            <p><strong>Client Connection</strong> | African Development Bank</p>
-            <p>This is an automated email. Please do not reply. / Cet email a été envoyé automatiquement. Merci de ne pas y répondre.</p>
-        </div>
-    </div>
+<table width="100%" cellpadding="15" style="background:#fff3cd;border-left:4px solid #ffc107;margin:20px 0;border-radius:4px">
+<tr><td>
+<p style="margin:0"><strong>📝 Your resubmission comment:</strong></p>
+<p style="margin:10px 0 0 0;line-height:1.8">{{data.comment}}</p>
+</td></tr></table>
+
+<h4 style="color:#d84315;margin-top:30px;font-size:16px">🔔 Next Steps</h4>
+<ul style="line-height:1.8;padding-left:20px">
+<li>Your modified request will be reviewed again</li>
+<li>We will verify that all comments have been addressed</li>
+<li>You will receive a notification with the final decision</li>
+</ul>
+
+<div style="text-align:center;margin-top:30px">
+<a href="https://clientconnection.afdb.org/disbursements/{{data.disbursementId}}" style="display:inline-block;padding:12px 30px;background:#fa709a;color:white;text-decoration:none;border-radius:5px">View my request</a>
+</div>
+</td></tr>
+
+<tr><td style="background:#e0e0e0;height:20px;border-left:1px solid #e0e0e0;border-right:1px solid #e0e0e0;text-align:center">
+<span style="background:white;padding:5px 15px;font-size:12px;color:#666;font-weight:600;border:2px solid #e0e0e0;border-radius:20px">• • •</span>
+</td></tr>
+
+<tr><td style="background:#ffffff;padding:30px;border-left:1px solid #e0e0e0;border-right:1px solid #e0e0e0;border-bottom:1px solid #e0e0e0">
+<div style="display:inline-block;padding:4px 12px;background:#fa709a;color:white;border-radius:15px;font-size:12px;font-weight:600;margin-bottom:15px">🇫🇷 FRANÇAIS</div>
+<p style="margin:0 0 15px 0">Bonjour <strong>{{recipientName}}</strong>,</p>
+<p style="margin:0 0 15px 0">Nous confirmons la resoumission de votre demande de décaissement après modifications. Elle est à nouveau en cours d'examen.</p>
+
+<table width="100%" cellpadding="20" style="background:#f8f9fa;border-left:4px solid #fa709a;margin:20px 0;border-radius:4px">
+<tr><td>
+<h3 style="margin-top:0;color:#d84315;font-size:18px">💰 Détails du décaissement</h3>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Numéro de demande :</span> <span style="color:#333"><strong>{{data.requestNumber}}</strong></span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Type :</span> <span style="color:#333">{{data.disbursementTypeName}} ({{data.disbursementTypeCode}})</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Code SAP Projet :</span> <span style="color:#333">{{data.sapCodeProject}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Numéro Prêt/Don :</span> <span style="color:#333">{{data.loanGrantNumber}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Date de resoumission :</span> <span style="color:#333">{{data.resubmittedDate}} à {{data.resubmittedTime}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Statut :</span> <span style="display:inline-block;padding:5px 15px;background:#ff9800;color:white;border-radius:20px;font-size:14px;font-weight:600">En attente d'approbation</span></div>
+</td></tr></table>
+
+<table width="100%" cellpadding="15" style="background:#fff3cd;border-left:4px solid #ffc107;margin:20px 0;border-radius:4px">
+<tr><td>
+<p style="margin:0"><strong>📝 Votre commentaire de resoumission :</strong></p>
+<p style="margin:10px 0 0 0;line-height:1.8">{{data.comment}}</p>
+</td></tr></table>
+
+<h4 style="color:#d84315;margin-top:30px;font-size:16px">🔔 Prochaines étapes</h4>
+<ul style="line-height:1.8;padding-left:20px">
+<li>Votre demande modifiée sera réexaminée</li>
+<li>Nous vérifierons que toutes les remarques ont été prises en compte</li>
+<li>Vous recevrez une notification de la décision finale</li>
+</ul>
+
+<div style="text-align:center;margin-top:30px">
+<a href="https://clientconnection.afdb.org/disbursements/{{data.disbursementId}}" style="display:inline-block;padding:12px 30px;background:#fa709a;color:white;text-decoration:none;border-radius:5px">Voir ma demande</a>
+</div>
+</td></tr>
+
+<tr><td style="background:#f8f9fa;padding:20px;text-align:center;font-size:12px;color:#666;border-radius:0 0 8px 8px;border:1px solid #e0e0e0;border-top:none">
+<p style="margin:0 0 10px 0"><strong>Client Connection</strong> | African Development Bank</p>
+<p style="margin:0">This is an automated email. Please do not reply. / Cet email a été envoyé automatiquement. Merci de ne pas y répondre.</p>
+</td></tr>
+
+</table>
+</td></tr></table>
 </body>
 </html>
