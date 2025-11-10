@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"></head>
+<body style="font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;line-height:1.6;color:#333;margin:0;padding:0;background:#f5f5f5">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f5f5f5;padding:20px">
+<tr><td align="center">
+<table width="650" cellpadding="0" cellspacing="0" border="0" style="max-width:650px">
+
+<tr><td style="background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);color:white;padding:30px;text-align:center;border-radius:8px 8px 0 0">
+<h1 style="margin:0;font-size:28px;color:white">🔔 New Disbursement Request / Nouvelle Demande de Décaissement</h1>
+<p style="margin:5px 0 0 0;opacity:0.9;font-size:16px;color:white">Action Required / Action Requise</p>
+</td></tr>
+
+<tr><td style="background:#ffffff;padding:30px;border-left:1px solid #e0e0e0;border-right:1px solid #e0e0e0;border-top:1px solid #e0e0e0">
+<div style="display:inline-block;padding:4px 12px;background:#f5576c;color:white;border-radius:15px;font-size:12px;font-weight:600;margin-bottom:15px">🇬🇧 ENGLISH</div>
+<p style="margin:0 0 15px 0">Hello,</p>
+<p style="margin:0 0 15px 0">A new disbursement request has been submitted and requires your attention for review and approval.</p>
+
+<table width="100%" cellpadding="20" style="background:#f8f9fa;border-left:4px solid #f5576c;margin:20px 0;border-radius:4px">
+<tr><td>
+<h3 style="margin-top:0;color:#f5576c;font-size:18px">💰 Disbursement Details</h3>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Request number:</span> <span style="color:#333"><strong>{{data.requestNumber}}</strong></span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Type:</span> <span style="color:#333">{{data.disbursementTypeName}} ({{data.disbursementTypeCode}})</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">SAP Project Code:</span> <span style="color:#333">{{data.sapCodeProject}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Loan/Grant Number:</span> <span style="color:#333">{{data.loanGrantNumber}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Country:</span> <span style="color:#333">{{data.country}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Submitted by:</span> <span style="color:#333">{{data.submittedByFirstName}} {{data.submittedByLastName}} ({{data.submittedByEmail}})</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Submission date:</span> <span style="color:#333">{{data.submittedDate}} at {{data.submittedTime}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Status:</span> <span style="display:inline-block;padding:5px 15px;background:#dc3545;color:white;border-radius:20px;font-size:14px;font-weight:600">Action Required</span></div>
+</td></tr></table>
+
+<table width="100%" cellpadding="20" style="background:#fff9e6;border-left:4px solid #ffc107;margin:20px 0;border-radius:4px">
+<tr><td>
+<h4 style="margin-top:0;color:#f57c00">📊 Request Summary</h4>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Amount:</span> <span style="color:#333">{{data.amount}} {{data.currency}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Purpose:</span> <span style="color:#333">{{data.purpose}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Documents attached:</span> <span style="color:#333">{{data.documentsCount}} file(s)</span></div>
+</td></tr></table>
+
+<h4 style="color:#f5576c;margin-top:30px;font-size:16px">⏰ Required Actions</h4>
+<ol style="line-height:1.8;padding-left:20px">
+<li>Review the disbursement request details carefully</li>
+<li>Verify all supporting documents</li>
+<li>Check compliance with project requirements</li>
+<li>Approve, request changes, or reject the request</li>
+<li>Update the status accordingly in the system</li>
+</ol>
+
+<table width="100%" cellpadding="15" style="background:#e3f2fd;border-left:4px solid #2196f3;margin:20px 0;border-radius:4px">
+<tr><td>
+<p style="margin:0"><strong>⏱️ Priority Level:</strong> <span style="display:inline-block;padding:3px 10px;background:#ff9800;color:white;border-radius:12px;font-size:12px;font-weight:600">NORMAL</span></p>
+<p style="margin:10px 0 0 0;font-size:14px;color:#555">Please review this request within the standard processing timeframe.</p>
+</td></tr></table>
+
+<div style="text-align:center;margin-top:30px">
+<a href="https://clientconnection.afdb.org/disbursements/{{data.disbursementId}}/review" style="display:inline-block;padding:12px 30px;background:#f5576c;color:white;text-decoration:none;border-radius:5px">Review Request</a>
+</div>
+</td></tr>
+
+<tr><td style="background:#e0e0e0;height:20px;border-left:1px solid #e0e0e0;border-right:1px solid #e0e0e0;text-align:center">
+<span style="background:white;padding:5px 15px;font-size:12px;color:#666;font-weight:600;border:2px solid #e0e0e0;border-radius:20px">• • •</span>
+</td></tr>
+
+<tr><td style="background:#ffffff;padding:30px;border-left:1px solid #e0e0e0;border-right:1px solid #e0e0e0;border-bottom:1px solid #e0e0e0">
+<div style="display:inline-block;padding:4px 12px;background:#f5576c;color:white;border-radius:15px;font-size:12px;font-weight:600;margin-bottom:15px">🇫🇷 FRANÇAIS</div>
+<p style="margin:0 0 15px 0">Bonjour,</p>
+<p style="margin:0 0 15px 0">Une nouvelle demande de décaissement a été soumise et nécessite votre attention pour examen et approbation.</p>
+
+<table width="100%" cellpadding="20" style="background:#f8f9fa;border-left:4px solid #f5576c;margin:20px 0;border-radius:4px">
+<tr><td>
+<h3 style="margin-top:0;color:#f5576c;font-size:18px">💰 Détails du décaissement</h3>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Numéro de demande :</span> <span style="color:#333"><strong>{{data.requestNumber}}</strong></span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Type :</span> <span style="color:#333">{{data.disbursementTypeName}} ({{data.disbursementTypeCode}})</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Code SAP Projet :</span> <span style="color:#333">{{data.sapCodeProject}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Numéro Prêt/Don :</span> <span style="color:#333">{{data.loanGrantNumber}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Pays :</span> <span style="color:#333">{{data.country}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Soumis par :</span> <span style="color:#333">{{data.submittedByFirstName}} {{data.submittedByLastName}} ({{data.submittedByEmail}})</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Date de soumission :</span> <span style="color:#333">{{data.submittedDate}} à {{data.submittedTime}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Statut :</span> <span style="display:inline-block;padding:5px 15px;background:#dc3545;color:white;border-radius:20px;font-size:14px;font-weight:600">Action Requise</span></div>
+</td></tr></table>
+
+<table width="100%" cellpadding="20" style="background:#fff9e6;border-left:4px solid #ffc107;margin:20px 0;border-radius:4px">
+<tr><td>
+<h4 style="margin-top:0;color:#f57c00">📊 Résumé de la demande</h4>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Montant :</span> <span style="color:#333">{{data.amount}} {{data.currency}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Objet :</span> <span style="color:#333">{{data.purpose}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#555">Documents joints :</span> <span style="color:#333">{{data.documentsCount}} fichier(s)</span></div>
+</td></tr></table>
+
+<h4 style="color:#f5576c;margin-top:30px;font-size:16px">⏰ Actions Requises</h4>
+<ol style="line-height:1.8;padding-left:20px">
+<li>Examinez attentivement les détails de la demande de décaissement</li>
+<li>Vérifiez tous les documents justificatifs</li>
+<li>Contrôlez la conformité avec les exigences du projet</li>
+<li>Approuvez, demandez des modifications ou rejetez la demande</li>
+<li>Mettez à jour le statut en conséquence dans le système</li>
+</ol>
+
+<table width="100%" cellpadding="15" style="background:#e3f2fd;border-left:4px solid #2196f3;margin:20px 0;border-radius:4px">
+<tr><td>
+<p style="margin:0"><strong>⏱️ Niveau de priorité :</strong> <span style="display:inline-block;padding:3px 10px;background:#ff9800;color:white;border-radius:12px;font-size:12px;font-weight:600">NORMAL</span></p>
+<p style="margin:10px 0 0 0;font-size:14px;color:#555">Veuillez examiner cette demande dans les délais de traitement standard.</p>
+</td></tr></table>
+
+<div style="text-align:center;margin-top:30px">
+<a href="https://clientconnection.afdb.org/disbursements/{{data.disbursementId}}/review" style="display:inline-block;padding:12px 30px;background:#f5576c;color:white;text-decoration:none;border-radius:5px">Examiner la Demande</a>
+</div>
+</td></tr>
+
+<tr><td style="background:#f8f9fa;padding:20px;text-align:center;font-size:12px;color:#666;border-radius:0 0 8px 8px;border:1px solid #e0e0e0;border-top:none">
+<p style="margin:0 0 10px 0"><strong>Client Connection</strong> | African Development Bank</p>
+<p style="margin:0 0 10px 0">This is an automated email. Please do not reply. / Cet email a été envoyé automatiquement. Merci de ne pas y répondre.</p>
+<p style="margin:0">For questions / Pour toute question : <a href="mailto:support@afdb.org" style="color:#f5576c">support@afdb.org</a></p>
+</td></tr>
+
+</table>
+</td></tr></table>
+</body>
+</html>
