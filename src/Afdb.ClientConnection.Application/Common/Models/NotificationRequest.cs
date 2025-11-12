@@ -8,13 +8,24 @@ public sealed record NotificationRequest
 
     public string Recipient { get; init; } = string.Empty;
 
-    public string? RecipientName { get; init; }
+    public string? RecipientName { get; init; }= string.Empty;
 
-    public string[]? AdditionalRecipients { get; init; }
+    public string[]? AdditionalRecipients { get; init; } = [];
 
-    public string[]? CcRecipients { get; init; }
+    public string[]? CcRecipients { get; init; }= [];
 
-    public Dictionary<string, object> Data { get; init; } = new();
+    public NotificationDataItem [] Data { get; init; } = [];
 
     public string Language { get; init; } = "en";
+
+    public static NotificationDataItem [] ConvertDictionaryToArray(Dictionary<string, object> dict)
+    {
+        return [.. dict.Select(kvp => new NotificationDataItem { Key = kvp.Key.ToLower(), Value = kvp.Value.ToString() })];
+    }
+}
+
+public sealed record NotificationDataItem
+{
+    public string Key { get; init; } = string.Empty;
+    public string Value { get; init; } = string.Empty;
 }

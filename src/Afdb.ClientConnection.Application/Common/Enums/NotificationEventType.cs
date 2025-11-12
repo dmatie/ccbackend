@@ -3,6 +3,7 @@ namespace Afdb.ClientConnection.Application.Common.Enums;
 public enum NotificationEventType
 {
     ClaimCreated,
+    ClaimCreatedAuthor,
     ClaimSubmitted,
     ClaimApproved,
     ClaimRejected,
@@ -10,6 +11,7 @@ public enum NotificationEventType
 
     DisbursementCreated,
     DisbursementSubmitted,
+    DisbursementSubmittedAuthor,
     DisbursementApproved,
     DisbursementRejected,
     DisbursementBackedToClient,

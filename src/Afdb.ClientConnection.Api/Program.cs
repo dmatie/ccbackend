@@ -94,6 +94,10 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.Configure<SecurityHeadersOptions>(
+    builder.Configuration.GetSection(SecurityHeadersOptions.SectionName)
+);
+
 // Add HTTP Context Accessor
 builder.Services.AddHttpContextAccessor();
 
@@ -104,7 +108,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Test"))
 {
     app.UseCors(option => option.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
     app.UseSwagger();
@@ -117,7 +121,14 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHsts(); 
+}
+
 app.UseHttpsRedirection();
+
+app.UseSecurityHeaders();
 
 app.UseCors("DefaultPolicy");
 

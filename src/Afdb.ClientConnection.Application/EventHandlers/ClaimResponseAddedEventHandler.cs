@@ -53,8 +53,8 @@ public sealed class ClaimResponseAddedEventHandler : INotificationHandler<ClaimP
                 EventType = NotificationEventType.ClaimResponseAdded,
                 Recipient = notification.AuthorEmail,
                 RecipientName = $"{notification.AuthorFirstName} {notification.AuthorLastName}",
-                Language = "fr",
-                Data = responseData
+                Language = "",
+                Data = NotificationRequest.ConvertDictionaryToArray(responseData)
             },
             cancellationToken);
 

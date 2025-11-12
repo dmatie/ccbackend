@@ -1,5 +1,6 @@
 using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Application.Common.Models;
+using Afdb.ClientConnection.Domain.Entities;
 
 namespace Afdb.ClientConnection.Api.Middleware;
 
@@ -21,6 +22,7 @@ public sealed class UserContextMiddleware
         HttpContext context,
         ICurrentUserService currentUserService,
         IUserRepository userRepository,
+        IAccessRequestRepository accessRequestRepository,
         ICountryAdminRepository countryAdminRepository)
     {
         if (context.User.Identity?.IsAuthenticated != true)
@@ -70,12 +72,27 @@ public sealed class UserContextMiddleware
                     user.Role);
             }
 
+            AccessRequest? userAccessRequest = null;
+            if (user.IsExternal)
+            {
+                userAccessRequest = await accessRequestRepository.GetByEmailAsync(user.Email);
+
+                if (userAccessRequest != null)
+                {
+                    _logger.LogInformation(
+                        "Added {AccessRequestID} detail for external user  {UserEmail}",
+                        userAccessRequest.Id,
+                        user.Email);
+                }
+            }
+
             var userContext = new UserContext
             {
                 UserId = user.Id,
                 Email = user.Email,
                 Role = user.Role,
-                CountryIds = countryIds
+                CountryIds = countryIds,
+                AccessRequest = userAccessRequest
             };
 
             context.Items[UserContextKey] = userContext;

@@ -66,7 +66,7 @@ public sealed class CreateClaimCommandHandler(
 
         if (countryAdmins != null && countryAdmins.Any())
         {
-            assignTo = countryAdmins.Select(ca => ca.User.Email).ToArray();
+            assignTo = countryAdmins.Select(ca => ca.User!.Email).ToArray();
         }
         else
         {

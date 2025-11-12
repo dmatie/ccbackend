@@ -42,20 +42,80 @@ public sealed class DisbursementSubmittedEventHandler : INotificationHandler<Dis
             ["submittedTime"] = DateTime.UtcNow.ToString("HH:mm")
         };
 
-        await _notificationService.SendNotificationAsync(
-            new NotificationRequest
-            {
-                EventType = NotificationEventType.DisbursementSubmitted,
-                Recipient = notification.CreatedByEmail,
-                RecipientName = $"{notification.CreatedByFirstName} {notification.CreatedByLastName}",
-                Language = "fr",
-                Data = disbursementData
-            },
-            cancellationToken);
+        if ((notification.AssignToEmail == null || notification.AssignToEmail.Length == 0) &&
+            (notification.AssignCcEmail == null || notification.AssignCcEmail.Length == 0))
+        {
+            _logger.LogInformation(
+                "No assigned or CC users to notify for Disbursement: {DisbursementId}",
+                notification.DisbursementId);
+            return;
+        }
+
+        await SendNotificationToAuthorAsync(notification, disbursementData, cancellationToken);
+
+        await SendNotificationToAssignedAndCcUsersAsync(notification, disbursementData, cancellationToken);
+
 
         _logger.LogInformation(
             "Successfully notified disbursement creator about submission: DisbursementId={DisbursementId}, Recipient={CreatedByEmail}",
             notification.DisbursementId,
             notification.CreatedByEmail);
     }
+
+    private async Task SendNotificationToAuthorAsync(
+        DisbursementSubmittedEvent notification,
+        Dictionary<string, object> disbursementData,
+        CancellationToken cancellationToken)
+    {
+
+        await _notificationService.SendNotificationAsync(
+            new NotificationRequest
+            {
+                EventType = NotificationEventType.DisbursementSubmittedAuthor,
+                Recipient = notification.CreatedByEmail,
+                RecipientName = $"{notification.CreatedByFirstName} {notification.CreatedByLastName}",
+                Language = "fr",
+                Data = NotificationRequest.ConvertDictionaryToArray(disbursementData)
+            },
+            cancellationToken);
+        _logger.LogInformation(
+            "Notification sent to disbursement author: {CreatedByEmail}",
+            notification.CreatedByEmail);
+    }
+
+    private async Task SendNotificationToAssignedAndCcUsersAsync(
+        DisbursementSubmittedEvent notification,
+        Dictionary<string, object> disbursementData,
+        CancellationToken cancellationToken)
+    {
+        if ((notification.AssignToEmail == null || notification.AssignToEmail.Length == 0) &&
+            (notification.AssignCcEmail == null || notification.AssignCcEmail.Length == 0))
+        {
+            _logger.LogInformation(
+                "No assigned or CC users to notify for DisbursementId: {DisbursementId}",
+                notification.DisbursementId);
+            return;
+        }
+
+        var assignToList = notification.AssignToEmail ?? Array.Empty<string>();
+        var ccList = notification.AssignCcEmail ?? Array.Empty<string>();
+
+        var primaryRecipient = assignToList[0];
+        var additionalRecipients = assignToList.Length > 1 ? assignToList.Skip(1).ToArray() : null;
+        var ccRecipients = ccList.Length > 0 ? ccList : null;
+
+        await _notificationService.SendNotificationAsync(
+            new NotificationRequest
+            {
+                EventType = NotificationEventType.DisbursementSubmitted,
+                Recipient = primaryRecipient,
+                RecipientName = primaryRecipient,
+                AdditionalRecipients = additionalRecipients,
+                CcRecipients = ccRecipients,
+                Language = "",
+                Data = NotificationRequest.ConvertDictionaryToArray(disbursementData)
+            },
+            cancellationToken);
+    }
+
 }

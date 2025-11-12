@@ -94,6 +94,16 @@ internal sealed class UserRepository : IUserRepository
         return entities.Select(DomainMappings.MapUserToDomain);
     }
 
+    public async Task<IEnumerable<User>> GetUsersAdminByCountry(Guid countryId, CancellationToken cancellationToken)
+    {
+        var entities = await _context.Users
+            .Include(u => u.CountryAdmins)
+            .Where(u => u.IsActive && u.CountryAdmins.Any(ca => ca.CountryId == countryId))
+            .ToListAsync(cancellationToken);
+
+        return entities.Select(DomainMappings.MapUserToDomain);
+    }
+
     public async Task<User> AddAsync(User user, CancellationToken cancellationToken = default)
     {
         var entity = EntityMappings.MapUserToEntity(user);

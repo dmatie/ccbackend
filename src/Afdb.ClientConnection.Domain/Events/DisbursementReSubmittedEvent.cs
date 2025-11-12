@@ -15,6 +15,8 @@ public sealed class DisbursementReSubmittedEvent : DomainEvent
     public string CreatedByEmail { get; }
     public string DisbursementTypeCode { get; }
     public string DisbursementTypeName { get; }
+    public string[] AssignToEmail { get; }
+    public string[] AssignCcEmail { get; }
 
     public DisbursementReSubmittedEvent(
         Guid disbursementId,
@@ -23,7 +25,7 @@ public sealed class DisbursementReSubmittedEvent : DomainEvent
         string loanGrantNumber,
         string comment,
         User createdByUser,
-        DisbursementType disbursementType)
+        DisbursementType disbursementType, string[] assignTo, string[] assignCC)
     {
         DisbursementId = disbursementId;
         RequestNumber = requestNumber;
@@ -35,5 +37,7 @@ public sealed class DisbursementReSubmittedEvent : DomainEvent
         CreatedByEmail = createdByUser.Email;
         DisbursementTypeCode = disbursementType.Code;
         DisbursementTypeName = disbursementType.Name;
+        AssignToEmail = assignTo;
+        AssignCcEmail = assignCC;
     }
 }

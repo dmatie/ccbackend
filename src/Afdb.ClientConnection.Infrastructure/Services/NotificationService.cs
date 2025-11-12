@@ -30,14 +30,14 @@ public sealed class NotificationService : INotificationService
 
             var payload = new
             {
-                eventType = request.EventType.ToString(),
-                recipient = request.Recipient,
-                recipientName = request.RecipientName,
-                additionalRecipients = request.AdditionalRecipients,
-                ccRecipients = request.CcRecipients,
-                language = request.Language,
-                data = request.Data,
-                timestamp = DateTime.UtcNow
+                EventType = request.EventType.ToString(),
+                Recipient = request.Recipient,
+                RecipientName = request.RecipientName,
+                AdditionalRecipients = request.AdditionalRecipients,
+                CcRecipients = request.CcRecipients,
+                Language = request.Language,
+                Data = request.Data,
+                Timestamp = DateTime.UtcNow
             };
 
             await _powerAutomateService.TriggerNotificationFlowAsync(

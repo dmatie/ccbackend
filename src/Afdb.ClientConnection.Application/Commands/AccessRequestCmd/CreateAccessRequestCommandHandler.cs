@@ -11,7 +11,6 @@ public sealed class CreateAccessRequestCommandHandler(
     IAccessRequestRepository accessRequestRepository,
     IUserRepository userRepository,
     IGraphService graphService,
-    ICurrentUserService currentUserService,
     IAuditService auditService,
     IReferenceService referenceService,
     IMapper mapper) : IRequestHandler<CreateAccessRequestCommand, CreateAccessRequestResponse>
@@ -19,7 +18,6 @@ public sealed class CreateAccessRequestCommandHandler(
     private readonly IAccessRequestRepository _accessRequestRepository = accessRequestRepository;
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IGraphService _graphService = graphService;
-    private readonly ICurrentUserService _currentUserService = currentUserService;
     private readonly IAuditService _auditService = auditService;
     private readonly IMapper _mapper = mapper;
     private readonly IReferenceService _referenceService = referenceService;

@@ -51,8 +51,8 @@ public sealed class DisbursementApprovedEventHandler : INotificationHandler<Disb
                 EventType = NotificationEventType.DisbursementApproved,
                 Recipient = notification.CreatedByEmail,
                 RecipientName = $"{notification.CreatedByFirstName} {notification.CreatedByLastName}",
-                Language = "fr",
-                Data = disbursementData
+                Language = "",
+                Data = NotificationRequest.ConvertDictionaryToArray(disbursementData)
             },
             cancellationToken);
 

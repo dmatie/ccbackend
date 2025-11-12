@@ -1,3 +1,4 @@
+using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Domain.Enums;
 
 namespace Afdb.ClientConnection.Application.Common.Models;
@@ -8,6 +9,7 @@ public sealed record UserContext
     public string Email { get; init; } = string.Empty;
     public UserRole Role { get; init; }
     public List<Guid> CountryIds { get; init; } = [];
+    public AccessRequest? AccessRequest { get; init; }
 
     public bool IsAdmin => Role == UserRole.Admin;
     public bool IsExternal => Role == UserRole.ExternalUser;

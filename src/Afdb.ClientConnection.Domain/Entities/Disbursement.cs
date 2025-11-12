@@ -15,7 +15,7 @@ public sealed class Disbursement : AggregateRoot
     public string SapCodeProject { get; private set; }
     public string LoanGrantNumber { get; private set; }
     public Guid DisbursementTypeId { get; private set; }
-    public Guid CurrencyId { get;private set; }
+    public Guid CurrencyId { get; private set; }
     public DisbursementStatus Status { get; private set; }
     public Guid CreatedByUserId { get; private set; }
     public DateTime? SubmittedAt { get; private set; }
@@ -178,7 +178,7 @@ public sealed class Disbursement : AggregateRoot
         SetUpdated(user.Email);
     }
 
-    public void SetFormDataForEdit(string DisbursementTypeCode, 
+    public void SetFormDataForEdit(string DisbursementTypeCode,
         DisbursementA1? formA1,
         DisbursementA2? formA2,
         DisbursementA3? formA3,
@@ -202,7 +202,7 @@ public sealed class Disbursement : AggregateRoot
         }
     }
 
-    public void Submit(User user)
+    public void Submit(User user, string[] assignTo, string[] assignCC)
     {
         if (Status != DisbursementStatus.Draft && Status != DisbursementStatus.BackedToClient)
             throw new InvalidOperationException("Only draft or backed to client disbursements can be submitted");
@@ -220,10 +220,11 @@ public sealed class Disbursement : AggregateRoot
         });
         _processes.Add(process);
 
-        AddDomainEvent(new DisbursementSubmittedEvent(Id, RequestNumber, SapCodeProject, LoanGrantNumber, CreatedByUser!, DisbursementType!));
+        AddDomainEvent(new DisbursementSubmittedEvent(Id, RequestNumber,
+            SapCodeProject, LoanGrantNumber, CreatedByUser!, DisbursementType!, assignTo, assignCC));
     }
 
-    public void Resubmit(User user, string comment)
+    public void Resubmit(User user, string comment, string[] assignTo, string[] assignCC)
     {
         if (Status != DisbursementStatus.BackedToClient)
             throw new InvalidOperationException("Only backed to client disbursements can be resubmitted");
@@ -244,7 +245,7 @@ public sealed class Disbursement : AggregateRoot
         });
         _processes.Add(process);
 
-        AddDomainEvent(new DisbursementReSubmittedEvent(Id, RequestNumber, SapCodeProject, LoanGrantNumber, comment, CreatedByUser!, DisbursementType!));
+        AddDomainEvent(new DisbursementReSubmittedEvent(Id, RequestNumber, SapCodeProject, LoanGrantNumber, comment, CreatedByUser!, DisbursementType!, assignTo, assignCC));
     }
 
     public void Approve(User user)

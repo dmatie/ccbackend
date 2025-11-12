@@ -50,6 +50,7 @@ public sealed class ClaimCreatedEventHandler : INotificationHandler<ClaimCreated
             notification.ClaimId);
     }
 
+    //accusé de reception à l'auteur de la réclamation
     private async Task SendNotificationToAuthorAsync(
         ClaimCreatedEvent notification,
         Dictionary<string, object> claimData,
@@ -58,11 +59,11 @@ public sealed class ClaimCreatedEventHandler : INotificationHandler<ClaimCreated
         await _notificationService.SendNotificationAsync(
             new NotificationRequest
             {
-                EventType = NotificationEventType.ClaimCreated,
+                EventType = NotificationEventType.ClaimCreatedAuthor,
                 Recipient = notification.AuthorEmail,
                 RecipientName = $"{notification.AuthorFirstName} {notification.AuthorLastName}",
                 Language = "fr",
-                Data = claimData
+                Data = NotificationRequest.ConvertDictionaryToArray(claimData)
             },
             cancellationToken);
 
@@ -102,8 +103,8 @@ public sealed class ClaimCreatedEventHandler : INotificationHandler<ClaimCreated
                     RecipientName = ccList[0],
                     AdditionalRecipients = null,
                     CcRecipients = ccList.Length > 1 ? ccList.Skip(1).ToArray() : null,
-                    Language = "en",
-                    Data = claimData
+                    Language = "",
+                    Data = NotificationRequest.ConvertDictionaryToArray(claimData)
                 },
                 cancellationToken);
 
@@ -124,8 +125,8 @@ public sealed class ClaimCreatedEventHandler : INotificationHandler<ClaimCreated
                 RecipientName = primaryRecipient,
                 AdditionalRecipients = additionalRecipients,
                 CcRecipients = ccList.Length > 0 ? ccList : null,
-                Language = "en",
-                Data = claimData
+                Language = "",
+                Data = NotificationRequest.ConvertDictionaryToArray(claimData)
             },
             cancellationToken);
 

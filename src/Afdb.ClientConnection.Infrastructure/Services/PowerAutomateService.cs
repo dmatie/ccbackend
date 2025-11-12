@@ -265,6 +265,20 @@ internal sealed class PowerAutomateService : IPowerAutomateService
     {
         ArgumentNullException.ThrowIfNull(payload);
 
+        var flowSigKeyName = _configuration["KeyVault:NotificationFlowSecretKeyName"];
+        if (string.IsNullOrWhiteSpace(flowSigKeyName))
+        {
+            _logger.LogWarning("PowerAutomate:NotificationFlowUrl Sig Key is not configured. Skipping notification.");
+            return;
+        }
+
+        var sigValue = _configuration[flowSigKeyName];
+        if (string.IsNullOrWhiteSpace(sigValue))
+        {
+            _logger.LogWarning("PowerAutomate:NotificationFlowUrl Sig Key is not found in keyvault. Skipping notification.");
+            return;
+        }
+
         var url = _configuration["PowerAutomate:NotificationFlowUrl"];
 
         if (string.IsNullOrWhiteSpace(url))
@@ -276,6 +290,14 @@ internal sealed class PowerAutomateService : IPowerAutomateService
         try
         {
             _logger.LogInformation("Triggering PowerAutomate notification flow");
+
+            url = $"{url}{sigValue}";
+
+            Console.WriteLine(JsonSerializer.Serialize(payload, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true
+            }));
 
             var response = await _httpClient.PostAsJsonAsync(url, payload, _jsonOptions, cancellationToken);
 

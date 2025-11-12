@@ -17,13 +17,6 @@ public class ProjectsController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpGet]
-    public async Task<ActionResult<GetProjectsResponse>> GetProjects(CancellationToken cancellationToken)
-    {
-        var response = await _mediator.Send(new GetProjectsQuery(), cancellationToken);
-        return Ok(response);
-    }
-
     [HttpGet("country/{countryCode}")]
     public async Task<ActionResult<GetProjectsByCountryResponse>> GetProjectsByCountry(string countryCode, CancellationToken cancellationToken)
     {

@@ -29,7 +29,24 @@ internal sealed class CountryAdminRepository : ICountryAdminRepository
         if (entities is null)
             return null;
 
-        return [.. entities.Select(DomainMappings.MapCountryAdminToDomain)];
+        var countryAdmins = entities
+            .Select(DomainMappings.MapCountryAdminToDomain).ToList();
+
+        foreach (var admin in countryAdmins)
+        {
+            var adminEntity = entities.FirstOrDefault(e => e.Id == admin.Id);
+            if (adminEntity != null && adminEntity.User !=null) 
+            {
+                admin.SetUser(DomainMappings.MapUserToDomain(adminEntity.User));
+            }
+
+            if (adminEntity != null && adminEntity.Country != null)
+            {
+                admin.SetCountry(DomainMappings.MapCountry(adminEntity.Country));
+            }
+        }
+
+        return countryAdmins;
     }
 
     public async Task<IEnumerable<CountryAdmin>?> GetByUserIdAsync(Guid userId, CancellationToken token)

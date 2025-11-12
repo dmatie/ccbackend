@@ -17,7 +17,7 @@ internal sealed class CurrentUserService : ICurrentUserService
 
     public string UserName => _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty;
 
-    public string Email => _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Email)?.Value ?? string.Empty;
+    public string Email => GetUserEmail(_httpContextAccessor.HttpContext?.User);
 
     public bool IsAuthenticated => _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
     public bool IsAppAuthentification => _httpContextAccessor.HttpContext?.User?.FindFirstValue("appid") != null;
@@ -28,4 +28,15 @@ internal sealed class CurrentUserService : ICurrentUserService
     {
         return _httpContextAccessor.HttpContext?.User?.IsInRole(role) ?? false;
     }
+
+    private static string GetUserEmail(ClaimsPrincipal? user)
+    {
+        if (user == null)
+            return string.Empty;
+
+        return user?.FindFirst(ClaimTypes.Email)?.Value
+            ?? user?.FindFirst(ClaimTypes.Upn)?.Value
+            ?? string.Empty;
+    }
+
 }

@@ -4,6 +4,7 @@ public sealed class GraphSettings
 {
     public const string SectionName = "Graph";
     public string AddGroupMemberUrl { get; set; } = string.Empty;
+    public string InviteRedirectUrl { get; set; } = string.Empty;
     public string[] MockAdminUsers { get; set; } = [];
     public string[] MockFifc3DOUsers { get; set; } = [];
     public string[] MockFifc3DAUsers { get; set; } = [];

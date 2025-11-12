@@ -53,8 +53,8 @@ public sealed class DisbursementBackedToClientEventHandler : INotificationHandle
                 EventType = NotificationEventType.DisbursementBackedToClient,
                 Recipient = notification.CreatedByEmail,
                 RecipientName = $"{notification.CreatedByFirstName} {notification.CreatedByLastName}",
-                Language = "fr",
-                Data = disbursementData
+                Language = "",
+                Data = NotificationRequest.ConvertDictionaryToArray(disbursementData)
             },
             cancellationToken);
 
