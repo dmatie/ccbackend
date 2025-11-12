@@ -136,6 +136,12 @@ app.UseAuthentication();
 app.UseUserContext();
 app.UseAuthorization();
 
+// Payload Encryption/Decryption Middlewares
+// IMPORTANT: Ces middlewares doivent être AVANT ExceptionHandlingMiddleware
+// pour que les erreurs d'encryption soient catchées proprement
+app.UseMiddleware<PayloadDecryptionMiddleware>();
+app.UseMiddleware<PayloadEncryptionMiddleware>();
+
 // Add custom exception handling middleware
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 

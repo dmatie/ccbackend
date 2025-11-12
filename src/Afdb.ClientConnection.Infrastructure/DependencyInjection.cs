@@ -101,6 +101,9 @@ public static class DependencyInjection
         services.AddScoped<IFileValidationService, FileValidationService>();
         services.AddScoped<IDisbursementDocumentService, DisbursementDocumentService>();
 
+        // Payload Encryption Service
+        services.AddSingleton<IPayloadEncryptionService, PayloadEncryptionService>();
+
         var useMock = configuration.GetSection("Sap").GetValue<bool>("UseMock");
         if (useMock)
             services.AddScoped<ISapService, SapServiceMock>();
