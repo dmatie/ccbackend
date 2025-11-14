@@ -399,7 +399,9 @@ public class MyController : ControllerBase
 
 ## 🔍 Logique de Décision
 
-Voici comment l'encryption est déterminée:
+### Pour l'Encryption (Réponses Sortantes)
+
+Voici comment l'encryption des réponses est déterminée:
 
 ```
 1. Encryption globalement désactivée (Enabled = false)?
@@ -428,6 +430,69 @@ Voici comment l'encryption est déterminée:
    └─ OUI → ✅ ENCRYPTS
    └─ NON → ❌ PAS D'ENCRYPTION
 ```
+
+### Pour le Décryptage (Requêtes Entrantes)
+
+La **même logique** s'applique pour le décryptage des requêtes:
+
+```
+1. Encryption globalement désactivée (Enabled = false)?
+   └─ OUI → Vérifie AlwaysEncryptEndpoints
+      ├─ Endpoint dans AlwaysEncryptEndpoints? → ✅ DÉCRYPTE
+      └─ Sinon → ❌ PAS DE DÉCRYPTAGE
+   └─ NON → Continue
+
+2. Attribut [NoEncryption] présent?
+   └─ OUI → ❌ PAS DE DÉCRYPTAGE
+   └─ NON → Continue
+
+3. Endpoint dans NeverEncryptEndpoints?
+   └─ OUI → ❌ PAS DE DÉCRYPTAGE
+   └─ NON → Continue
+
+4. Endpoint dans AlwaysEncryptEndpoints?
+   └─ OUI → ✅ DÉCRYPTE
+   └─ NON → Continue
+
+5. Mode = Global?
+   └─ OUI → ✅ DÉCRYPTE
+   └─ NON → Continue
+
+6. Attribut [EncryptedPayload] présent avec EncryptRequest = true?
+   └─ OUI → ✅ DÉCRYPTE
+   └─ NON → ❌ PAS DE DÉCRYPTAGE
+```
+
+**Important:** Les deux middlewares (encryption et décryptage) utilisent la **même configuration**. Si un endpoint est configuré pour être encrypté, il sera automatiquement décrypté aussi!
+
+### Comportement Symétrique
+
+L'encryption est **bidirectionnelle et symétrique**:
+
+| Configuration | Requête (Client → API) | Réponse (API → Client) |
+|---------------|------------------------|------------------------|
+| Enabled: false | Pas de décryptage ❌ | Pas d'encryption ❌ |
+| Enabled: true, Mode: Global | Décrypte tout ✅ | Encrypte tout ✅ |
+| Enabled: true, Mode: Attribute | Décrypte si [EncryptedPayload] ✅ | Encrypte si [EncryptedPayload] ✅ |
+| AlwaysEncryptEndpoints: ["/api/x"] | Décrypte /api/x ✅ | Encrypte /api/x ✅ |
+| NeverEncryptEndpoints: ["/api/y"] | Ne décrypte pas /api/y ❌ | N'encrypte pas /api/y ❌ |
+
+**Exemple pratique:**
+
+```json
+{
+  "Encryption": {
+    "Enabled": true,
+    "Mode": "Global",
+    "NeverEncryptEndpoints": ["/health", "/api/references"]
+  }
+}
+```
+
+**Résultat:**
+- POST /api/disbursements → **Décrypte requête ✅**, **Encrypte réponse ✅**
+- GET /api/references/countries → **Ne décrypte pas ❌**, **N'encrypte pas ❌**
+- GET /health → **Ne décrypte pas ❌**, **N'encrypte pas ❌**
 
 ---
 
