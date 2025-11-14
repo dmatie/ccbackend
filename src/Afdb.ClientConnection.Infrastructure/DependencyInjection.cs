@@ -22,6 +22,7 @@ public static class DependencyInjection
         services.Configure<FileUploadSettings>(configuration.GetSection(FileUploadSettings.SectionName));
         services.Configure<AzureAdSettings>(configuration.GetSection(AzureAdSettings.SectionName));
         services.Configure<GraphSettings>(configuration.GetSection(GraphSettings.SectionName));
+        services.Configure<EncryptionSettings>(configuration.GetSection(EncryptionSettings.SectionName));
 
         // Database
         services.AddDbContext<ClientConnectionDbContext>((serviceProvider, options) =>

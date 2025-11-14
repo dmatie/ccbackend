@@ -1,6 +1,8 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using Afdb.ClientConnection.Infrastructure.Settings;
+using Microsoft.Extensions.Options;
 
 namespace Afdb.ClientConnection.Infrastructure.Services;
 
@@ -10,6 +12,16 @@ namespace Afdb.ClientConnection.Infrastructure.Services;
 /// </summary>
 public interface IPayloadEncryptionService
 {
+    /// <summary>
+    /// Vérifie si l'encryption est activée globalement
+    /// </summary>
+    bool IsEnabled { get; }
+
+    /// <summary>
+    /// Vérifie si un endpoint spécifique doit être encrypté
+    /// </summary>
+    bool ShouldEncrypt(string path);
+
     /// <summary>
     /// Encrypts a payload object to a base64 string
     /// </summary>
@@ -35,25 +47,37 @@ public class PayloadEncryptionService : IPayloadEncryptionService
 {
     private readonly byte[] _key;
     private readonly ILogger<PayloadEncryptionService> _logger;
+    private readonly EncryptionSettings _settings;
 
     // Format du payload encrypté: [12 bytes nonce][16 bytes tag][encrypted data]
     private const int NonceSize = 12; // 96 bits recommandé pour AES-GCM
     private const int TagSize = 16;   // 128 bits pour authentication tag
 
+    public bool IsEnabled => _settings.Enabled;
+
     public PayloadEncryptionService(
-        IConfiguration configuration,
+        IOptions<EncryptionSettings> settings,
         ILogger<PayloadEncryptionService> logger)
     {
         _logger = logger;
+        _settings = settings.Value;
+
+        // Si l'encryption n'est pas activée, on ne charge pas la clé
+        if (!_settings.Enabled && _settings.AlwaysEncryptEndpoints.Count == 0)
+        {
+            _logger.LogInformation("Payload encryption is DISABLED globally");
+            _key = new byte[32]; // Clé dummy pour éviter les null checks
+            return;
+        }
 
         // Récupère la clé depuis la configuration
-        var keyString = configuration["Encryption:PayloadKey"];
+        var keyString = _settings.PayloadKey;
 
         if (string.IsNullOrEmpty(keyString))
         {
             throw new InvalidOperationException(
-                "Encryption:PayloadKey is not configured. " +
-                "Generate a key using: dotnet user-secrets set 'Encryption:PayloadKey' '<your-256-bit-key>'");
+                "Encryption:PayloadKey is not configured but encryption is enabled. " +
+                "Generate a key using: Convert.ToBase64String(RandomNumberGenerator.GetBytes(32))");
         }
 
         // La clé doit être en base64 et faire 32 bytes (256 bits)
@@ -74,7 +98,44 @@ public class PayloadEncryptionService : IPayloadEncryptionService
                 "Generate one using: Convert.ToBase64String(RandomNumberGenerator.GetBytes(32))");
         }
 
-        _logger.LogInformation("PayloadEncryptionService initialized with AES-256-GCM");
+        _logger.LogInformation(
+            "PayloadEncryptionService initialized - Enabled: {Enabled}, Mode: {Mode}",
+            _settings.Enabled,
+            _settings.Mode);
+    }
+
+    public bool ShouldEncrypt(string path)
+    {
+        if (string.IsNullOrEmpty(path))
+        {
+            return false;
+        }
+
+        // Normalise le path (enlève query string et fragments)
+        var normalizedPath = path.Split('?')[0].ToLowerInvariant();
+
+        // Vérifie si dans la liste "Never Encrypt"
+        if (_settings.NeverEncryptEndpoints.Any(endpoint =>
+            normalizedPath.StartsWith(endpoint.ToLowerInvariant(), StringComparison.OrdinalIgnoreCase)))
+        {
+            return false;
+        }
+
+        // Vérifie si dans la liste "Always Encrypt"
+        if (_settings.AlwaysEncryptEndpoints.Any(endpoint =>
+            normalizedPath.StartsWith(endpoint.ToLowerInvariant(), StringComparison.OrdinalIgnoreCase)))
+        {
+            return true;
+        }
+
+        // Mode Global: encrypts tout sauf NeverEncryptEndpoints
+        if (_settings.Mode == EncryptionMode.Global && _settings.Enabled)
+        {
+            return true;
+        }
+
+        // Mode Attribute: encryption gérée par les attributs [EncryptedPayload]
+        return false;
     }
 
     public string Encrypt<T>(T payload)

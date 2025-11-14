@@ -23,6 +23,13 @@ public class PayloadEncryptionMiddleware
 
     public async Task InvokeAsync(HttpContext context, IPayloadEncryptionService encryptionService)
     {
+        // Si l'encryption est complètement désactivée, on skip
+        if (!encryptionService.IsEnabled)
+        {
+            await _next(context);
+            return;
+        }
+
         // Vérifie si l'endpoint nécessite l'encryption
         var endpoint = context.GetEndpoint();
         if (endpoint == null)
@@ -42,8 +49,23 @@ public class PayloadEncryptionMiddleware
             return;
         }
 
-        // Si [EncryptedPayload] n'est pas présent ET que l'encryption globale n'est pas activée, on skip
-        if (encryptedPayload == null || !encryptedPayload.EncryptResponse)
+        // Détermine si on doit encrypter basé sur la configuration et les attributs
+        var shouldEncrypt = false;
+
+        // 1. Vérifie la configuration globale pour ce path
+        if (encryptionService.ShouldEncrypt(context.Request.Path))
+        {
+            shouldEncrypt = true;
+        }
+
+        // 2. Vérifie l'attribut [EncryptedPayload]
+        if (encryptedPayload != null && encryptedPayload.EncryptResponse)
+        {
+            shouldEncrypt = true;
+        }
+
+        // Si pas d'encryption nécessaire, on skip
+        if (!shouldEncrypt)
         {
             await _next(context);
             return;
