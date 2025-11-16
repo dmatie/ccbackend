@@ -1,3 +1,4 @@
+using Afdb.ClientConnection.Api.Attributes;
 using Afdb.ClientConnection.Application.Commands.DisbursementCmd;
 using Afdb.ClientConnection.Application.DTOs;
 using Afdb.ClientConnection.Application.Queries.DisbursementQrs;
@@ -14,6 +15,7 @@ public class DisbursementsController(IMediator mediator) : ControllerBase
     private readonly IMediator _mediator = mediator;
 
     [HttpPost]
+    [NoEncryption]
     [Authorize(Policy = "ExternalUsers")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -28,6 +30,7 @@ public class DisbursementsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [NoEncryption]
     [Authorize(Policy = "ExternalUsers")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -49,6 +52,7 @@ public class DisbursementsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost("{id}/submit")]
+    [NoEncryption]
     [Authorize(Policy = "ExternalUsers")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -65,6 +69,7 @@ public class DisbursementsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost("{id}/resubmit")]
+    [NoEncryption]
     [Authorize(Policy = "ExternalUsers")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -121,6 +126,7 @@ public class DisbursementsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost("{id}/back-to-client")]
+    [NoEncryption]
     [Authorize(Policy = "InternalUsers")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
