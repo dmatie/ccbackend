@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"></head>
+<body style="font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;line-height:1.6;color:#333;margin:0;padding:0;background:#f5f5f5">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f5f5f5;padding:20px">
+<tr><td align="center">
+<table width="650" cellpadding="0" cellspacing="0" border="0" style="max-width:650px">
+
+<tr><td style="background:linear-gradient(135deg,#dc3545 0%,#c82333 100%);color:white;padding:30px;text-align:center;border-radius:8px 8px 0 0">
+<h1 style="margin:0;font-size:28px;color:white">❌ Access Request Update / Mise à Jour de la Demande d'Accès</h1>
+<p style="margin:5px 0 0 0;opacity:0.9;font-size:16px;color:white">Important information regarding your request / Information importante concernant votre demande</p>
+</td></tr>
+
+<tr><td style="background:#ffffff;padding:30px;border-left:1px solid #e0e0e0;border-right:1px solid #e0e0e0;border-top:1px solid #e0e0e0">
+<div style="display:inline-block;padding:4px 12px;background:#dc3545;color:white;border-radius:15px;font-size:12px;font-weight:600;margin-bottom:15px">🇬🇧 ENGLISH</div>
+<p style="margin:0 0 15px 0">Hello <strong>{{recipientName}}</strong>,</p>
+<p style="margin:0 0 15px 0">Thank you for your interest in the <strong>Client Connection Portal</strong>.</p>
+<p style="margin:0 0 15px 0">After careful review, we regret to inform you that your access request has been <strong style="color:#dc3545">declined</strong> at this time.</p>
+
+<table width="100%" cellpadding="20" style="background:#f8d7da;border-left:4px solid #dc3545;margin:20px 0;border-radius:4px">
+<tr><td>
+<h3 style="margin-top:0;color:#dc3545;font-size:18px">📋 Request Details</h3>
+<div style="margin:10px 0"><span style="font-weight:600;color:#721c24">Request Reference:</span> <span style="color:#721c24">#{{data.requestId}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#721c24">Email:</span> <span style="color:#721c24">{{data.email}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#721c24">Organization:</span> <span style="color:#721c24">{{data.organization}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#721c24">Country:</span> <span style="color:#721c24">{{data.country}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#721c24">Decision date:</span> <span style="color:#721c24">{{data.rejectedDate}} at {{data.rejectedTime}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#721c24">Status:</span> <span style="display:inline-block;padding:5px 15px;background:#dc3545;color:white;border-radius:20px;font-size:14px">✗ Declined</span></div>
+</td></tr></table>
+
+<table width="100%" cellpadding="15" style="background:#fff3cd;border-left:4px solid #ffc107;margin:20px 0;border-radius:4px">
+<tr><td>
+<p style="margin:0"><strong>💬 Reason for Decision:</strong></p>
+<p style="margin:10px 0 0 0;line-height:1.8;color:#856404">{{data.rejectionReason}}</p>
+</td></tr></table>
+
+<h4 style="color:#dc3545;margin-top:30px;font-size:16px">🔄 What You Can Do Next</h4>
+<ul style="line-height:1.8;padding-left:20px">
+<li>Review the reason provided above carefully</li>
+<li>If you have additional information or documentation, you may submit a new request</li>
+<li>Ensure all required information and supporting documents are included</li>
+<li>Contact our support team if you need clarification</li>
+</ul>
+
+<table width="100%" cellpadding="15" style="background:#e7f3ff;border-left:4px solid #0066cc;margin:20px 0;border-radius:4px">
+<tr><td>
+<p style="margin:0"><strong>📌 Important Information:</strong></p>
+<p style="margin:10px 0 0 0;line-height:1.8">This decision was made after a thorough review of your application. If you believe this decision was made in error or if your circumstances have changed, please contact our support team for assistance.</p>
+</td></tr></table>
+
+<div style="text-align:center;margin-top:30px">
+<a href="https://clientconnection.afdb.org/access-request" style="display:inline-block;padding:15px 40px;background:#6c757d;color:white;text-decoration:none;border-radius:5px;font-size:16px;font-weight:600">📝 Submit New Request</a>
+</div>
+</td></tr>
+
+<tr><td style="background:#e0e0e0;height:20px;border-left:1px solid #e0e0e0;border-right:1px solid #e0e0e0;text-align:center">
+<span style="background:white;padding:5px 15px;font-size:12px;color:#666;font-weight:600;border:2px solid #e0e0e0;border-radius:20px">• • •</span>
+</td></tr>
+
+<tr><td style="background:#ffffff;padding:30px;border-left:1px solid #e0e0e0;border-right:1px solid #e0e0e0">
+<div style="display:inline-block;padding:4px 12px;background:#dc3545;color:white;border-radius:15px;font-size:12px;font-weight:600;margin-bottom:15px">🇫🇷 FRANÇAIS</div>
+<p style="margin:0 0 15px 0">Bonjour <strong>{{recipientName}}</strong>,</p>
+<p style="margin:0 0 15px 0">Nous vous remercions de votre intérêt pour le <strong>Portail Client Connection</strong>.</p>
+<p style="margin:0 0 15px 0">Après un examen attentif, nous regrettons de vous informer que votre demande d'accès a été <strong style="color:#dc3545">refusée</strong> pour le moment.</p>
+
+<table width="100%" cellpadding="20" style="background:#f8d7da;border-left:4px solid #dc3545;margin:20px 0;border-radius:4px">
+<tr><td>
+<h3 style="margin-top:0;color:#dc3545;font-size:18px">📋 Détails de la Demande</h3>
+<div style="margin:10px 0"><span style="font-weight:600;color:#721c24">Référence de la demande :</span> <span style="color:#721c24">#{{data.requestId}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#721c24">Email :</span> <span style="color:#721c24">{{data.email}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#721c24">Organisation :</span> <span style="color:#721c24">{{data.organization}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#721c24">Pays :</span> <span style="color:#721c24">{{data.country}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#721c24">Date de décision :</span> <span style="color:#721c24">{{data.rejectedDate}} à {{data.rejectedTime}}</span></div>
+<div style="margin:10px 0"><span style="font-weight:600;color:#721c24">Statut :</span> <span style="display:inline-block;padding:5px 15px;background:#dc3545;color:white;border-radius:20px;font-size:14px">✗ Refusé</span></div>
+</td></tr></table>
+
+<table width="100%" cellpadding="15" style="background:#fff3cd;border-left:4px solid #ffc107;margin:20px 0;border-radius:4px">
+<tr><td>
+<p style="margin:0"><strong>💬 Motif de la Décision :</strong></p>
+<p style="margin:10px 0 0 0;line-height:1.8;color:#856404">{{data.rejectionReason}}</p>
+</td></tr></table>
+
+<h4 style="color:#dc3545;margin-top:30px;font-size:16px">🔄 Prochaines Étapes Possibles</h4>
+<ul style="line-height:1.8;padding-left:20px">
+<li>Examinez attentivement le motif fourni ci-dessus</li>
+<li>Si vous disposez d'informations ou de documents supplémentaires, vous pouvez soumettre une nouvelle demande</li>
+<li>Assurez-vous que toutes les informations requises et les documents justificatifs sont inclus</li>
+<li>Contactez notre équipe de support si vous avez besoin de clarifications</li>
+</ul>
+
+<table width="100%" cellpadding="15" style="background:#e7f3ff;border-left:4px solid #0066cc;margin:20px 0;border-radius:4px">
+<tr><td>
+<p style="margin:0"><strong>📌 Information Importante :</strong></p>
+<p style="margin:10px 0 0 0;line-height:1.8">Cette décision a été prise après un examen approfondi de votre candidature. Si vous pensez que cette décision a été prise par erreur ou si votre situation a changé, veuillez contacter notre équipe de support pour obtenir de l'aide.</p>
+</td></tr></table>
+
+<div style="text-align:center;margin-top:30px">
+<a href="https://clientconnection.afdb.org/access-request" style="display:inline-block;padding:15px 40px;background:#6c757d;color:white;text-decoration:none;border-radius:5px;font-size:16px;font-weight:600">📝 Soumettre une Nouvelle Demande</a>
+</div>
+</td></tr>
+
+<tr><td style="background:#f8f9fa;padding:25px;text-align:center;border:1px solid #e0e0e0;border-radius:0 0 8px 8px">
+<p style="margin:0 0 10px 0;color:#666;font-size:13px">📧 Need help? Contact us at <a href="mailto:support@clientconnection.afdb.org" style="color:#dc3545;text-decoration:none">support@clientconnection.afdb.org</a></p>
+<p style="margin:0 0 10px 0;color:#666;font-size:13px">🌐 Besoin d'aide ? Contactez-nous à <a href="mailto:support@clientconnection.afdb.org" style="color:#dc3545;text-decoration:none">support@clientconnection.afdb.org</a></p>
+<div style="margin-top:20px;padding-top:20px;border-top:1px solid #dee2e6">
+<p style="margin:0;color:#999;font-size:12px">African Development Bank / Banque Africaine de Développement</p>
+<p style="margin:5px 0 0 0;color:#999;font-size:12px">Client Connection Portal / Portail Client Connection</p>
+</div>
+</td></tr>
+
+</table>
+</td></tr>
+</table>
+</body>
+</html>
