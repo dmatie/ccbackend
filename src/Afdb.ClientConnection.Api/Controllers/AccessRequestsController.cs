@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Application.Commands.AccessRequestCmd;
+using Afdb.ClientConnection.Application.Commands.AccessRequestCmd;
 using Afdb.ClientConnection.Application.Queries.AccessRequestQrs;
 using Afdb.ClientConnection.Domain.Enums;
 using MediatR;
@@ -113,6 +113,30 @@ public class AccessRequestsController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<GetAccessRequestsResponse>> GetAccessRequests(
         [FromQuery] GetAccessRequestsQuery query, CancellationToken cancellationToken = default)
     {
+        var result = await _mediator.Send(query, cancellationToken);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Lister les demandes d'accès approuvées avec pagination et filtres (Admin/DO uniquement)
+    /// </summary>
+    [HttpGet("approved")]
+    [Authorize(Policy = "DOOrAdmin")]
+    public async Task<ActionResult<Application.DTOs.PaginatedAccessRequestDto>> GetApprovedAccessRequests(
+        [FromQuery] Guid? countryId,
+        [FromQuery] string? projectCode,
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 10,
+        CancellationToken cancellationToken = default)
+    {
+        var query = new GetApprovedAccessRequestsQuery
+        {
+            CountryId = countryId,
+            ProjectCode = projectCode,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
+
         var result = await _mediator.Send(query, cancellationToken);
         return Ok(result);
     }

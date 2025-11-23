@@ -22,4 +22,10 @@ public interface IAccessRequestRepository
     Task<int> CountByStatusAsync(RequestStatus status, CancellationToken cancellationToken = default);
     Task<int> CountByStatusAsync(UserContext userContext, RequestStatus status, CancellationToken cancellationToken = default);
     Task<int> CountProjectsByUserIdAsync(string email, CancellationToken cancellationToken = default);
+    Task<(List<AccessRequest> items, int totalCount)> GetApprovedWithPaginationAsync(
+        Guid? countryId,
+        string? projectCode,
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken = default);
 }

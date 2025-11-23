@@ -221,4 +221,43 @@ internal sealed class AccessRequestRepository : IAccessRequestRepository
             .Where(arp => arp.AccessRequest.Email == email)
             .CountAsync(cancellationToken);
     }
+
+    public async Task<(List<AccessRequest> items, int totalCount)> GetApprovedWithPaginationAsync(
+        Guid? countryId,
+        string? projectCode,
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken = default)
+    {
+        var query = _context.AccessRequests
+            .Include(ar => ar.ProcessedBy)
+            .Include(ar => ar.Function)
+            .Include(ar => ar.Country)
+            .Include(ar => ar.BusinessProfile)
+            .Include(ar => ar.FinancingType)
+            .Include(ar => ar.Projects)
+            .Where(ar => ar.Status == RequestStatus.Approved);
+
+        if (countryId.HasValue)
+        {
+            query = query.Where(ar => ar.CountryEntityId == countryId.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(projectCode))
+        {
+            query = query.Where(ar => ar.Projects.Any(p => p.ProjectCode == projectCode));
+        }
+
+        var totalCount = await query.CountAsync(cancellationToken);
+
+        var entities = await query
+            .OrderByDescending(ar => ar.CreatedDate)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        var items = entities.Select(DomainMappings.MapToDomain).ToList();
+
+        return (items, totalCount);
+    }
 }
