@@ -50,7 +50,7 @@ internal sealed class ServiceBusService : IServiceBusService, IAsyncDisposable
     }
 
     public async Task SendAccessRequestApprovedAsync(Guid accessRequestId, string email, string firstName,
-        string lastName, CancellationToken cancellationToken = default)
+        string lastName, string approverEmail, CancellationToken cancellationToken = default)
     {
         var message = new
         {
@@ -59,7 +59,8 @@ internal sealed class ServiceBusService : IServiceBusService, IAsyncDisposable
             Email = email,
             FirstName = firstName,
             LastName = lastName,
-            ApprovedAt = DateTime.UtcNow
+            ApprovedAt = DateTime.UtcNow,
+            ApproverEmail = approverEmail
         };
 
         await SendMessageAsync(_accessRequestResponseSender, message, "AccessRequestApproved", cancellationToken);

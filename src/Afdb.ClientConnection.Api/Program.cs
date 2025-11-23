@@ -7,6 +7,11 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// builder.WebHost.ConfigureKestrel(options =>
+// {
+//     options.ListenAnyIP(80); // écoute HTTP
+// });
+
 //Config Azure KeyVault
 var keyVaultUrl = builder.Configuration["KeyVault:VaultUri"];
 if (!string.IsNullOrEmpty(keyVaultUrl))
@@ -126,7 +131,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts(); 
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseSecurityHeaders();
 

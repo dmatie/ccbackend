@@ -4,9 +4,11 @@ using Afdb.ClientConnection.Domain.Enums;
 using Afdb.ClientConnection.Infrastructure.Data;
 using Afdb.ClientConnection.Infrastructure.Data.Entities;
 using Afdb.ClientConnection.Infrastructure.Data.Mapping;
+using Afdb.ClientConnection.Infrastructure.Settings;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Afdb.ClientConnection.Infrastructure.Repositories;
 
@@ -15,14 +17,15 @@ internal sealed class UserRepository : IUserRepository
     private readonly ClientConnectionDbContext _context;
     private ILogger<UserRepository> _logger;
     private readonly IGraphService _graphService;
-
+    private readonly GraphSettings _graphSettings;
 
     public UserRepository(ClientConnectionDbContext context, 
-        IGraphService graphService, ILogger<UserRepository> logger)
+        IGraphService graphService, IOptions<GraphSettings> graphSettings, ILogger<UserRepository> logger)
     {
         _context = context;
         _graphService = graphService;
         _logger = logger;
+        _graphSettings = graphSettings.Value;
     }
 
     public async Task<User?> GetByIdAsync(Guid id)
@@ -125,7 +128,8 @@ internal sealed class UserRepository : IUserRepository
 
             await _graphService.AddUserToGroupByNameAsync(adUserDetails.Id, userRole, cancellationToken);
 
-            await _graphService.AssignAppRoleToUserByRoleNameAsync(adUserDetails.Id, userRole, cancellationToken);
+            if (_graphSettings.AddRoleToUser)
+                await _graphService.AssignAppRoleToUserByRoleNameAsync(adUserDetails.Id, userRole, cancellationToken);
 
             await transaction.CommitAsync(cancellationToken);
 
@@ -140,7 +144,8 @@ internal sealed class UserRepository : IUserRepository
                 user);
 
             await _graphService.RemoveUserFromGroupByNameAsync(adUserDetails.Id, userRole, cancellationToken);
-            await _graphService.RemoveAppRoleFromUserByRoleNameAsync(adUserDetails.Id, userRole, cancellationToken);
+            if(_graphSettings.AddRoleToUser)
+                await _graphService.RemoveAppRoleFromUserByRoleNameAsync(adUserDetails.Id, userRole, cancellationToken);
 
             throw new InvalidOperationException("ERR.User.FailToCreate");
         }

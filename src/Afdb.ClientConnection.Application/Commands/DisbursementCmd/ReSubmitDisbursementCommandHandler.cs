@@ -75,8 +75,12 @@ public sealed class ReSubmitDisbursementCommandHandler(
                 request.AdditionalDocuments,
                 cancellationToken);
         }
+        else
+        {
+            await _disbursementRepository.UpdateProcessAsync(disbursement, cancellationToken);
+        }
 
-        var updatedDisbursement = await _disbursementRepository.UpdateProcessAsync(disbursement, cancellationToken);
+        var updatedDisbursement = await _disbursementRepository.GetByIdAsync(disbursement.Id, cancellationToken);
 
         return new ReSubmitDisbursementResponse
         {

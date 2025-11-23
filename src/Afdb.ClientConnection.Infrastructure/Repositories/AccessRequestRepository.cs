@@ -91,7 +91,7 @@ internal sealed class AccessRequestRepository : IAccessRequestRepository
 
     public async Task<IEnumerable<AccessRequest>> GetByStatusAsync(UserContext userContext, RequestStatus status)
     {
-        var entities = await _context.AccessRequests
+        var query = _context.AccessRequests
             .Include(ar => ar.ProcessedBy)
             .Include(ar => ar.Function)
             .Include(ar => ar.Country)
@@ -99,6 +99,14 @@ internal sealed class AccessRequestRepository : IAccessRequestRepository
             .Include(ar => ar.FinancingType)
             .Include(ar => ar.Projects)
             .Where(ar => ar.Status == status)
+            .AsQueryable();
+
+        if (userContext.RequiresCountryFilter)
+        {
+            query = query.Where(c => c.CountryEntityId != null && userContext.CountryIds.Contains(c.CountryEntityId.Value));
+        }
+        var entities = await query
+            .OrderByDescending(ar => ar.CreatedAt)
             .ToListAsync();
 
         return entities.Select(DomainMappings.MapToDomain);

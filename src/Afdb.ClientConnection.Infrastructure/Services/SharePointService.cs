@@ -1,4 +1,5 @@
 ﻿using Afdb.ClientConnection.Application.Common.Interfaces;
+using Afdb.ClientConnection.Infrastructure.Settings;
 using Microsoft.Extensions.Logging;
 using Microsoft.Graph;
 using Microsoft.Graph.Models;
@@ -16,7 +17,7 @@ public class SharePointGraphService : ISharePointGraphService
         _graphClient = graphClient;
     }
 
-    public async Task<string> UploadFileAsync(string _siteId, string _driveId, string folderPath,
+    public async Task<string> UploadFileAsync(string _siteId, string _driveId, string _listId, string folderPath,
         Stream fileStream, string fileName, Dictionary<string, object>? metadata = null)
     {
         try
@@ -33,19 +34,28 @@ public class SharePointGraphService : ISharePointGraphService
                 .Content
                 .PutAsync(fileStream);
 
-            if (fileItem?.ListItem == null)
+            // Récupère le DriveItem avec ListItem
+            var fileItemWithListItem = await _graphClient
+                .Drives[_driveId]
+                .Items[fileItem.Id]
+                .GetAsync(requestConfiguration =>
+                {
+                    requestConfiguration.QueryParameters.Expand = new[] { "listItem" };
+                });
+
+            if (fileItemWithListItem == null || fileItemWithListItem?.ListItem == null)
             {
                 throw new InvalidOperationException("Impossible de récupérer l'élément ListItem pour mettre à jour les métadonnées.");
             }
 
 
-            if (metadata != null && metadata.Count > 0 && fileItem?.ListItem != null)
+            if (metadata != null && metadata.Count > 0 && fileItemWithListItem?.ListItem != null)
             {
                 // Mise à jour des métadonnées
                 await _graphClient
                     .Sites[_siteId]
-                    .Lists[_driveId]
-                    .Items[fileItem.ListItem.Id]
+                    .Lists[_listId]
+                    .Items[fileItemWithListItem.ListItem.Id]
                     .Fields
                     .PatchAsync(new FieldValueSet
                     {
@@ -54,12 +64,12 @@ public class SharePointGraphService : ISharePointGraphService
                     });
             }
 
-            if(fileItem == null)
+            if (fileItemWithListItem == null)
             {
                 throw new InvalidOperationException("L'upload du fichier a échoué, l'élément DriveItem est null.");
             }
 
-            var webUrl = fileItem.WebUrl 
+            var webUrl = fileItem.WebUrl
                 ?? throw new InvalidOperationException("WebUrl introuvable dans la réponse Graph.");
 
             return webUrl;
@@ -103,7 +113,7 @@ public class SharePointGraphService : ISharePointGraphService
                 .GetAsync()
                 ?? throw new FileNotFoundException("Impossible de résoudre l'élément à partir de l'URL fournie.");
 
-            if(driveItem.ParentReference == null)
+            if (driveItem.ParentReference == null)
                 throw new InvalidOperationException("DriveId introuvable pour l'élément spécifié.");
 
             var stream = await _graphClient
@@ -127,24 +137,49 @@ public class SharePointGraphService : ISharePointGraphService
         }
     }
 
+    public async Task<(Stream FileStream, string ContentType, string FileName)?> DownloadBySharePointUrlAsync(
+        string driveId, string relativePath)
+    {
+        // Télécharge le fichier via Graph
+        var stream = await _graphClient
+            .Drives[driveId]
+            .Root
+            .ItemWithPath(relativePath)
+            .Content
+            .GetAsync();
+
+        var driveItem = await _graphClient
+            .Drives[driveId]
+            .Root
+            .ItemWithPath(relativePath)
+            .GetAsync();
+
+        if (stream == null || driveItem == null)
+            return null;
+
+        string contentType = driveItem!.File?.MimeType ?? "application/octet-stream";
+        string fileName = driveItem.Name ?? "fichier";
+
+        return (stream, contentType, fileName);
+    }
+
     private async Task<DriveItem?> EnsureFolderExistsAsync(string _driveId, string folderPath)
     {
         string[] parts = folderPath.Split('/', StringSplitOptions.RemoveEmptyEntries);
-        string currentPath = "";
         DriveItem? parent = await _graphClient.Drives[_driveId].Root.GetAsync();
 
         foreach (var part in parts)
         {
-            currentPath = string.IsNullOrEmpty(currentPath) ? part : $"{currentPath}/{part}";
             DriveItem? existing = null;
-
             try
             {
-                existing = await _graphClient
+                DriveItemCollectionResponse? children = await _graphClient
                     .Drives[_driveId]
-                    .Root
-                    .ItemWithPath(currentPath)
+                    .Items[parent.Id]
+                    .Children
                     .GetAsync();
+
+                existing = children?.Value?.FirstOrDefault(d => d.Name.ToUpper() == part.ToUpper() && d.Folder != null);
             }
             catch (ServiceException ex) when (ex.ResponseStatusCode == 404)
             {
@@ -152,15 +187,14 @@ public class SharePointGraphService : ISharePointGraphService
             }
 
             existing ??= await _graphClient
-                    .Drives[_driveId]
-                    .Root
-                    .ItemWithPath(currentPath)
-                    .Children
-                    .PostAsync(new DriveItem
-                    {
-                        Name = part,
-                        Folder = new Folder()
-                    });
+                .Drives[_driveId]
+                .Items[parent.Id]
+                .Children
+                .PostAsync(new DriveItem
+                {
+                    Name = part,
+                    Folder = new Folder()
+                });
 
             parent = existing!;
         }

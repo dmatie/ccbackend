@@ -4,72 +4,71 @@ using Afdb.ClientConnection.Application.DTOs;
 using Afdb.ClientConnection.Domain.Entities;
 using AutoMapper;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Afdb.ClientConnection.Application.Commands.AccessRequestCmd;
 
-public sealed class RejectAccessRequestCommandHandler(
+public sealed class ApproveAccessRequestByAppCommandHandler(
     IAccessRequestRepository accessRequestRepository,
     IUserRepository userRepository,
     ICurrentUserService currentUserService,
     IAuditService auditService,
-    IMapper mapper) : IRequestHandler<RejectAccessRequestCommand, RejectAccessRequestResponse>
+    IMapper mapper,
+    IServiceBusService serviceBusService) : IRequestHandler<ApproveAccessRequestByAppCommand, ApproveAccessRequestByAppResponse>
 {
     private readonly IAccessRequestRepository _accessRequestRepository = accessRequestRepository;
     private readonly IUserRepository _userRepository = userRepository;
     private readonly ICurrentUserService _currentUserService = currentUserService;
     private readonly IAuditService _auditService = auditService;
     private readonly IMapper _mapper = mapper;
+    private readonly IServiceBusService _serviceBusService = serviceBusService;
+    
 
-    public async Task<RejectAccessRequestResponse> Handle(RejectAccessRequestCommand request, CancellationToken cancellationToken)
+    public async Task<ApproveAccessRequestByAppResponse> Handle(ApproveAccessRequestByAppCommand request, CancellationToken cancellationToken)
     {
         // Récupérer la demande d'accès
         var accessRequest = await _accessRequestRepository.GetByIdAsync(request.AccessRequestId)
             ?? throw new NotFoundException(nameof(AccessRequest), request.AccessRequestId);
 
-        // Vérifier que l'utilisateur actuel peut rejeter
+        // Vérifier que l'utilisateur actuel peut approuver
         if (!_currentUserService.IsInRole("Admin") && !_currentUserService.IsInRole("DO"))
         {
             throw new ForbiddenAccessException("ERR.General.NotAuthorize");
         }
 
-        // Récupérer l'utilisateur qui rejette
-        var email =   _currentUserService.Email;
-
-        if(_currentUserService.IsAppAuthentification && !string.IsNullOrEmpty(request.ApproverEmail))
-        {
-            email = request.ApproverEmail;
-        }
+        // Récupérer l'utilisateur qui approuve
+        var email =  _currentUserService.Email ;
 
         var currentUser = (await _userRepository.GetByEmailAsync(email))
-           ?? throw new NotFoundException($"ERR.General.UserNotExist {email}");
+            ?? throw new NotFoundException($"ERR.General.UserNotExist {email}");
 
-        // Rejeter la demande (cela déclenchera l'événement AccessRequestRejectedEvent)
-        accessRequest.Reject(currentUser.Id, request.RejectionReason, _currentUserService.UserId, email, request.IsFromApplication);
+        // Approuver la demande (cela déclenchera l'événement AccessRequestApprovedEvent)
+        accessRequest.Approve(currentUser.Id, request.Comments, _currentUserService.UserId, email, request.IsFromApplication);
 
-        // Sauvegarder
+        //Mettre à jour la demande d'accès
         await _accessRequestRepository.UpdateAsync(accessRequest);
 
         // Logger l'audit
         await _auditService.LogAsync(
             nameof(AccessRequest),
             accessRequest.Id,
-            "Reject",
+            "Approve By App",
             null,
             newValues: System.Text.Json.JsonSerializer.Serialize(new
             {
                 Status = accessRequest.Status.ToString(),
                 ProcessedById = currentUser.Id,
-                ProcessingComments = request.RejectionReason,
+                ProcessingComments = request.Comments,
                 ProcessedDate = accessRequest.ProcessedDate
             }),
             cancellationToken);
 
         var dto = _mapper.Map<AccessRequestDto>(accessRequest);
 
-        return new RejectAccessRequestResponse
+        return new ApproveAccessRequestByAppResponse
         {
             AccessRequest = dto,
-            Message = "MSG.AccessRequest.Rejected"
+            Message = "MSG.AccessRequest.Approved"
         };
     }
 }

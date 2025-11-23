@@ -113,6 +113,9 @@ public class MappingProfile : Profile
         CreateMap<DisbursementA3, DisbursementA3Dto>();
         CreateMap<DisbursementB1, DisbursementB1Dto>();
 
+
+        CreateMap<DisbursementDocument, DisbursementDocumentDto>();
+
         CreateMap<Disbursement, DisbursementDto>()
             .ForMember(dest => dest.Currency,
                 opt => opt.MapFrom(src => src.Currency != null ? src.Currency.Code : string.Empty))

@@ -36,7 +36,7 @@ public sealed class CreateAccessRequestCommandHandler(
 
         // Vérifier si une demande est déjà en cours pour cet email
         var existingRequest = await _accessRequestRepository.GetByEmailAsync(request.Email);
-        if (existingRequest != null && existingRequest.Status == Domain.Enums.RequestStatus.Pending)
+        if (existingRequest != null)
         {
             throw new ValidationException(new[] {
                 new FluentValidation.Results.ValidationFailure("Email", "ERR.AccessRequest.RequestAlreadyExists")

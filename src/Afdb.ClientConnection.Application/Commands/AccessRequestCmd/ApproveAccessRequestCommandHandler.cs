@@ -51,8 +51,8 @@ public sealed class ApproveAccessRequestCommandHandler(
         var currentUser = (await _userRepository.GetByEmailAsync(email))
             ?? throw new NotFoundException($"ERR.General.UserNotExist {email}");
 
-        // Approuver la demande (cela déclenchera l'événement AccessRequestApprovedEvent)
-        accessRequest.Approve(currentUser.Id, request.Comments, _currentUserService.UserId, request.IsFromApplication);
+        accessRequest.ApproveByAutomate(currentUser.Id, request.Comments, _currentUserService.UserId,
+            email, request.IsFromApplication);
 
         await _accessRequestRepository.ExecuteInTransactionAsync(async () =>
         {

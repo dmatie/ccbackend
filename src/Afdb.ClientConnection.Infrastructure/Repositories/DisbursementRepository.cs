@@ -105,6 +105,16 @@ internal sealed class DisbursementRepository : IDisbursementRepository
         return entities.Select(DomainMappings.MapDisbursementToDomain);
     }
 
+    public async Task<bool> IdExist(Guid id, CancellationToken cancellationToken = default) => 
+        await _context.Disbursements.AnyAsync(d => d.Id == id, cancellationToken);
+
+    public async Task<bool> ReferenceExist(string reference, CancellationToken cancellationToken = default) => 
+        await _context.Disbursements.AnyAsync(d => d.RequestNumber == reference, cancellationToken);
+
+    public async Task<bool> FileNameExist(string reference, string fileName, CancellationToken cancellationToken = default) => 
+        await _context.DisbursementDocuments
+        .AnyAsync(d => d.FileName == fileName && d.Disbursement.RequestNumber == reference, cancellationToken);
+
     public async Task<Disbursement> AddAsync(Disbursement disbursement, CancellationToken cancellationToken = default)
     {
         var entity = EntityMappings.MapDisbursementToEntity(disbursement);

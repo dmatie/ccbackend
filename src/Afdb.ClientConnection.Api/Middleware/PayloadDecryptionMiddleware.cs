@@ -1,4 +1,5 @@
 using Afdb.ClientConnection.Api.Attributes;
+using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using System.Text;
@@ -116,7 +117,8 @@ public class PayloadDecryptionMiddleware
 
             // Extrait le payload encrypté du JSON reçu
             // Format attendu: { "encryptedData": "base64..." }
-            var encryptedPayload2 = JsonSerializer.Deserialize<EncryptedPayloadWrapper>(encryptedBody);
+            var encryptedPayload2 = JsonSerializer.Deserialize<EncryptedPayloadWrapper>(encryptedBody, 
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             if (encryptedPayload2 == null || string.IsNullOrWhiteSpace(encryptedPayload2.EncryptedData))
             {

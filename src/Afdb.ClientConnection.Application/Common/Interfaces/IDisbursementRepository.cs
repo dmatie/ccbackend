@@ -18,4 +18,7 @@ public interface IDisbursementRepository
     Task<int> CountByStatusAsync(DisbursementStatus status, CancellationToken cancellationToken = default);
     Task<int> CountByStatusAsync(UserContext userContext, DisbursementStatus status, CancellationToken cancellationToken = default);
     Task<int> CountByUserIdAndStatusAsync(Guid userId, DisbursementStatus status, CancellationToken cancellationToken = default);
+    Task<bool> IdExist(Guid id, CancellationToken cancellationToken = default);
+    Task<bool> ReferenceExist(string reference, CancellationToken cancellationToken = default);
+    Task<bool> FileNameExist(string reference, string fileName, CancellationToken cancellationToken = default);
 }

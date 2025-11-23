@@ -7,12 +7,12 @@ using MediatR;
 
 namespace Afdb.ClientConnection.Application.Commands.AccessRequestCmd;
 
-public sealed class RejectAccessRequestCommandHandler(
+public sealed class RejectAccessRequestByAppCommandHandler(
     IAccessRequestRepository accessRequestRepository,
     IUserRepository userRepository,
     ICurrentUserService currentUserService,
     IAuditService auditService,
-    IMapper mapper) : IRequestHandler<RejectAccessRequestCommand, RejectAccessRequestResponse>
+    IMapper mapper) : IRequestHandler<RejectAccessRequestByAppCommand, RejectAccessRequestByAppResponse>
 {
     private readonly IAccessRequestRepository _accessRequestRepository = accessRequestRepository;
     private readonly IUserRepository _userRepository = userRepository;
@@ -20,7 +20,7 @@ public sealed class RejectAccessRequestCommandHandler(
     private readonly IAuditService _auditService = auditService;
     private readonly IMapper _mapper = mapper;
 
-    public async Task<RejectAccessRequestResponse> Handle(RejectAccessRequestCommand request, CancellationToken cancellationToken)
+    public async Task<RejectAccessRequestByAppResponse> Handle(RejectAccessRequestByAppCommand request, CancellationToken cancellationToken)
     {
         // Récupérer la demande d'accès
         var accessRequest = await _accessRequestRepository.GetByIdAsync(request.AccessRequestId)
@@ -34,11 +34,6 @@ public sealed class RejectAccessRequestCommandHandler(
 
         // Récupérer l'utilisateur qui rejette
         var email =   _currentUserService.Email;
-
-        if(_currentUserService.IsAppAuthentification && !string.IsNullOrEmpty(request.ApproverEmail))
-        {
-            email = request.ApproverEmail;
-        }
 
         var currentUser = (await _userRepository.GetByEmailAsync(email))
            ?? throw new NotFoundException($"ERR.General.UserNotExist {email}");
@@ -66,7 +61,7 @@ public sealed class RejectAccessRequestCommandHandler(
 
         var dto = _mapper.Map<AccessRequestDto>(accessRequest);
 
-        return new RejectAccessRequestResponse
+        return new RejectAccessRequestByAppResponse
         {
             AccessRequest = dto,
             Message = "MSG.AccessRequest.Rejected"

@@ -31,6 +31,28 @@ public sealed class DisbursementDocumentService : IDisbursementDocumentService
         _logger = logger;
     }
 
+    public async Task<FileDownloaded?> 
+        DownloadAttachDocumentsAsync(string reference, string fileName , CancellationToken cancellationToken = default)
+    {
+        // Le chemin relatif commence après "Disbursements"
+        var relativePath = string.Join('/', reference, fileName);
+
+        (Stream FileContent, string ContentType, string FileName)? downloadResult = await
+            _sharePointService.DownloadBySharePointUrlAsync(
+            _sharePointSettings.DriveId,
+            relativePath);
+
+        if(downloadResult == null)
+            return null;
+
+        return new FileDownloaded
+        {
+            FileName = downloadResult?.FileName ?? string.Empty,
+            FileContent = downloadResult?.FileContent ?? Stream.Null,
+            ContentType = downloadResult?.ContentType ?? string.Empty
+        };
+    }
+
     public async Task UploadAndAttachDocumentsAsync(
         Disbursement disbursement,
         IEnumerable<IFormFile> documents,
@@ -67,6 +89,7 @@ public sealed class DisbursementDocumentService : IDisbursementDocumentService
                 var documentUrl = await _sharePointService.UploadFileAsync(
                     _sharePointSettings.SiteId,
                     _sharePointSettings.DriveId,
+                    _sharePointSettings.ListId,
                     disbursement.RequestNumber,
                     stream,
                     document.FileName,

@@ -118,6 +118,19 @@ public class AccessRequestsController(IMediator mediator) : ControllerBase
     }
 
     /// <summary>
+    /// Approuver une demande d'accès (Admin/DO uniquement) depuis l'application
+    /// </summary>
+    [HttpPost("{id}/approve-byapp")]
+    [Authorize(Policy = "DOOrAdmin")]
+    public async Task<ActionResult<ApproveAccessRequestByAppResponse>> ApproveAccessRequestByApp(
+        Guid id, [FromBody] ApproveAccessRequestByAppCommand command, CancellationToken cancellationToken = default)
+    {
+        command.AccessRequestId = id;
+        var result = await _mediator.Send(command, cancellationToken);
+        return Ok(result);
+    }
+
+    /// <summary>
     /// Approuver une demande d'accès (Admin/DO uniquement)
     /// </summary>
     [HttpPost("{id}/approve")]
@@ -137,6 +150,19 @@ public class AccessRequestsController(IMediator mediator) : ControllerBase
     [Authorize(Policy = "DOOrAdmin")]
     public async Task<ActionResult<RejectAccessRequestResponse>> RejectAccessRequest(
         Guid id, [FromBody] RejectAccessRequestCommand command, CancellationToken cancellationToken = default)
+    {
+        command.AccessRequestId = id;
+        var result = await _mediator.Send(command, cancellationToken);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Rejeter une demande d'accès (Admin/DO uniquement)
+    /// </summary>
+    [HttpPost("{id}/reject-byapp")]
+    [Authorize(Policy = "DOOrAdmin")]
+    public async Task<ActionResult<RejectAccessRequestByAppResponse>> RejectAccessRequestByApp(
+        Guid id, [FromBody] RejectAccessRequestByAppCommand command, CancellationToken cancellationToken = default)
     {
         command.AccessRequestId = id;
         var result = await _mediator.Send(command, cancellationToken);

@@ -231,7 +231,6 @@ internal static partial class EntityMappings
             {
                 entity.Processes.Add(new DisbursementProcessEntity
                 {
-                    Id = process.Id,
                     DisbursementId = disbursement.Id,
                     Status = process.Status,
                     CreatedByUserId = process.CreatedByUserId,
@@ -240,6 +239,24 @@ internal static partial class EntityMappings
                     CreatedBy = process.CreatedBy,
                     UpdatedAt = process.UpdatedAt,
                     UpdatedBy = process.UpdatedBy
+                });
+            }
+        }
+
+        if (disbursement.Documents.Count > 0)
+        {
+            var existingDocumentIds = entity.Documents.Select(d => d.Id).ToHashSet();
+            var newDocuments = disbursement.Documents.Where(d => !existingDocumentIds.Contains(d.Id));
+
+            foreach (var document in newDocuments)
+            {
+                entity.Documents.Add(new DisbursementDocumentEntity
+                {
+                    DisbursementId = disbursement.Id,
+                    FileName = document.FileName,
+                    DocumentUrl = document.DocumentUrl,
+                    CreatedAt = document.CreatedAt,
+                    CreatedBy = document.CreatedBy
                 });
             }
         }

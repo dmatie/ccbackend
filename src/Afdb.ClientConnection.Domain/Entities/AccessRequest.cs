@@ -36,6 +36,8 @@ public sealed class AccessRequest : AggregateRoot
     public Country? Country { get; private set; }
     public BusinessProfile? BusinessProfile { get; private set; }
     public FinancingType? FinancingType { get; private set; }
+    public string BusinessProfileName  => BusinessProfile != null ? BusinessProfile.Name : "";
+    public string CountryName  => Country != null ? Country.Name : "";
 
     public ICollection<AccessRequestProject> Projects => _projects;
 
@@ -106,9 +108,10 @@ public sealed class AccessRequest : AggregateRoot
         CreatedBy = loadParam.CreatedBy;
         ApproversEmail = loadParam.ApproversEmail ?? [];
         _projects = loadParam.Projects;
+
     }
 
-    public void Approve(Guid processedById, string? comments, string updatedBy, bool isFromApplication)
+    public void Approve(Guid processedById, string? comments, string updatedBy, string approvedByEmail, bool isFromApplication)
     {
         if (Status != RequestStatus.Pending)
             throw new InvalidOperationException("Only pending requests can be approved");
@@ -121,10 +124,19 @@ public sealed class AccessRequest : AggregateRoot
 
         // Add domain event for guest account creation
         if (isFromApplication)
-            AddDomainEvent(new AccessRequestApprovedEvent(Id, Email, FirstName, LastName));
+            AddDomainEvent(new AccessRequestApprovedEvent(Id, Email, FirstName, LastName, approvedByEmail));
     }
 
-    public void Reject(Guid processedById, string rejectionReason, string updatedBy, bool isFromApplication)
+    public void ApproveByAutomate(Guid processedById, string? comments, string updatedBy, string approvedByEmail, bool isFromApplication)
+    {
+        Status = RequestStatus.Approved;
+        ProcessedDate = DateTime.UtcNow;
+        ProcessedById = processedById;
+        ProcessingComments = comments;
+        SetUpdated(updatedBy);
+    }
+
+    public void Reject(Guid processedById, string rejectionReason, string updatedBy, string rejectedByEmail, bool isFromApplication)
     {
         if (Status != RequestStatus.Pending)
             throw new InvalidOperationException("Only pending requests can be rejected");
@@ -140,7 +152,18 @@ public sealed class AccessRequest : AggregateRoot
 
         // Add domain event for rejection notification
         if (isFromApplication)
-            AddDomainEvent(new AccessRequestRejectedEvent(Id, Email, FirstName, LastName, rejectionReason));
+            AddDomainEvent(new AccessRequestRejectedEvent(
+                new AccessRequestRejectedEventNewParam
+                {
+                    AccessRequestId = Id,
+                    Email = Email,
+                    FirstName = FirstName,
+                    LastName = LastName,
+                    RejectionReason = rejectionReason,
+                    Organization = BusinessProfile != null ? BusinessProfile.Name : "",
+                    Country = Country != null ? Country.Name : "",
+                    RejectedByEmail= rejectedByEmail
+                }));
     }
 
     public void SetEntraIdObjectId(string entraIdObjectId, string updatedBy)

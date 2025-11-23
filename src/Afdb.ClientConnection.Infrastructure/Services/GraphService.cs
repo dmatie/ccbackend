@@ -88,7 +88,7 @@ internal sealed class GraphService(
             {
                 InvitedUserEmailAddress = email,
                 InvitedUserDisplayName = $"{firstName} {lastName}",
-                InviteRedirectUrl = _graphSettings.InviteRedirectUrl, // Configure selon vos besoins
+                InviteRedirectUrl = _graphSettings.InviteRedirectUrl, 
                 SendInvitationMessage = true,
                 InvitedUserMessageInfo = new InvitedUserMessageInfo
                 {

@@ -59,7 +59,7 @@ public class DisbursementsController(IMediator mediator) : ControllerBase
         Guid id, [FromForm] List<IFormFile>? additionalDocuments,
         CancellationToken cancellationToken = default)
     {
-        var command = new SubmitDisbursementCommand { DisbursementId = id, AdditionalDocuments= additionalDocuments };
+        var command = new SubmitDisbursementCommand { DisbursementId = id, AdditionalDocuments = additionalDocuments };
         var result = await _mediator.Send(command, cancellationToken);
         return Ok(result);
     }
@@ -176,5 +176,14 @@ public class DisbursementsController(IMediator mediator) : ControllerBase
         var query = new GetDisbursementsByUserQuery();
         var result = await _mediator.Send(query, cancellationToken);
         return Ok(result);
+    }
+
+    [HttpGet("DownloadDocument")]
+    [Authorize]
+    public async Task<IActionResult> DownloadDocument([FromQuery] GetFileUploadedQuery query,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await _mediator.Send(query, cancellationToken);
+        return File(result.FileContent, result.ContentType, result.FileName);
     }
 }

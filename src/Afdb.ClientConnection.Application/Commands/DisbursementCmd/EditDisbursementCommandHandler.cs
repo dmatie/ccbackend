@@ -76,7 +76,6 @@ public sealed class EditDisbursementCommandHandler(
        
         disbursement.SetFormDataForEdit(disbursementType.Code, newA1, newA2, newA3, newB1);
 
-        await _disbursementRepository.UpdateAsync(disbursement, cancellationToken);
 
         if (request.Documents != null && request.Documents.Count > 0)
         {
@@ -84,6 +83,10 @@ public sealed class EditDisbursementCommandHandler(
                 disbursement,
                 request.Documents,
                 cancellationToken);
+        }
+        else
+        {
+            await _disbursementRepository.UpdateAsync(disbursement, cancellationToken);
         }
 
         var updatedDisbursement = await _disbursementRepository.GetByIdAsync(disbursement.Id, cancellationToken);

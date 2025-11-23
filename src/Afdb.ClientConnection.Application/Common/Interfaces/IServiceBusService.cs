@@ -8,7 +8,7 @@ public interface IServiceBusService
            CancellationToken cancellationToken = default);
 
     Task SendAccessRequestApprovedAsync(Guid accessRequestId, string email, string firstName,
-        string lastName, CancellationToken cancellationToken = default);
+        string lastName, string approverEmail, CancellationToken cancellationToken = default);
 
     Task SendAccessRequestRejectedAsync(Guid accessRequestId, string email, string firstName,
         string lastName, string rejectionReason, CancellationToken cancellationToken = default);

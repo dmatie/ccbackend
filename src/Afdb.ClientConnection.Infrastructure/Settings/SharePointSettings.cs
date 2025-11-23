@@ -6,5 +6,6 @@ public sealed class SharePointSettings
 
     public string SiteId { get; set; } = string.Empty;
     public string DriveId { get; set; } = string.Empty;
+    public string ListId { get; set; } = string.Empty;
     public bool UseSharePointStorage { get; set; } = true;
 }

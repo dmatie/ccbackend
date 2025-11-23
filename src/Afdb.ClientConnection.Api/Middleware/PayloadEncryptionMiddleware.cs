@@ -1,4 +1,5 @@
 using Afdb.ClientConnection.Api.Attributes;
+using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using System.Text;

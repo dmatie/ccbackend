@@ -9,4 +9,8 @@ public interface IDisbursementDocumentService
         Disbursement disbursement,
         IEnumerable<IFormFile> documents,
         CancellationToken cancellationToken = default);
+
+    Task<FileDownloaded?> DownloadAttachDocumentsAsync(
+        string reference, string fileName,
+        CancellationToken cancellationToken = default);
 }

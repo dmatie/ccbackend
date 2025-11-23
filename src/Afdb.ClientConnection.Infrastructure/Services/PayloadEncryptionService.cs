@@ -1,47 +1,14 @@
+using Afdb.ClientConnection.Application.Common.Interfaces;
+using Afdb.ClientConnection.Infrastructure.Settings;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using Afdb.ClientConnection.Infrastructure.Settings;
-using Microsoft.Extensions.Options;
+using System.Text.RegularExpressions;
 
 namespace Afdb.ClientConnection.Infrastructure.Services;
-
-/// <summary>
-/// Service pour l'encryption/decryption des payloads entre frontend et backend
-/// Utilise AES-256-GCM pour une sécurité maximale
-/// </summary>
-public interface IPayloadEncryptionService
-{
-    /// <summary>
-    /// Vérifie si l'encryption est activée globalement
-    /// </summary>
-    bool IsEnabled { get; }
-
-    /// <summary>
-    /// Vérifie si un endpoint spécifique doit être encrypté
-    /// </summary>
-    bool ShouldEncrypt(string path);
-
-    /// <summary>
-    /// Encrypts a payload object to a base64 string
-    /// </summary>
-    string Encrypt<T>(T payload);
-
-    /// <summary>
-    /// Decrypts a base64 string to a payload object
-    /// </summary>
-    T Decrypt<T>(string encryptedPayload);
-
-    /// <summary>
-    /// Encrypts raw JSON string
-    /// </summary>
-    string EncryptJson(string jsonPayload);
-
-    /// <summary>
-    /// Decrypts to raw JSON string
-    /// </summary>
-    string DecryptJson(string encryptedPayload);
-}
 
 public class PayloadEncryptionService : IPayloadEncryptionService
 {
@@ -56,6 +23,7 @@ public class PayloadEncryptionService : IPayloadEncryptionService
     public bool IsEnabled => _settings.Enabled;
 
     public PayloadEncryptionService(
+        IConfiguration _configuration,
         IOptions<EncryptionSettings> settings,
         ILogger<PayloadEncryptionService> logger)
     {
@@ -70,14 +38,22 @@ public class PayloadEncryptionService : IPayloadEncryptionService
             return;
         }
 
-        // Récupère la clé depuis la configuration
-        var keyString = _settings.PayloadKey;
+
+        var encryptKeySecretKeyName = _configuration["KeyVault:PayloadEncryptKeyName"];
+        if (string.IsNullOrEmpty(encryptKeySecretKeyName))
+            throw new InvalidOperationException("ERR.KeyVault.EncryptKeyNameMissing");
+
+
+        var keyString = _configuration[encryptKeySecretKeyName];
+        if (string.IsNullOrEmpty(keyString))
+            throw new InvalidOperationException("ERR.KeyVault.EncryptKeyMissing");
+
 
         if (string.IsNullOrEmpty(keyString))
         {
             throw new InvalidOperationException(
-                "Encryption:PayloadKey is not configured but encryption is enabled. " +
-                "Generate a key using: Convert.ToBase64String(RandomNumberGenerator.GetBytes(32))");
+                "Encryption:PayloadKey is not configured. " +
+                "Generate a key using: dotnet user-secrets set 'Encryption:PayloadKey' '<your-256-bit-key>'");
         }
 
         // La clé doit être en base64 et faire 32 bytes (256 bits)
@@ -99,9 +75,9 @@ public class PayloadEncryptionService : IPayloadEncryptionService
         }
 
         _logger.LogInformation(
-            "PayloadEncryptionService initialized - Enabled: {Enabled}, Mode: {Mode}",
-            _settings.Enabled,
-            _settings.Mode);
+                    "PayloadEncryptionService initialized - Enabled: {Enabled}, Mode: {Mode}",
+                    _settings.Enabled,
+                    _settings.Mode);
     }
 
     public bool ShouldEncrypt(string path)
@@ -115,10 +91,21 @@ public class PayloadEncryptionService : IPayloadEncryptionService
         var normalizedPath = path.Split('?')[0].ToLowerInvariant();
 
         // Vérifie si dans la liste "Never Encrypt"
-        if (_settings.NeverEncryptEndpoints.Any(endpoint =>
-            normalizedPath.StartsWith(endpoint.ToLowerInvariant(), StringComparison.OrdinalIgnoreCase)))
+        foreach (var endpoint in _settings.NeverEncryptEndpoints)
         {
-            return false;
+            if (endpoint.Contains("*"))
+            {
+                // Transforme le pattern * en regex
+                var pattern = "^" + Regex.Escape(endpoint.ToLowerInvariant()).Replace("\\*", ".*") + "$";
+                if (Regex.IsMatch(normalizedPath, pattern, RegexOptions.IgnoreCase))
+                    return false;
+            }
+            else
+            {
+                // Match exact ou préfixe
+                if (normalizedPath.StartsWith(endpoint.ToLowerInvariant(), StringComparison.OrdinalIgnoreCase))
+                    return false;
+            }
         }
 
         // Vérifie si dans la liste "Always Encrypt"

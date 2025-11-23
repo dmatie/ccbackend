@@ -42,6 +42,7 @@ public sealed class DisbursementDocument : BaseEntity
         if (string.IsNullOrWhiteSpace(loadParam.DocumentUrl))
             throw new ArgumentException("FileUrl cannot be empty");
 
+        Id = loadParam.Id;
         DisbursementId = loadParam.DisbursementId;
         FileName = loadParam.FileName;
         DocumentUrl = loadParam.DocumentUrl;

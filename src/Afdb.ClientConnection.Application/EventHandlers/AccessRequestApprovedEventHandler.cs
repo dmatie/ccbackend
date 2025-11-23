@@ -21,6 +21,7 @@ public sealed class AccessRequestApprovedEventHandler : INotificationHandler<Acc
             notification.Email,
             notification.FirstName,
             notification.LastName,
+            notification.ApproverEmail,
             cancellationToken);
     }
 }

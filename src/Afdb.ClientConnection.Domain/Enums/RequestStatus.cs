@@ -5,5 +5,6 @@ public enum RequestStatus
     Approved = 2,
     Rejected = 3,
     Completed = 10,
-    Cancelled = 20
+    Cancelled = 20,
+    ApprovedByApp = 22
 }

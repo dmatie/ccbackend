@@ -9,6 +9,7 @@ public sealed class GraphSettings
     public string[] MockFifc3DOUsers { get; set; } = [];
     public string[] MockFifc3DAUsers { get; set; } = [];
     public bool UseMock { get; set; }
+    public bool AddRoleToUser { get; set; }
     public AppGroups AppGroups { get; set; } = new();
     public AppRoles AppRoles { get; set; } = new();
 }
