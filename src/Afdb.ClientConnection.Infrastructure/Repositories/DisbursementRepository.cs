@@ -98,7 +98,25 @@ internal sealed class DisbursementRepository : IDisbursementRepository
             .Include(d => d.DisbursementType)
             .Include(d => d.Currency)
             .Include(d => d.CreatedByUser)
+            .Include(d => d.BusinessProfile)
             .Where(d => d.CreatedByUserId == userId)
+            .OrderByDescending(d => d.CreatedAt)
+            .ToListAsync(cancellationToken);
+
+        return entities.Select(DomainMappings.MapDisbursementToDomain);
+    }
+
+    public async Task<IEnumerable<Disbursement>> GetByUserIdWithPermissionsAsync(
+        Guid userId,
+        List<Guid> authorizedBusinessProfileIds,
+        CancellationToken cancellationToken = default)
+    {
+        var entities = await _context.Disbursements
+            .Include(d => d.DisbursementType)
+            .Include(d => d.Currency)
+            .Include(d => d.CreatedByUser)
+            .Include(d => d.BusinessProfile)
+            .Where(d => d.CreatedByUserId == userId || authorizedBusinessProfileIds.Contains(d.BusinessProfileId))
             .OrderByDescending(d => d.CreatedAt)
             .ToListAsync(cancellationToken);
 

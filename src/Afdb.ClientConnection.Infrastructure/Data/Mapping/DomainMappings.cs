@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Domain.Entities;
+using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Domain.EntitiesParams;
 using Afdb.ClientConnection.Infrastructure.Data.Entities;
 
@@ -69,5 +69,17 @@ internal static partial class DomainMappings
     {
         // Mapper les propriétés nécessaires
         return new AccessRequestProject(entity.AccessRequestId,entity.SapCode);
+    }
+
+    public static DisbursementPermission? ToDomain(this DisbursementPermissionEntity? entity)
+    {
+        if (entity == null) return null;
+
+        return DisbursementPermission.Create(
+            entity.BusinessProfileId,
+            entity.FunctionId,
+            entity.CanConsult,
+            entity.CanSubmit
+        );
     }
 }

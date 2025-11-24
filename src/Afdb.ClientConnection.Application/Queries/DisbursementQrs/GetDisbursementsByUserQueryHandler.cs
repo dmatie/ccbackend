@@ -10,11 +10,13 @@ public sealed class GetDisbursementsByUserQueryHandler(
     IDisbursementRepository disbursementRepository,
     IUserRepository userRepository,
     ICurrentUserService currentUserService,
+    IDisbursementPermissionRepository permissionRepository,
     IMapper mapper) : IRequestHandler<GetDisbursementsByUserQuery, IEnumerable<DisbursementDto>>
 {
     private readonly IDisbursementRepository _disbursementRepository = disbursementRepository;
     private readonly IUserRepository _userRepository = userRepository;
     private readonly ICurrentUserService _currentUserService = currentUserService;
+    private readonly IDisbursementPermissionRepository _permissionRepository = permissionRepository;
     private readonly IMapper _mapper = mapper;
 
     public async Task<IEnumerable<DisbursementDto>> Handle(GetDisbursementsByUserQuery request, CancellationToken cancellationToken)
@@ -22,7 +24,18 @@ public sealed class GetDisbursementsByUserQueryHandler(
         var user = await _userRepository.GetByEmailAsync(_currentUserService.Email)
             ?? throw new NotFoundException("ERR.General.UserNotFound");
 
-        var disbursements = await _disbursementRepository.GetByUserIdAsync(user.Id, cancellationToken);
+        if (user.FunctionId == null)
+        {
+            var userDisbursements = await _disbursementRepository.GetByUserIdAsync(user.Id, cancellationToken);
+            return _mapper.Map<IEnumerable<DisbursementDto>>(userDisbursements);
+        }
+
+        var authorizedBusinessProfileIds = await _permissionRepository
+            .GetAuthorizedBusinessProfileIdsAsync(user.FunctionId.Value, cancellationToken);
+
+        var disbursements = await _disbursementRepository
+            .GetByUserIdWithPermissionsAsync(user.Id, authorizedBusinessProfileIds, cancellationToken);
+
         return _mapper.Map<IEnumerable<DisbursementDto>>(disbursements);
     }
 }

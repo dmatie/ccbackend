@@ -164,6 +164,19 @@ public class DisbursementsController(IMediator mediator) : ControllerBase
         return Ok(result);
     }
 
+    [HttpGet("me/permissions")]
+    [Authorize(Policy = "ExternalUsers")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<DisbursementPermissionsDto>> GetMyPermissions(
+        CancellationToken cancellationToken = default)
+    {
+        var query = new GetUserDisbursementPermissionsQuery();
+        var result = await _mediator.Send(query, cancellationToken);
+        return Ok(result);
+    }
+
     [HttpGet("by-user")]
     [Authorize(Policy = "ExternalUsers")]
     [ProducesResponseType(StatusCodes.Status200OK)]

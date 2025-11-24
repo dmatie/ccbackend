@@ -48,6 +48,7 @@ public static class DependencyInjection
         services.AddScoped<IDisbursementRepository, DisbursementRepository>();
         services.AddScoped<IDisbursementTypeRepository, DisbursementTypeRepository>();
         services.AddScoped<ICurrencyRepository, CurrencyRepository>();
+        services.AddScoped<IDisbursementPermissionRepository, DisbursementPermissionRepository>();
 
         // Services
         services.AddScoped<IAuditService, AuditService>();
