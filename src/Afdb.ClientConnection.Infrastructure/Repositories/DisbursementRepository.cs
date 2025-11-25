@@ -111,12 +111,32 @@ internal sealed class DisbursementRepository : IDisbursementRepository
         List<Guid> authorizedBusinessProfileIds,
         CancellationToken cancellationToken = default)
     {
+        var userAccessRequestProjects = await _context.AccessRequestProject
+            .Join(
+                _context.AccessRequests,
+                project => project.AccessRequestId,
+                request => request.Id,
+                (project, request) => new { project, request }
+            )
+            .Join(
+                _context.Users,
+                combined => combined.request.Email,
+                user => user.Email,
+                (combined, user) => new { combined.project, combined.request, user }
+            )
+            .Where(x => x.user.Id == userId &&
+                        x.request.BusinessProfileEntityId.HasValue &&
+                        authorizedBusinessProfileIds.Contains(x.request.BusinessProfileEntityId.Value))
+            .Select(x => x.project.SapCode)
+            .Distinct()
+            .ToListAsync(cancellationToken);
+
         var entities = await _context.Disbursements
             .Include(d => d.DisbursementType)
             .Include(d => d.Currency)
             .Include(d => d.CreatedByUser)
             .Include(d => d.BusinessProfile)
-            .Where(d => d.CreatedByUserId == userId || authorizedBusinessProfileIds.Contains(d.BusinessProfileId))
+            .Where(d => d.CreatedByUserId == userId || userAccessRequestProjects.Contains(d.SapCodeProject))
             .OrderByDescending(d => d.CreatedAt)
             .ToListAsync(cancellationToken);
 
