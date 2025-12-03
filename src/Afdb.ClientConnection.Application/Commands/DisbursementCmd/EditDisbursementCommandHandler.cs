@@ -41,7 +41,7 @@ public sealed class EditDisbursementCommandHandler(
         if (disbursement == null)
             throw new NotFoundException($"ERR.Disbursement.NotFound:{request.Id}");
 
-        if (disbursement.Status != DisbursementStatus.Draft)
+        if (disbursement.Status != DisbursementStatus.Draft && disbursement.Status != DisbursementStatus.BackedToClient)
             throw new ValidationException(new[] {
                 new FluentValidation.Results.ValidationFailure("Status",
                     $"ERR.Disbursement.CannotEditNonDraft:{disbursement.Status}")
@@ -72,7 +72,17 @@ public sealed class EditDisbursementCommandHandler(
         var newA3 = request.DisbursementA3 != null ? MapFormA3Data(request) : null;
         var newB1 = request.DisbursementB1 != null ? MapFormB1Data(request) : null;
 
-        disbursement.Edit(user);
+
+        DisbursementEditParam editParam = new DisbursementEditParam
+        {
+            DisbursementTypeId = disbursementType.Id,
+            CurrencyId = currency.Id,
+            CreatedByUserId = user.Id,
+            LoanGrantNumber = request.LoanGrantNumber,
+            SapCodeProject = request.SapCodeProject,
+        };
+
+        disbursement.Edit(editParam,user);
        
         disbursement.SetFormDataForEdit(disbursementType.Code, newA1, newA2, newA3, newB1);
 

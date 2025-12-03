@@ -171,10 +171,16 @@ public sealed class Disbursement : AggregateRoot
         }
     }
 
-    public void Edit(User user)
+    public void Edit(DisbursementEditParam editParam, User user)
     {
         if (Status != DisbursementStatus.Draft && Status != DisbursementStatus.BackedToClient)
             throw new InvalidOperationException("Only draft or backed to client disbursements can be edited");
+
+        SapCodeProject = editParam.SapCodeProject;
+        LoanGrantNumber = editParam.LoanGrantNumber;
+        DisbursementTypeId = editParam.DisbursementTypeId;
+        CurrencyId = editParam.CurrencyId;
+
         SetUpdated(user.Email);
     }
 

@@ -40,8 +40,11 @@ public sealed class GetExternalDashboardStatsQueryHandler : IRequestHandler<GetE
             ?? throw new NotFoundException("ERR.General.UserNotFound");
 
         var activeProjects = await _accessRequestRepository.CountProjectsByUserIdAsync(user.Email, cancellationToken);
+
         var activeDisbursementRequests = await _disbursementRepository
-            .CountByUserIdAndStatusAsync(user.Id, DisbursementStatus.Submitted, cancellationToken);
+            .CountByUserIdAndStatusAsync(user.Id, 
+            [DisbursementStatus.Submitted, DisbursementStatus.BackedToClient], cancellationToken);
+
         var pendingClaims = await _claimRepository.CountByUserIdAndStatusAsync(user.Id, ClaimStatus.Submitted, cancellationToken);
 
         _logger.LogInformation(

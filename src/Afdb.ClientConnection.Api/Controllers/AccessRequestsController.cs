@@ -1,6 +1,5 @@
-using Afdb.ClientConnection.Application.Commands.AccessRequestCmd;
+﻿using Afdb.ClientConnection.Application.Commands.AccessRequestCmd;
 using Afdb.ClientConnection.Application.Queries.AccessRequestQrs;
-using Afdb.ClientConnection.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -122,7 +121,7 @@ public class AccessRequestsController(IMediator mediator) : ControllerBase
     /// </summary>
     [HttpGet("approved")]
     [Authorize(Policy = "DOOrAdmin")]
-    public async Task<ActionResult<Application.DTOs.PaginatedAccessRequestDto>> GetApprovedAccessRequests(
+    public async Task<ActionResult<GetApprovedAccessRequestsResponse>> GetApprovedAccessRequests(
         [FromQuery] Guid? countryId,
         [FromQuery] string? projectCode,
         [FromQuery] int pageNumber = 1,

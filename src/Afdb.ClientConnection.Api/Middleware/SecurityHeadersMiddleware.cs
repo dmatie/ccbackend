@@ -32,7 +32,6 @@ public class SecurityHeadersMiddleware(RequestDelegate next, IOptions<SecurityHe
             headers["Permissions-Policy"] = _options.PermissionsPolicy ?? "geolocation=(), microphone=(), camera=()";
             headers["Cross-Origin-Resource-Policy"] = "same-origin";
             headers["Cross-Origin-Opener-Policy"] = "same-origin";
-            headers["Cross-Origin-Embedder-Policy"] = "require-corp";
         }
 
         // ---- SÉCURITÉ DU CONTENU ----

@@ -1,4 +1,5 @@
 using Afdb.ClientConnection.Infrastructure.Data.Entities;
+using Afdb.ClientConnection.Infrastructure.Data.Seeder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -24,14 +25,14 @@ public sealed class DisbursementPermissionConfiguration : IEntityTypeConfigurati
         builder.Property(e => e.CanSubmit)
             .IsRequired();
 
-        builder.Property(e => e.CreatedDate)
+        builder.Property(e => e.CreatedAt)
             .IsRequired();
 
         builder.Property(e => e.CreatedBy)
             .IsRequired()
             .HasMaxLength(255);
 
-        builder.Property(e => e.UpdatedDate);
+        builder.Property(e => e.UpdatedAt);
 
         builder.Property(e => e.UpdatedBy)
             .HasMaxLength(255);
@@ -49,5 +50,7 @@ public sealed class DisbursementPermissionConfiguration : IEntityTypeConfigurati
         builder.HasIndex(e => new { e.BusinessProfileId, e.FunctionId })
             .IsUnique()
             .HasDatabaseName("IX_DisbursementPermissions_BusinessProfile_Function");
+
+        builder.HasData(DisbursementPermissionSeeder.GetData());
     }
 }

@@ -7,42 +7,45 @@ using MediatR;
 namespace Afdb.ClientConnection.Application.Queries.AccessRequestQrs;
 
 internal sealed class GetApprovedAccessRequestsQueryHandler
-    : IRequestHandler<GetApprovedAccessRequestsQuery, PaginatedAccessRequestDto>
+    : IRequestHandler<GetApprovedAccessRequestsQuery, GetApprovedAccessRequestsResponse>
 {
     private readonly IAccessRequestRepository _accessRequestRepository;
     private readonly IMapper _mapper;
+    private readonly IUserContextService _userContextService;
 
     public GetApprovedAccessRequestsQueryHandler(
         IAccessRequestRepository accessRequestRepository,
+        IUserContextService userContextService,
         IMapper mapper)
     {
         _accessRequestRepository = accessRequestRepository;
         _mapper = mapper;
+        _userContextService = userContextService;
     }
 
-    public async Task<PaginatedAccessRequestDto> Handle(
+    public async Task<GetApprovedAccessRequestsResponse> Handle(
         GetApprovedAccessRequestsQuery request,
         CancellationToken cancellationToken)
     {
+        var userContext = _userContextService.GetUserContext();
+
+
         if (request.PageNumber < 1)
         {
-            throw new ValidationException(new ExceptionContent
-            {
-                Title = "Invalid Page Number",
-                Message = "Page number must be greater than or equal to 1."
+            throw new ValidationException(new[] {
+                new FluentValidation.Results.ValidationFailure("Email", "ERR.General.PageNumberGEOne")
             });
         }
 
         if (request.PageSize < 1 || request.PageSize > 100)
         {
-            throw new ValidationException(new ExceptionContent
-            {
-                Title = "Invalid Page Size",
-                Message = "Page size must be between 1 and 100."
+            throw new ValidationException(new[] {
+                new FluentValidation.Results.ValidationFailure("Email", "ERR.General.PageSizeInterval")
             });
         }
 
         var (items, totalCount) = await _accessRequestRepository.GetApprovedWithPaginationAsync(
+            userContext,
             request.CountryId,
             request.ProjectCode,
             request.PageNumber,
@@ -53,7 +56,7 @@ internal sealed class GetApprovedAccessRequestsQueryHandler
 
         var totalPages = (int)Math.Ceiling(totalCount / (double)request.PageSize);
 
-        return new PaginatedAccessRequestDto
+        return new GetApprovedAccessRequestsResponse
         {
             AccessRequests = accessRequestDtos,
             TotalCount = totalCount,

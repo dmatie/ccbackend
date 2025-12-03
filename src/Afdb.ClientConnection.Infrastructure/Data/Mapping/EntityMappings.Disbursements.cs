@@ -195,6 +195,10 @@ internal static partial class EntityMappings
     public static void UpdateDisbursementEntityFromDomain(DisbursementEntity entity, Disbursement disbursement)
     {
         entity.Status = disbursement.Status;
+        entity.LoanGrantNumber = disbursement.LoanGrantNumber;
+        entity.CurrencyId = disbursement.CurrencyId;
+        entity.SapCodeProject = disbursement.SapCodeProject;
+        entity.DisbursementTypeId = disbursement.DisbursementTypeId;
         entity.SubmittedAt = disbursement.SubmittedAt;
         entity.ProcessedAt = disbursement.ProcessedAt;
         entity.ProcessedByUserId = disbursement.ProcessedByUserId;

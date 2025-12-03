@@ -231,4 +231,21 @@ internal static partial class DomainMappings
             UpdatedBy = entity.UpdatedBy
         });
     }
+
+    public static DisbursementPermission? MapDisbursementPermissionToDomain(this DisbursementPermissionEntity? entity)
+    {
+        if (entity == null) return null;
+
+        return new DisbursementPermission( new DisbursementPermissionLoadParam { 
+            Id = entity.Id,
+            UpdatedAt = entity.UpdatedAt,
+            UpdatedBy = entity.UpdatedBy,
+            CreatedAt =  entity.CreatedAt,  
+            CreatedBy = entity.CreatedBy,
+            BusinessProfileId = entity.BusinessProfileId,
+            FunctionId = entity.FunctionId,
+            CanConsult = entity.CanConsult,
+            CanSubmit = entity.CanSubmit,
+        });
+    }
 }

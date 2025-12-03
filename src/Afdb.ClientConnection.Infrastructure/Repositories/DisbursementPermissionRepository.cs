@@ -25,7 +25,7 @@ public sealed class DisbursementPermissionRepository : IDisbursementPermissionRe
                 p => p.BusinessProfileId == businessProfileId && p.FunctionId == functionId,
                 cancellationToken);
 
-        return entity?.ToDomain();
+        return entity== null? null: DomainMappings.MapDisbursementPermissionToDomain(entity);
     }
 
     public async Task<List<Guid>> GetAuthorizedBusinessProfileIdsAsync(

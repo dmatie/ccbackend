@@ -1,4 +1,5 @@
 using Afdb.ClientConnection.Domain.Common;
+using Afdb.ClientConnection.Domain.EntitiesParams;
 
 namespace Afdb.ClientConnection.Domain.Entities;
 
@@ -16,29 +17,34 @@ public sealed class DisbursementPermission : BaseEntity
     {
     }
 
-    public static DisbursementPermission Create(
-        Guid businessProfileId,
-        Guid functionId,
-        bool canConsult,
-        bool canSubmit)
+    public DisbursementPermission(DisbursementPermissionNewParam newParam )
     {
-        return new DisbursementPermission
-        {
-            Id = Guid.NewGuid(),
-            BusinessProfileId = businessProfileId,
-            FunctionId = functionId,
-            CanConsult = canConsult,
-            CanSubmit = canSubmit,
-            CreatedDate = DateTime.UtcNow,
-            CreatedBy = "System"
-        };
+        BusinessProfileId = newParam.BusinessProfileId;
+        FunctionId = newParam.FunctionId;
+        CanConsult = newParam.CanConsult;
+        CanSubmit = newParam.CanSubmit;
+        CreatedAt = DateTime.UtcNow;
+        CreatedBy = "System";
+    }
+
+    public DisbursementPermission(DisbursementPermissionLoadParam loadParam)
+    {
+        Id = loadParam.Id;
+        BusinessProfileId = loadParam.BusinessProfileId;
+        FunctionId = loadParam.FunctionId;
+        CanConsult = loadParam.CanConsult;
+        CanSubmit = loadParam.CanSubmit;
+        CreatedAt = loadParam.CreatedAt;
+        CreatedBy = loadParam.CreatedBy;
+        UpdatedAt = loadParam.UpdatedAt;
+        UpdatedBy = loadParam.UpdatedBy;
     }
 
     public void Update(bool canConsult, bool canSubmit, string updatedBy)
     {
         CanConsult = canConsult;
         CanSubmit = canSubmit;
-        UpdatedDate = DateTime.UtcNow;
+        UpdatedAt = DateTime.UtcNow;
         UpdatedBy = updatedBy;
     }
 }

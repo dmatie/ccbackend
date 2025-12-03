@@ -98,7 +98,6 @@ internal sealed class DisbursementRepository : IDisbursementRepository
             .Include(d => d.DisbursementType)
             .Include(d => d.Currency)
             .Include(d => d.CreatedByUser)
-            .Include(d => d.BusinessProfile)
             .Where(d => d.CreatedByUserId == userId)
             .OrderByDescending(d => d.CreatedAt)
             .ToListAsync(cancellationToken);
@@ -107,20 +106,37 @@ internal sealed class DisbursementRepository : IDisbursementRepository
     }
 
     public async Task<IEnumerable<Disbursement>> GetByUserIdWithPermissionsAsync(
-        Guid userId,
-        List<Guid> authorizedBusinessProfileIds,
-        CancellationToken cancellationToken = default)
+    Guid userId,
+    List<Guid> authorizedBusinessProfileIds,
+    CancellationToken cancellationToken = default)
     {
-        var entities = await _context.Disbursements
-            .Include(d => d.DisbursementType)
-            .Include(d => d.Currency)
-            .Include(d => d.CreatedByUser)
-            .Include(d => d.BusinessProfile)
-            .Where(d => d.CreatedByUserId == userId || authorizedBusinessProfileIds.Contains(d.BusinessProfileId))
+
+        var query = _context.Disbursements
+           .Include(d => d.DisbursementType)
+           .Include(d => d.Currency)
+           .Include(d => d.CreatedByUser)
+           .Include(d => d.ProcessedByUser)
+           .AsQueryable();
+
+        query = query
+            .Join(
+                _context.AccessRequests,
+                disbursement => disbursement.CreatedByUser.Email,
+                accessRequest => accessRequest.Email,
+                (disbursement, accessRequest) => new { disbursement, accessRequest }
+            )
+            .Where(x => x.accessRequest.BusinessProfileEntityId != null &&
+                authorizedBusinessProfileIds.Contains(x.accessRequest.BusinessProfileEntityId.Value))
+            .Select(x => x.disbursement);
+
+        query = query.Where(d => d.CreatedByUserId == userId);
+
+        var entities = await query
             .OrderByDescending(d => d.CreatedAt)
             .ToListAsync(cancellationToken);
 
         return entities.Select(DomainMappings.MapDisbursementToDomain);
+
     }
 
     public async Task<bool> IdExist(Guid id, CancellationToken cancellationToken = default) => 
@@ -331,10 +347,11 @@ internal sealed class DisbursementRepository : IDisbursementRepository
         return await query.CountAsync(cancellationToken);
     }
 
-    public async Task<int> CountByUserIdAndStatusAsync(Guid userId, DisbursementStatus status, CancellationToken cancellationToken = default)
+    public async Task<int> CountByUserIdAndStatusAsync(Guid userId, DisbursementStatus[] status, 
+        CancellationToken cancellationToken = default)
     {
         return await _context.Disbursements
-            .Where(d => d.CreatedByUserId == userId && d.Status == status)
+            .Where(d => d.CreatedByUserId == userId && status.Contains(d.Status))
             .CountAsync(cancellationToken);
     }
 }

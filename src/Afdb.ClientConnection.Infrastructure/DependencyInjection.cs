@@ -23,6 +23,7 @@ public static class DependencyInjection
         services.Configure<AzureAdSettings>(configuration.GetSection(AzureAdSettings.SectionName));
         services.Configure<GraphSettings>(configuration.GetSection(GraphSettings.SectionName));
         services.Configure<EncryptionSettings>(configuration.GetSection(EncryptionSettings.SectionName));
+        services.Configure<FrontEndUrlsSettings>(configuration.GetSection(FrontEndUrlsSettings.SectionName));
 
         // Database
         services.AddDbContext<ClientConnectionDbContext>((serviceProvider, options) =>

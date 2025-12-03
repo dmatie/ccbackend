@@ -7,10 +7,10 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// builder.WebHost.ConfigureKestrel(options =>
-// {
-//     options.ListenAnyIP(80); // écoute HTTP
-// });
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.AddServerHeader = false;
+});
 
 //Config Azure KeyVault
 var keyVaultUrl = builder.Configuration["KeyVault:VaultUri"];

@@ -111,7 +111,11 @@ public class MappingProfile : Profile
         CreateMap<DisbursementA1, DisbursementA1Dto>();
         CreateMap<DisbursementA2, DisbursementA2Dto>();
         CreateMap<DisbursementA3, DisbursementA3Dto>();
-        CreateMap<DisbursementB1, DisbursementB1Dto>();
+        CreateMap<DisbursementB1, DisbursementB1Dto>()
+            .ForMember(dest => dest.IssuingBankAdress,
+                opt => opt.MapFrom(src => src.IssuingBankAddress));
+
+        CreateMap<DisbursementPermission, DisbursementPermissionsDto>();
 
 
         CreateMap<DisbursementDocument, DisbursementDocumentDto>();

@@ -223,6 +223,7 @@ internal sealed class AccessRequestRepository : IAccessRequestRepository
     }
 
     public async Task<(List<AccessRequest> items, int totalCount)> GetApprovedWithPaginationAsync(
+        UserContext userContext,
         Guid? countryId,
         string? projectCode,
         int pageNumber,
@@ -245,13 +246,18 @@ internal sealed class AccessRequestRepository : IAccessRequestRepository
 
         if (!string.IsNullOrWhiteSpace(projectCode))
         {
-            query = query.Where(ar => ar.Projects.Any(p => p.ProjectCode == projectCode));
+            query = query.Where(ar => ar.Projects.Any(p => p.SapCode == projectCode));
+        }
+
+        if (userContext.RequiresCountryFilter)
+        {
+            query = query.Where(c => c.CountryEntityId != null && userContext.CountryIds.Contains(c.CountryEntityId.Value));
         }
 
         var totalCount = await query.CountAsync(cancellationToken);
 
         var entities = await query
-            .OrderByDescending(ar => ar.CreatedDate)
+            .OrderByDescending(ar => ar.CreatedAt)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);

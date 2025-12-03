@@ -53,10 +53,6 @@ public sealed class SubmitDisbursementCommandHandler(
         {
             assignTo = fifcAdmins;
         }
-        else
-        {
-            assignTo = fifcAdmins;
-        }
 
         disbursement.Submit(user, assignTo, fifcAdmins);
 

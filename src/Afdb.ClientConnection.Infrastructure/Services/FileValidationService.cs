@@ -37,19 +37,19 @@ public sealed class FileValidationService : IFileValidationService
 
         if (file.Length > _settings.MaxFileSizeInBytes)
         {
-            errors.Add($"ERR.FILE.SIZE_EXCEEDED:{_settings.MaxFileSizeInMB}MB");
+            errors.Add($"ERR.FILE.SIZE_EXCEEDED");
         }
 
         var extension = Path.GetExtension(fileName)?.ToLowerInvariant();
         if (string.IsNullOrEmpty(extension) || !_settings.AllowedExtensions.Contains(extension))
         {
-            errors.Add($"ERR.FILE.EXTENSION_NOT_ALLOWED:{extension ?? "none"}");
+            errors.Add($"ERR.FILE.EXTENSION_NOT_ALLOWED");
         }
 
         var contentType = file.ContentType?.ToLowerInvariant();
         if (string.IsNullOrEmpty(contentType) || !_settings.AllowedMimeTypes.Contains(contentType))
         {
-            errors.Add($"ERR.FILE.MIMETYPE_NOT_ALLOWED:{contentType ?? "none"}");
+            errors.Add($"ERR.FILE.MIMETYPE_NOT_ALLOWED");
         }
 
         if (errors.Count > 0)

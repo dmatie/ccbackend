@@ -36,7 +36,8 @@ public sealed class GetInternalDashboardStatsQueryHandler : IRequestHandler<GetI
         _logger.LogInformation("Fetching internal dashboard statistics");
         var userContext = _userContextService.GetUserContext();
 
-        var pendingAccessRequests = await _accessRequestRepository.CountByStatusAsync(userContext, RequestStatus.Pending, cancellationToken);
+        var pendingAccessRequests = await _accessRequestRepository
+            .CountByStatusAsync(userContext, RequestStatus.Pending, cancellationToken);
 
         var pendingClaims = await _claimRepository.CountByStatusAsync(userContext,
             [ClaimStatus.Submitted, ClaimStatus.InProgress], cancellationToken);
@@ -44,7 +45,9 @@ public sealed class GetInternalDashboardStatsQueryHandler : IRequestHandler<GetI
         var pendingDisbursements = await _disbursementRepository
             .CountByStatusAsync(userContext, DisbursementStatus.Submitted, cancellationToken);
 
-        var totalUsers = await _userRepository.CountByRoleAsync([UserRole.Admin, UserRole.DA, UserRole.DO], cancellationToken);
+
+        var totalUsers = await _accessRequestRepository
+                .CountByStatusAsync(userContext, RequestStatus.Approved, cancellationToken);
 
         _logger.LogInformation(
             "Internal dashboard stats - PendingAccessRequests: {PendingAccessRequests}, " +
