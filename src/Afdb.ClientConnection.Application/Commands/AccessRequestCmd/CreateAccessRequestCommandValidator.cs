@@ -1,11 +1,17 @@
-﻿using FluentValidation;
+using Afdb.ClientConnection.Application.Common.Interfaces;
+using Afdb.ClientConnection.Application.Common.Validators;
+using FluentValidation;
 
 namespace Afdb.ClientConnection.Application.Commands.AccessRequestCmd;
 
 public class CreateAccessRequestCommandValidator : AbstractValidator<CreateAccessRequestCommand>
 {
-    public CreateAccessRequestCommandValidator()
+    private readonly IInputSanitizationService _sanitizationService;
+
+    public CreateAccessRequestCommandValidator(IInputSanitizationService sanitizationService)
     {
+        _sanitizationService = sanitizationService;
+
         RuleFor(x => x.Email)
             .NotEmpty()
             .WithMessage("ERR.AccessRequest.MandatoryEmail")
@@ -18,15 +24,16 @@ public class CreateAccessRequestCommandValidator : AbstractValidator<CreateAcces
             .NotEmpty()
             .WithMessage("ERR.AccessRequest.MandatoryFirstName")
             .MaximumLength(100)
-            .WithMessage("ERR.AccessRequest.LengthMaxFirstName");
+            .WithMessage("ERR.AccessRequest.LengthMaxFirstName")
+            .SafeName(_sanitizationService);
 
         RuleFor(x => x.LastName)
             .NotEmpty()
             .WithMessage("ERR.AccessRequest.MandatoryLastName")
             .MaximumLength(100)
-            .WithMessage("ERR.AccessRequest.LengthMaxLastName");
+            .WithMessage("ERR.AccessRequest.LengthMaxLastName")
+            .SafeName(_sanitizationService);
 
-        // Validation pour les IDs optionnels (GUIDs valides)
         RuleFor(x => x.FunctionId)
             .Must(BeValidGuid)
             .WithMessage("ERR.AccessRequest.InvalidFunctionId")

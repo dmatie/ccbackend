@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
     <ProjectReference Include="..\Afdb.ClientConnection.Application\Afdb.ClientConnection.Application.csproj" />
@@ -37,6 +37,7 @@
     <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.18.1" />
     <PackageReference Include="Azure.Identity" Version="1.12.1" />
     <PackageReference Include="Microsoft.Graph" Version="5.93.0" />
+    <PackageReference Include="HtmlSanitizer" Version="8.1.870" />
   </ItemGroup>
 
 

@@ -60,6 +60,7 @@ public static class DependencyInjection
         services.AddScoped<IOtpCodeRepository, OtpCodeRepository>();
         services.AddScoped<IOtpService, OtpService>();
         services.AddScoped<INotificationService, NotificationService>();
+        services.AddSingleton<IInputSanitizationService, InputSanitizationService>();
 
         // HttpClient for PowerAutomateService
         services.AddHttpClient<IPowerAutomateService, PowerAutomateService>(client =>
