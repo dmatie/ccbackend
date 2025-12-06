@@ -18,6 +18,7 @@ public enum NotificationEventType
     DisbursementReSubmitted,
 
     AccessRequestCreated,
+    AccessRequestSubmitted,
     AccessRequestApproved,
     AccessRequestRejected,
 

@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Application.Commands.AccessRequestCmd;
+using Afdb.ClientConnection.Application.Commands.AccessRequestCmd;
 using Afdb.ClientConnection.Application.Queries.AccessRequestQrs;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -77,6 +77,18 @@ public class AccessRequestsController(IMediator mediator) : ControllerBase
         return Ok(result);
     }
 
+    /// <summary>
+    /// Soumettre une demande d'accès (accessible sans authentification)
+    /// </summary>
+    [HttpPost("{id}/submit")]
+    [AllowAnonymous]
+    public async Task<ActionResult<SubmitAccessRequestResponse>> SubmitAccessRequest(
+        Guid id, CancellationToken cancellationToken = default)
+    {
+        var command = new SubmitAccessRequestCommand { AccessRequestId = id };
+        var result = await _mediator.Send(command, cancellationToken);
+        return Ok(result);
+    }
 
     /// <summary>
     /// Récupérer une demande d'accès par email (accessible sans authentification)
