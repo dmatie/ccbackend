@@ -1,4 +1,4 @@
-using Afdb.ClientConnection.Application.Common.Interfaces;
+﻿using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Application.Common.Validators;
 using FluentValidation;
 
@@ -6,12 +6,9 @@ namespace Afdb.ClientConnection.Application.Commands.ClaimCmd;
 
 public sealed class CreateClaimCommandValidator : AbstractValidator<CreateClaimCommand>
 {
-    private readonly IInputSanitizationService _sanitizationService;
 
     public CreateClaimCommandValidator(IInputSanitizationService sanitizationService)
     {
-        _sanitizationService = sanitizationService;
-
         RuleFor(x => x.ClaimTypeId)
             .NotEmpty()
             .WithMessage("ClaimTypeId is required");
@@ -21,6 +18,6 @@ public sealed class CreateClaimCommandValidator : AbstractValidator<CreateClaimC
             .WithMessage("Comment is required")
             .MaximumLength(2000)
             .WithMessage("Comment cannot exceed 2000 characters")
-            .SafeDescription(_sanitizationService);
+            .SafeDescription(sanitizationService);
     }
 }

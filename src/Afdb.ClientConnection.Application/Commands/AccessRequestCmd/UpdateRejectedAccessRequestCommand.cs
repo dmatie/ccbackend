@@ -20,6 +20,7 @@ public sealed record UpdateRejectedAccessRequestCommand : IRequest<UpdateRejecte
 public sealed record UpdateRequestProject
 {
     public string SapCode { get; init; } = default!;
+    public string ProjectTitle { get; init; } = default!;
 }
 
 public sealed record UpdateRejectedAccessRequestResponse

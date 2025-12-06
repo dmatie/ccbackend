@@ -3,6 +3,7 @@ using Afdb.ClientConnection.Domain.EntitiesParams;
 using Afdb.ClientConnection.Domain.Enums;
 using Afdb.ClientConnection.Domain.Events;
 using System.Diagnostics.Metrics;
+using System.Security.Cryptography;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Afdb.ClientConnection.Domain.Entities;
@@ -15,6 +16,7 @@ public sealed class AccessRequest : AggregateRoot
     public string Email { get; private set; }
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
+    public string Code { get; private set; }
     public RequestStatus Status { get; private set; }
     public DateTime RequestedDate { get; private set; }
     public DateTime? ProcessedDate { get; private set; }
@@ -36,8 +38,8 @@ public sealed class AccessRequest : AggregateRoot
     public Country? Country { get; private set; }
     public BusinessProfile? BusinessProfile { get; private set; }
     public FinancingType? FinancingType { get; private set; }
-    public string BusinessProfileName  => BusinessProfile != null ? BusinessProfile.Name : "";
-    public string CountryName  => Country != null ? Country.Name : "";
+    public string BusinessProfileName => BusinessProfile != null ? BusinessProfile.Name : "";
+    public string CountryName => Country != null ? Country.Name : "";
 
     public ICollection<AccessRequestProject> Projects => _projects;
 
@@ -65,7 +67,8 @@ public sealed class AccessRequest : AggregateRoot
         Country = newParam.Country;
         BusinessProfile = newParam.BusinessProfile;
         FinancingType = newParam.FinancingType;
-        Status = RequestStatus.Pending;
+        Status = RequestStatus.Draft;
+        Code = GenerateRandomCode();
         RequestedDate = DateTime.UtcNow;
         CreatedBy = newParam.CreatedBy;
         ApproversEmail = newParam.ApproversEmail ?? [];
@@ -73,7 +76,8 @@ public sealed class AccessRequest : AggregateRoot
 
         // Add domain event for Teams approval process with actual entity names
         AddDomainEvent(new AccessRequestCreatedEvent(Id, Email, FirstName, LastName,
-             Function?.Name, BusinessProfile?.Name, Country?.Name, FinancingType?.Name, Status.ToString(), ApproversEmail));
+             Function?.Name, BusinessProfile?.Name, Country?.Name, FinancingType?.Name, 
+             Status.ToString(), ApproversEmail,Code));
     }
 
     public AccessRequest(AccessRequestLoadParam loadParam)
@@ -91,6 +95,7 @@ public sealed class AccessRequest : AggregateRoot
         Email = loadParam.Email.ToLowerInvariant();
         FirstName = loadParam.FirstName;
         LastName = loadParam.LastName;
+        Code = loadParam.Code;
         FunctionId = loadParam.FunctionId;
         CountryId = loadParam.CountryId;
         BusinessProfileId = loadParam.BusinessProfileId;
@@ -110,6 +115,21 @@ public sealed class AccessRequest : AggregateRoot
         _projects = loadParam.Projects;
 
     }
+
+    public void Submit()
+    {
+        if (Status != RequestStatus.Draft)
+            throw new InvalidOperationException("Only draft requests can be submit");
+
+        Status = RequestStatus.Pending;
+        SetUpdated(Email);
+
+        // Add domain event for Teams approval process with actual entity names
+        AddDomainEvent(new AccessRequestSubmitedEvent(Id, Email, FirstName, LastName,
+             Function?.Name, BusinessProfile?.Name, Country?.Name, FinancingType?.Name,
+             Status.ToString(), ApproversEmail, Code));
+    }
+
 
     public void Approve(Guid processedById, string? comments, string updatedBy, string approvedByEmail, bool isFromApplication)
     {
@@ -162,7 +182,7 @@ public sealed class AccessRequest : AggregateRoot
                     RejectionReason = rejectionReason,
                     Organization = BusinessProfile != null ? BusinessProfile.Name : "",
                     Country = Country != null ? Country.Name : "",
-                    RejectedByEmail= rejectedByEmail
+                    RejectedByEmail = rejectedByEmail
                 }));
     }
 
@@ -224,14 +244,25 @@ public sealed class AccessRequest : AggregateRoot
         BusinessProfile = updateParam.BusinessProfile;
         FinancingType = updateParam.FinancingType;
         ApproversEmail = updateParam.ApproversEmail ?? ApproversEmail;
-        Status = RequestStatus.Pending; // Reset status to Pending on update
+        Status = RequestStatus.Draft; // Reset status to draft on update
         Projects.Clear();
         _projects.AddRange(updateParam.Projects);
         SetUpdated("System");
         // Add domain event for Teams approval process with actual entity names
         AddDomainEvent(new AccessRequestCreatedEvent(Id, Email, FirstName, LastName,
-             Function?.Name, BusinessProfile?.Name, Country?.Name, FinancingType?.Name, Status.ToString(), ApproversEmail));
+             Function?.Name, BusinessProfile?.Name, Country?.Name, FinancingType?.Name, 
+             Status.ToString(), ApproversEmail, Code));
     }
+
+    private static string GenerateRandomCode()
+    {
+        using var rng = RandomNumberGenerator.Create();
+        var bytes = new byte[4];
+        rng.GetBytes(bytes);
+        var value = BitConverter.ToUInt32(bytes, 0) % 1000000;
+        return value.ToString("D6");
+    }
+
 
     public string FullName => $"{FirstName} {LastName}";
     public bool CanBeProcessed => Status == RequestStatus.Pending;

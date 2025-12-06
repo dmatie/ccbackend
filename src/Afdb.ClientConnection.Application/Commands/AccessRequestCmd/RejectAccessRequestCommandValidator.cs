@@ -1,10 +1,12 @@
-﻿using FluentValidation;
+﻿using Afdb.ClientConnection.Application.Common.Interfaces;
+using Afdb.ClientConnection.Application.Common.Validators;
+using FluentValidation;
 
 namespace Afdb.ClientConnection.Application.Commands.AccessRequestCmd;
 
 public class RejectAccessRequestCommandValidator : AbstractValidator<RejectAccessRequestCommand>
 {
-    public RejectAccessRequestCommandValidator()
+    public RejectAccessRequestCommandValidator(IInputSanitizationService sanitizationService)
     {
         RuleFor(x => x.AccessRequestId)
             .NotEmpty()
@@ -16,6 +18,7 @@ public class RejectAccessRequestCommandValidator : AbstractValidator<RejectAcces
             .MinimumLength(10)
             .WithMessage("ERR.AccessRequest.LengthMinRejectionMessage")
             .MaximumLength(1000)
-            .WithMessage("ERR.AccessRequest.LengthMaxRejectionMessage");
+            .WithMessage("ERR.AccessRequest.LengthMaxRejectionMessage")
+            .SafeDescription(sanitizationService);
     }
 }

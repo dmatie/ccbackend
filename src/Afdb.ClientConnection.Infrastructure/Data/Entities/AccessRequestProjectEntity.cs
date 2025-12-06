@@ -11,5 +11,9 @@ public class AccessRequestProjectEntity : BaseEntityConfiguration
     [Required]
     [MaxLength(100)]
     public string SapCode { get; set; } = default!;
+
+    [Required]
+    [MaxLength(200)]
+    public string ProjectTitle { get; set; } = default!;
     public AccessRequestEntity AccessRequest { get; set; } = default!;
 }

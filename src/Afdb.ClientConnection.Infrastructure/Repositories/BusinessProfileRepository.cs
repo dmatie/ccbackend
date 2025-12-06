@@ -1,6 +1,7 @@
 using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Infrastructure.Data;
+using Afdb.ClientConnection.Infrastructure.Data.Mapping;
 using Afdb.ClientConnection.Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,7 +22,7 @@ public class BusinessProfileRepository : IBusinessProfileRepository
             .Where(bp => bp.Id == id)
             .FirstOrDefaultAsync(cancellationToken);
 
-        return entity != null ? new BusinessProfile(entity.Id, entity.Name, entity.Description, entity.CreatedBy) : null;
+        return entity != null ? DomainMappings.MapBusinessProfile(entity) : null;
     }
 
     public async Task<IEnumerable<BusinessProfile>> GetAllAsync(CancellationToken cancellationToken = default)
@@ -30,7 +31,7 @@ public class BusinessProfileRepository : IBusinessProfileRepository
             .OrderBy(bp => bp.Name)
             .ToListAsync(cancellationToken);
 
-        return entities.Select(e => new BusinessProfile(e.Id, e.Name, e.Description, e.CreatedBy));
+        return entities.Select(DomainMappings.MapBusinessProfile);
     }
 
     public async Task<IEnumerable<BusinessProfile>> GetActiveAsync(CancellationToken cancellationToken = default)
@@ -40,6 +41,6 @@ public class BusinessProfileRepository : IBusinessProfileRepository
             .OrderBy(bp => bp.Name)
             .ToListAsync(cancellationToken);
 
-        return entities.Select(e => new BusinessProfile(e.Id, e.Name, e.Description, e.CreatedBy));
+        return entities.Select(DomainMappings.MapBusinessProfile);
     }
 }

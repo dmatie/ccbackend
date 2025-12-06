@@ -1,10 +1,12 @@
-﻿using FluentValidation;
+﻿using Afdb.ClientConnection.Application.Common.Interfaces;
+using Afdb.ClientConnection.Application.Common.Validators;
+using FluentValidation;
 
 namespace Afdb.ClientConnection.Application.Commands.AccessRequestCmd;
 
 public class UpdateRejectedAccessRequestCommandValidator : AbstractValidator<UpdateRejectedAccessRequestCommand>
 {
-    public UpdateRejectedAccessRequestCommandValidator()
+    public UpdateRejectedAccessRequestCommandValidator(IInputSanitizationService sanitizationService)
     {
         RuleFor(x => x.Email)
             .NotEmpty()
@@ -18,13 +20,15 @@ public class UpdateRejectedAccessRequestCommandValidator : AbstractValidator<Upd
             .NotEmpty()
             .WithMessage("ERR.AccessRequest.MandatoryFirstName")
             .MaximumLength(100)
-            .WithMessage("ERR.AccessRequest.LengthMaxFirstName");
+            .WithMessage("ERR.AccessRequest.LengthMaxFirstName")
+            .SafeName(sanitizationService);
 
         RuleFor(x => x.LastName)
             .NotEmpty()
             .WithMessage("ERR.AccessRequest.MandatoryLastName")
             .MaximumLength(100)
-            .WithMessage("ERR.AccessRequest.LengthMaxLastName");
+            .WithMessage("ERR.AccessRequest.LengthMaxLastName")
+            .SafeName(sanitizationService);
 
         // Validation pour les IDs optionnels (GUIDs valides)
         RuleFor(x => x.FunctionId)

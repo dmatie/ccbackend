@@ -13,6 +13,7 @@ internal static partial  class EntityMappings
             Email = accessRequest.Email,
             FirstName = accessRequest.FirstName,
             LastName = accessRequest.LastName,
+            Code = accessRequest.Code,
             Status = accessRequest.Status,
             RequestedDate = accessRequest.RequestedDate,
             ProcessedDate = accessRequest.ProcessedDate,
@@ -36,7 +37,8 @@ internal static partial  class EntityMappings
             {
                 entity.Projects.Add(new()
                 {
-                    SapCode = item.SapCode
+                    SapCode = item.SapCode,
+                    ProjectTitle = item.ProjectTitle,
                 });
             }
         }
@@ -66,7 +68,8 @@ internal static partial  class EntityMappings
             {
                 entity.Projects.Add(new()
                 {
-                    SapCode = item.SapCode
+                    SapCode = item.SapCode,
+                    ProjectTitle = item.ProjectTitle,
                 });
             }
         }

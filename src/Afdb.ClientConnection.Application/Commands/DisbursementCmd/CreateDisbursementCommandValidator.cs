@@ -6,12 +6,8 @@ namespace Afdb.ClientConnection.Application.Commands.DisbursementCmd;
 
 public sealed class CreateDisbursementCommandValidator : AbstractValidator<CreateDisbursementCommand>
 {
-    private readonly IInputSanitizationService _sanitizationService;
-
     public CreateDisbursementCommandValidator(IInputSanitizationService sanitizationService)
     {
-        _sanitizationService = sanitizationService;
-
         RuleFor(x => x.SapCodeProject)
             .NotEmpty()
             .WithMessage("ERR.Disbursement.SapCodeProjectRequired")
@@ -41,19 +37,19 @@ public sealed class CreateDisbursementCommandValidator : AbstractValidator<Creat
             .WithName("DisbursementForms");
 
         RuleFor(x => x.DisbursementA1)
-            .SetValidator(new CreateDisbursementA1CommandValidator(_sanitizationService))
+            .SetValidator(new CreateDisbursementA1CommandValidator(sanitizationService))
             .When(x => x.DisbursementA1 != null);
 
         RuleFor(x => x.DisbursementA2)
-            .SetValidator(new CreateDisbursementA2CommandValidator(_sanitizationService))
+            .SetValidator(new CreateDisbursementA2CommandValidator(sanitizationService))
             .When(x => x.DisbursementA2 != null);
 
         RuleFor(x => x.DisbursementA3)
-            .SetValidator(new CreateDisbursementA3CommandValidator(_sanitizationService))
+            .SetValidator(new CreateDisbursementA3CommandValidator(sanitizationService))
             .When(x => x.DisbursementA3 != null);
 
         RuleFor(x => x.DisbursementB1)
-            .SetValidator(new CreateDisbursementB1CommandValidator(_sanitizationService))
+            .SetValidator(new CreateDisbursementB1CommandValidator(sanitizationService))
             .When(x => x.DisbursementB1 != null);
 
         RuleFor(x => x.Documents)

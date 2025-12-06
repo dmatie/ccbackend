@@ -14,6 +14,11 @@ public class FinancingTypeConfiguration : IEntityTypeConfiguration<FinancingType
             .IsRequired()
             .HasMaxLength(100);
 
+        builder.Property(e => e.NameFr)
+            .IsRequired()
+            .HasMaxLength(100);
+
+
         builder.Property(e => e.Code)
             .IsRequired()
             .HasMaxLength(100);
@@ -35,6 +40,7 @@ public class FinancingTypeConfiguration : IEntityTypeConfiguration<FinancingType
             {
                 Id = Guid.Parse("27cfc0a1-682f-4e97-8d22-6416617f3706"),
                 Name = "Private",
+                NameFr ="Privé",
                 Code = "PRIVATE",
                 Description = "Financement d'origine privée",
                 IsActive = true,
@@ -43,6 +49,7 @@ public class FinancingTypeConfiguration : IEntityTypeConfiguration<FinancingType
             {
                 Id = Guid.Parse("a975c9e2-0cb2-4f83-876c-7078aaf66abd"),
                 Name = "Public",
+                NameFr ="Public",
                 Code = "PUBLIC",
                 Description = "Financement d'origine publique",
                 IsActive = true,
@@ -51,6 +58,7 @@ public class FinancingTypeConfiguration : IEntityTypeConfiguration<FinancingType
             {
                 Id = Guid.Parse("1aefe328-1746-457c-9949-cfbaa3390c67"),
                 Name = "Other",
+                NameFr ="Autre",
                 Code = "OTHER",
                 Description = "Autre type de financement",
                 IsActive = true,

@@ -33,4 +33,7 @@ public sealed record AccessRequestDto
     public bool IsProcessed => Status != RequestStatus.Pending;
     public bool HasEntraIdAccount => !string.IsNullOrWhiteSpace(EntraIdObjectId);
     public List<String> SelectedProjectCodes { get; init; } = default!;
+    public string RegistrationCode { get; init; } = default!;
+    public List<AccessRequestProjectDto> Projects { get; init; } = default!;
 }
+

@@ -18,6 +18,7 @@ public sealed record CreateAccessRequestCommand : IRequest<CreateAccessRequestRe
 public sealed record RequestProject
 {
     public string SapCode { get; init; } = default!;
+    public string ProjectTitle { get; init; } = default!;
 }
 
 public sealed record CreateAccessRequestResponse

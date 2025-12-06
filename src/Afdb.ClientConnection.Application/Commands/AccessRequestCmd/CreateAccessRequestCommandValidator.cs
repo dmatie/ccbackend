@@ -1,4 +1,4 @@
-using Afdb.ClientConnection.Application.Common.Interfaces;
+﻿using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Application.Common.Validators;
 using FluentValidation;
 
@@ -6,12 +6,8 @@ namespace Afdb.ClientConnection.Application.Commands.AccessRequestCmd;
 
 public class CreateAccessRequestCommandValidator : AbstractValidator<CreateAccessRequestCommand>
 {
-    private readonly IInputSanitizationService _sanitizationService;
-
     public CreateAccessRequestCommandValidator(IInputSanitizationService sanitizationService)
     {
-        _sanitizationService = sanitizationService;
-
         RuleFor(x => x.Email)
             .NotEmpty()
             .WithMessage("ERR.AccessRequest.MandatoryEmail")
@@ -25,14 +21,14 @@ public class CreateAccessRequestCommandValidator : AbstractValidator<CreateAcces
             .WithMessage("ERR.AccessRequest.MandatoryFirstName")
             .MaximumLength(100)
             .WithMessage("ERR.AccessRequest.LengthMaxFirstName")
-            .SafeName(_sanitizationService);
+            .SafeName(sanitizationService);
 
         RuleFor(x => x.LastName)
             .NotEmpty()
             .WithMessage("ERR.AccessRequest.MandatoryLastName")
             .MaximumLength(100)
             .WithMessage("ERR.AccessRequest.LengthMaxLastName")
-            .SafeName(_sanitizationService);
+            .SafeName(sanitizationService);
 
         RuleFor(x => x.FunctionId)
             .Must(BeValidGuid)

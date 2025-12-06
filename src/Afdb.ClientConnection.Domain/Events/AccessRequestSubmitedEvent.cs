@@ -2,7 +2,7 @@
 
 namespace Afdb.ClientConnection.Domain.Events;
 
-public sealed class AccessRequestCreatedEvent : DomainEvent
+public sealed class AccessRequestSubmitedEvent : DomainEvent
 {
     public Guid AccessRequestId { get; }
     public string Email { get; }
@@ -16,7 +16,7 @@ public sealed class AccessRequestCreatedEvent : DomainEvent
     public string Status { get; }
     public string[] ApproversEmail { get; }
 
-    public AccessRequestCreatedEvent(Guid accessRequestId, string email, string firstName,
+    public AccessRequestSubmitedEvent(Guid accessRequestId, string email, string firstName,
         string lastName, string? function, string? businessProfile, string? country,
         string? financingType, string status, string[] approversEmail, string Code)
     {

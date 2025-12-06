@@ -23,10 +23,10 @@ public sealed class CreateAccessRequestCommandHandler(
     private readonly IReferenceService _referenceService = referenceService;
 
 
-    public async Task<CreateAccessRequestResponse> Handle(CreateAccessRequestCommand request, CancellationToken cancellationToken)
+    public async Task<CreateAccessRequestResponse> Handle(CreateAccessRequestCommand command, CancellationToken cancellationToken)
     {
         // Vérifier si l'utilisateur existe déjà dans notre système
-        var existingUser = await _userRepository.GetByEmailAsync(request.Email);
+        var existingUser = await _userRepository.GetByEmailAsync(command.Email);
         if (existingUser != null)
         {
             throw new ValidationException(new[] {
@@ -35,7 +35,7 @@ public sealed class CreateAccessRequestCommandHandler(
         }
 
         // Vérifier si une demande est déjà en cours pour cet email
-        var existingRequest = await _accessRequestRepository.GetByEmailAsync(request.Email);
+        var existingRequest = await _accessRequestRepository.GetByEmailAsync(command.Email);
         if (existingRequest != null)
         {
             throw new ValidationException(new[] {
@@ -44,7 +44,7 @@ public sealed class CreateAccessRequestCommandHandler(
         }
 
         // Vérifier si l'utilisateur existe dans Entra ID
-        var userExistsInEntraId = await _graphService.UserExistsAsync(request.Email, cancellationToken);
+        var userExistsInEntraId = await _graphService.UserExistsAsync(command.Email, cancellationToken);
         if (userExistsInEntraId)
         {
             throw new ValidationException(new[] {
@@ -57,33 +57,33 @@ public sealed class CreateAccessRequestCommandHandler(
         Country? country = null;
         FinancingType? financingType = null;
 
-        if (request.FunctionId.HasValue)
-            function = await _referenceService.GetFunctionByIdAsync(request.FunctionId.Value, cancellationToken) ??
+        if (command.FunctionId.HasValue)
+            function = await _referenceService.GetFunctionByIdAsync(command.FunctionId.Value, cancellationToken) ??
             throw new ValidationException(new[] {
                 new FluentValidation.Results.ValidationFailure("Function", "ERR.General.ReferenceDataNotExist")
             });
 
-        if (request.BusinessProfileId.HasValue)
-            businessProfile = await _referenceService.GetBusinessProfileByIdAsync(request.BusinessProfileId.Value, cancellationToken) ??
+        if (command.BusinessProfileId.HasValue)
+            businessProfile = await _referenceService.GetBusinessProfileByIdAsync(command.BusinessProfileId.Value, cancellationToken) ??
             throw new ValidationException(new[] {
                 new FluentValidation.Results.ValidationFailure("BusinessProfile", "ERR.General.ReferenceDataNotExist")
             });
 
-        if (request.CountryId.HasValue)
-            country = await _referenceService.GetCountryByIdAsync(request.CountryId.Value, cancellationToken)??
+        if (command.CountryId.HasValue)
+            country = await _referenceService.GetCountryByIdAsync(command.CountryId.Value, cancellationToken)??
             throw new ValidationException(new[] {
                 new FluentValidation.Results.ValidationFailure("Country", "ERR.General.ReferenceDataNotExist")
             });
 
-        if (request.FinancingTypeId.HasValue)
-            financingType = await _referenceService.GetFinancingTypeByIdAsync(request.FinancingTypeId.Value, cancellationToken);
+        if (command.FinancingTypeId.HasValue)
+            financingType = await _referenceService.GetFinancingTypeByIdAsync(command.FinancingTypeId.Value, cancellationToken);
 
         List<AccessRequestProject> projects = [];
-        if (request.Projects.Count > 0)
+        if (command.Projects.Count > 0)
         {
-            foreach (var project in request.Projects) 
+            foreach (var project in command.Projects) 
             {
-                projects.Add(new(Guid.Empty, project.SapCode));
+                projects.Add(new(Guid.Empty, project.SapCode, project.ProjectTitle));
             }
         }
 
@@ -96,17 +96,17 @@ public sealed class CreateAccessRequestCommandHandler(
         {
             ApproversEmail= approvers.ToArray(),
             BusinessProfile= businessProfile,
-            BusinessProfileId= request.BusinessProfileId,
-            CountryId= request.CountryId,
+            BusinessProfileId= command.BusinessProfileId,
+            CountryId= command.CountryId,
             Country = country,
             CreatedBy= "System",
-            Email= request.Email,
+            Email= command.Email,
             FinancingType= financingType,
-            FinancingTypeId = request.FinancingTypeId,
-            FirstName= request.FirstName,
+            FinancingTypeId = command.FinancingTypeId,
+            FirstName= command.FirstName,
             Function= function,
-            FunctionId= request.FunctionId,
-            LastName= request.LastName, 
+            FunctionId= command.FunctionId,
+            LastName= command.LastName, 
             Projects = projects
         });
 
@@ -121,12 +121,12 @@ public sealed class CreateAccessRequestCommandHandler(
             null,
             newValues: System.Text.Json.JsonSerializer.Serialize(new
             {
-                Email = request.Email,
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                FunctionId = request.FunctionId,
-                CountryId = request.CountryId,
-                BusinessProfileId = request.BusinessProfileId
+                Email = command.Email,
+                FirstName = command.FirstName,
+                LastName = command.LastName,
+                FunctionId = command.FunctionId,
+                CountryId = command.CountryId,
+                BusinessProfileId = command.BusinessProfileId
             }),
             cancellationToken);
 

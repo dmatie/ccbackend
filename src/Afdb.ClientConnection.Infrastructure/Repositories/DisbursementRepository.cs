@@ -110,6 +110,7 @@ internal sealed class DisbursementRepository : IDisbursementRepository
     List<Guid> authorizedBusinessProfileIds,
     CancellationToken cancellationToken = default)
     {
+
         var query = _context.Disbursements
            .Include(d => d.DisbursementType)
            .Include(d => d.Currency)
@@ -117,8 +118,6 @@ internal sealed class DisbursementRepository : IDisbursementRepository
            .Include(d => d.ProcessedByUser)
            .AsQueryable();
 
-        // Filter disbursements based on authorized business profiles
-        // This allows users with permissions to see disbursements created by others
         query = query
             .Join(
                 _context.AccessRequests,
@@ -130,8 +129,6 @@ internal sealed class DisbursementRepository : IDisbursementRepository
                 authorizedBusinessProfileIds.Contains(x.accessRequest.BusinessProfileEntityId.Value))
             .Select(x => x.disbursement);
 
-        // Exclude draft disbursements created by other users
-        // Users can only see their own drafts, but can see submitted/processed disbursements from others
         query = query.Where(d => d.Status != DisbursementStatus.Draft || d.CreatedByUserId == userId);
 
         var entities = await query
@@ -139,6 +136,7 @@ internal sealed class DisbursementRepository : IDisbursementRepository
             .ToListAsync(cancellationToken);
 
         return entities.Select(DomainMappings.MapDisbursementToDomain);
+
     }
 
     public async Task<bool> IdExist(Guid id, CancellationToken cancellationToken = default) => 

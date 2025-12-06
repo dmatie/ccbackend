@@ -1,3 +1,5 @@
+using Afdb.ClientConnection.Application.Common.Interfaces;
+using Afdb.ClientConnection.Application.Common.Validators;
 using Afdb.ClientConnection.Domain.Enums;
 using FluentValidation;
 
@@ -5,7 +7,7 @@ namespace Afdb.ClientConnection.Application.Commands.ClaimCmd;
 
 public sealed class AddClaimResponseCommandValidator : AbstractValidator<AddClaimResponseCommand>
 {
-    public AddClaimResponseCommandValidator()
+    public AddClaimResponseCommandValidator(IInputSanitizationService sanitizationService)
     {
         RuleFor(x => x.ClaimId)
             .NotEmpty()
@@ -19,6 +21,7 @@ public sealed class AddClaimResponseCommandValidator : AbstractValidator<AddClai
             .NotEmpty()
             .WithMessage("ERR.Claim.MandatoryComment")
             .MaximumLength(2000)
-            .WithMessage("ERR.Claim.MaxLengthLimit");
+            .WithMessage("ERR.Claim.MaxLengthLimit")
+            .SafeDescription(sanitizationService);
     }
 }

@@ -16,6 +16,12 @@ public class AccessRequestProjectConfiguration : IEntityTypeConfiguration<Access
             .IsRequired()
             .HasMaxLength(100);
 
+        builder.Property(x => x.ProjectTitle)
+            .IsRequired()
+            .HasDefaultValue("123456")
+            .HasMaxLength(200);
+
+
         builder.Property(x => x.CreatedBy)
             .IsRequired()
             .HasMaxLength(255);

@@ -1,6 +1,7 @@
 using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Infrastructure.Data;
+using Afdb.ClientConnection.Infrastructure.Data.Mapping;
 using Microsoft.EntityFrameworkCore;
 
 namespace Afdb.ClientConnection.Infrastructure.Repositories;
@@ -20,7 +21,7 @@ public class FunctionRepository : IFunctionRepository
             .Where(f => f.Id == id)
             .FirstOrDefaultAsync(cancellationToken);
 
-        return entity != null ? new Function(entity.Id, entity.Name, entity.Code , entity.Description, entity.CreatedBy) : null;
+        return entity != null ? DomainMappings.MapFunction(entity) : null;
     }
 
     public async Task<IEnumerable<Function>> GetAllAsync(CancellationToken cancellationToken = default)
@@ -29,7 +30,7 @@ public class FunctionRepository : IFunctionRepository
             .OrderBy(f => f.Name)
             .ToListAsync(cancellationToken);
 
-        return entities.Select(e => new Function(e.Id, e.Name, e.Code, e.Description, e.CreatedBy));
+        return entities.Select(DomainMappings.MapFunction);
     }
 
     public async Task<IEnumerable<Function>> GetActiveAsync(CancellationToken cancellationToken = default)
@@ -39,6 +40,6 @@ public class FunctionRepository : IFunctionRepository
             .OrderBy(f => f.Name)
             .ToListAsync(cancellationToken);
 
-        return entities.Select(e => new Function(e.Id, e.Name, e.Code, e.Description, e.CreatedBy));
+        return entities.Select(DomainMappings.MapFunction);
     }
 }

@@ -4,18 +4,14 @@ using FluentValidation;
 
 namespace Afdb.ClientConnection.Application.Commands.DisbursementCmd;
 
-public sealed class ReSubmitDisbursementCommandValidator : AbstractValidator<ReSubmitDisbursementCommand>
+public sealed class RejectDisbursementCommandValidator : AbstractValidator<RejectDisbursementCommand>
 {
-    public ReSubmitDisbursementCommandValidator(IInputSanitizationService sanitizationService)
+    public RejectDisbursementCommandValidator(IInputSanitizationService sanitizationService)
     {
-        RuleFor(x => x.DisbursementId)
-            .NotEmpty()
-            .WithMessage("ERR.Disbursement.IdRequired");
-
         RuleFor(x => x.Comment)
             .NotEmpty()
             .WithMessage("ERR.Disbursement.CommentEmpty")
-            .MaximumLength(1000)
+            .MaximumLength(1500)
             .WithMessage("ERR.Disbursement.CommentMaxLength")
             .SafeDescription(sanitizationService);
     }

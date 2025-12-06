@@ -21,11 +21,12 @@ internal static partial class DomainMappings
                 CountryId = entity.CountryEntityId,
                 BusinessProfileId = entity.BusinessProfileEntityId,
                 FinancingTypeId = entity.FinancingTypeEntityId,
+                Code = entity.Code,
                 Status = entity.Status,
                 ProcessedById = entity.ProcessedById,
                 ProcessedDate = entity.ProcessedDate,
                 ProcessingComments = entity.ProcessingComments,
-                RequestedDate= entity.RequestedDate,
+                RequestedDate = entity.RequestedDate,
                 ProcessedBy = entity.ProcessedBy != null ? MapUser(entity.ProcessedBy) : null,
                 Function = entity.Function != null ? MapFunction(entity.Function) : null,
                 Country = entity.Country != null ? MapCountry(entity.Country) : null,
@@ -52,22 +53,58 @@ internal static partial class DomainMappings
 
     public static Function MapFunction(FunctionEntity entity)
     {
-        return new Function(entity.Id, entity.Name, entity.Code, entity.Description, entity.CreatedBy);
+        return new Function(new FunctionLoadParam
+        {
+            Id = entity.Id,
+            Code = entity.Code,
+            Name = entity.Name,
+            NameFr = entity.NameFr,
+            Description = entity.Description,
+            IsActive = entity.IsActive,
+            CreatedAt = entity.CreatedAt,
+            UpdatedAt = entity.UpdatedAt,
+            CreatedBy = entity.CreatedBy,
+            UpdatedBy = entity.UpdatedBy,
+        });
     }
 
     public static BusinessProfile MapBusinessProfile(BusinessProfileEntity entity)
     {
-        return new BusinessProfile(entity.Id, entity.Name, entity.Description, entity.CreatedBy);
+        return new BusinessProfile(new BusinessProfileLoadParam
+        {
+            Id = entity.Id,
+            Name = entity.Name,
+            NameFr = entity.NameFr,
+            Code = entity.Code,
+            Description = entity.Description,
+            CreatedAt = entity.CreatedAt,
+            CreatedBy = entity.CreatedBy,
+            IsActive = entity.IsActive,
+            UpdatedAt = entity.UpdatedAt,
+            UpdatedBy = entity.UpdatedBy
+        });
     }
 
     public static FinancingType MapFinancingType(FinancingTypeEntity entity)
     {
-        return new FinancingType(entity.Id, entity.Name, entity.Code, entity.Description, entity.CreatedBy);
+        return new FinancingType(new FinancingTypeLoadParam
+        {
+            Id = entity.Id,
+            Name = entity.Name,
+            NameFr = entity.NameFr,
+            Code = entity.Code,
+            Description = entity.Description,
+            CreatedAt = entity.CreatedAt,
+            CreatedBy = entity.CreatedBy,
+            IsActive = entity.IsActive,
+            UpdatedAt = entity.UpdatedAt,
+            UpdatedBy = entity.UpdatedBy
+        });
     }
 
     public static AccessRequestProject MapProject(AccessRequestProjectEntity entity)
     {
         // Mapper les propriétés nécessaires
-        return new AccessRequestProject(entity.AccessRequestId,entity.SapCode);
+        return new AccessRequestProject(entity.AccessRequestId, entity.SapCode, entity.ProjectTitle);
     }
 }

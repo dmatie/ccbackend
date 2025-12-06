@@ -12,6 +12,19 @@ public class AccessRequestConfiguration : IEntityTypeConfiguration<AccessRequest
 
         builder.HasIndex(e => e.Email);
 
+        builder.Property(e => e.Code)
+            .IsRequired()
+            .HasDefaultValue("123456")
+            .HasMaxLength(10);
+
+        builder.Property(e => e.FirstName)
+            .IsRequired()
+            .HasMaxLength(100);
+
+        builder.Property(e => e.LastName)
+            .IsRequired()
+            .HasMaxLength(100);
+
         builder.Property(e => e.Status);
 
         builder.Property(e => e.FunctionEntityId);

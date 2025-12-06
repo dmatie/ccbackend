@@ -9,6 +9,7 @@ public sealed record AccessRequestLoadParam : CommonLoadParam
     public string Email { get; init; } = default!;
     public string FirstName { get; init; } = default!;
     public string LastName { get; init; } = default!;
+    public string Code { get; init; } = default!;
     public string[] ApproversEmail { get; init; } = [];
     public Guid? FunctionId { get; init; }
     public Guid? CountryId { get; init; }

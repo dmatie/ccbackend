@@ -19,6 +19,9 @@ public class AccessRequestEntity : BaseEntityConfiguration
     [MaxLength(100)]
     public string LastName { get; set; } = string.Empty;
 
+    [MaxLength(10)]
+    public string Code { get; set; } = string.Empty;
+
     public RequestStatus Status { get; set; }
 
     public DateTime RequestedDate { get; set; }

@@ -6,11 +6,8 @@ namespace Afdb.ClientConnection.Application.Commands.DisbursementCmd;
 
 public sealed class EditDisbursementCommandValidator : AbstractValidator<EditDisbursementCommand>
 {
-    private readonly IInputSanitizationService _sanitizationService;
-
     public EditDisbursementCommandValidator(IInputSanitizationService sanitizationService)
     {
-        _sanitizationService = sanitizationService;
 
         RuleFor(x => x.Id)
             .NotEmpty()
@@ -45,19 +42,19 @@ public sealed class EditDisbursementCommandValidator : AbstractValidator<EditDis
             .WithName("DisbursementForms");
 
         RuleFor(x => x.DisbursementA1)
-            .SetValidator(new EditDisbursementA1CommandValidator(_sanitizationService))
+            .SetValidator(new EditDisbursementA1CommandValidator(sanitizationService))
             .When(x => x.DisbursementA1 != null);
 
         RuleFor(x => x.DisbursementA2)
-            .SetValidator(new EditDisbursementA2CommandValidator(_sanitizationService))
+            .SetValidator(new EditDisbursementA2CommandValidator(sanitizationService))
             .When(x => x.DisbursementA2 != null);
 
         RuleFor(x => x.DisbursementA3)
-            .SetValidator(new EditDisbursementA3CommandValidator(_sanitizationService))
+            .SetValidator(new EditDisbursementA3CommandValidator(sanitizationService))
             .When(x => x.DisbursementA3 != null);
 
         RuleFor(x => x.DisbursementB1)
-            .SetValidator(new EditDisbursementB1CommandValidator(_sanitizationService))
+            .SetValidator(new EditDisbursementB1CommandValidator(sanitizationService))
             .When(x => x.DisbursementB1 != null);
 
         RuleFor(x => x.Documents)

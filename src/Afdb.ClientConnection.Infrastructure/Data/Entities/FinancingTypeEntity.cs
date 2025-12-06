@@ -12,6 +12,10 @@ public class FinancingTypeEntity : BaseEntityConfiguration
 
     [Required]
     [MaxLength(100)]
+    public string NameFr { get; set; } = string.Empty;
+
+    [Required]
+    [MaxLength(100)]
     public string Code { get; set; } = string.Empty;
 
     [MaxLength(500)]

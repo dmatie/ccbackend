@@ -9,9 +9,7 @@ namespace Afdb.ClientConnection.Application.Commands.AccessRequestCmd;
 
 public sealed class UpdateRejectedAccessRequestCommandHandler(
     IAccessRequestRepository accessRequestRepository,
-    IUserRepository userRepository,
     IGraphService graphService,
-    ICurrentUserService currentUserService,
     IAuditService auditService,
     IReferenceService referenceService,
     IMapper mapper) : IRequestHandler<UpdateRejectedAccessRequestCommand, UpdateRejectedAccessRequestResponse>
@@ -74,7 +72,7 @@ public sealed class UpdateRejectedAccessRequestCommandHandler(
         {
             foreach (var project in request.Projects) 
             {
-                projects.Add(new(Guid.Empty, project.SapCode));
+                projects.Add(new(Guid.Empty, project.SapCode, project.ProjectTitle));
             }
         }
 

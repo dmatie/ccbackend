@@ -4,4 +4,5 @@ public sealed record AccessRequestProjectDto
 {
     public Guid AccessRequestId { get; init; }
     public string SapCode { get; init; } = default!;
+    public string ProjectTitle { get; set; } = default!;
 }
