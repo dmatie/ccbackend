@@ -1,4 +1,5 @@
 ﻿using Afdb.ClientConnection.Domain.Common;
+using Afdb.ClientConnection.Domain.EntitiesParams;
 
 namespace Afdb.ClientConnection.Domain.Events;
 
@@ -15,21 +16,23 @@ public sealed class AccessRequestCreatedEvent : DomainEvent
     public string? FinancingType { get; }
     public string Status { get; }
     public string[] ApproversEmail { get; }
+    public SelectedProjectCreatedEvent[] Projects { get; }
 
-    public AccessRequestCreatedEvent(Guid accessRequestId, string email, string firstName,
-        string lastName, string? function, string? businessProfile, string? country,
-        string? financingType, string status, string[] approversEmail, string Code)
+    public AccessRequestCreatedEvent(AccessRequestEventParams eventParams)
     {
-        AccessRequestId = accessRequestId;
-        Email = email;
-        FirstName = firstName;
-        LastName = lastName;
-        Function = function;
-        BusinessProfile = businessProfile;
-        Country = country;
-        FinancingType = financingType;
-        Status = status;
-        ApproversEmail = approversEmail;
-        RegistrationCode = Code;
+        AccessRequestId = eventParams.AccessRequestId;
+        Email = eventParams.Email;
+        FirstName = eventParams.FirstName;
+        LastName = eventParams.LastName;
+        Function = eventParams.Function;
+        BusinessProfile = eventParams.BusinessProfile;
+        Country = eventParams.Country;
+        FinancingType = eventParams.FinancingType;
+        Status = eventParams.Status;
+        ApproversEmail = eventParams.ApproversEmail;
+        RegistrationCode = eventParams.RegistrationCode;
+        Projects = eventParams.Projects;
     }
 }
+
+

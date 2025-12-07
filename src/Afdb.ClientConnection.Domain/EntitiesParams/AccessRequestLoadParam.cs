@@ -25,4 +25,5 @@ public sealed record AccessRequestLoadParam : CommonLoadParam
     public BusinessProfile? BusinessProfile { get; init; }
     public FinancingType? FinancingType { get; init; }
     public List<AccessRequestProject> Projects { get; init; } = [];
+    public List<AccessRequestDocument> Documents { get; init; } = [];
 }

@@ -1,4 +1,5 @@
 using Afdb.ClientConnection.Application.Common.Exceptions;
+using Afdb.ClientConnection.Application.Common.Helpers;
 using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Application.DTOs;
 using Afdb.ClientConnection.Domain.Entities;
@@ -26,51 +27,49 @@ public sealed class SubmitAccessRequestCommandHandler(
     public async Task<SubmitAccessRequestResponse> Handle(SubmitAccessRequestCommand request, CancellationToken cancellationToken)
     {
         if (request.Document == null)
-            throw new ValidationException("ERR.AccessRequest.DocumentRequired");
+            throw new ValidationException(new[] {
+                new FluentValidation.Results.ValidationFailure("Document","ERR.AccessRequest.DocumentRequired")
+            });
+
 
         await _fileValidationService.ValidateAndThrowAsync(new[] { request.Document }, "Document");
 
         if (!request.Document.FileName.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
-            throw new ValidationException("ERR.AccessRequest.OnlyPdfAllowed");
+            throw new ValidationException(new[] {
+                new FluentValidation.Results.ValidationFailure("Document","ERR.AccessRequest.OnlyPdfAllowed")
+            });
 
         var accessRequest = await _accessRequestRepository.GetByIdAsync(request.AccessRequestId)
             ?? throw new NotFoundException(nameof(AccessRequest), request.AccessRequestId);
 
-        try
-        {
-            await _documentService.UploadAndAttachDocumentAsync(
+        await _documentService.UploadAndAttachDocumentAsync(
                 accessRequest,
                 request.Document,
                 cancellationToken);
 
-            accessRequest.Submit();
 
-            await _accessRequestRepository.UpdateAsync(accessRequest);
+        accessRequest.Submit();
 
-            await _auditService.LogAsync(
-                nameof(AccessRequest),
-                accessRequest.Id,
-                "Submit",
-                oldValues: null,
-                newValues: System.Text.Json.JsonSerializer.Serialize(new
-                {
-                    Status = accessRequest.Status.ToString(),
-                    DocumentFileName = request.Document.FileName
-                }),
-                cancellationToken);
+        await _accessRequestRepository.UpdateAsync(accessRequest);
 
-            var dto = _mapper.Map<AccessRequestDto>(accessRequest);
-
-            return new SubmitAccessRequestResponse
+        await _auditService.LogAsync(
+            nameof(AccessRequest),
+            accessRequest.Id,
+            "Submit",
+            oldValues: null,
+            newValues: System.Text.Json.JsonSerializer.Serialize(new
             {
-                AccessRequest = dto,
-                Message = "MSG.AccessRequest.Submitted"
-            };
-        }
-        catch (InvalidOperationException ex)
+                Status = accessRequest.Status.ToString(),
+                DocumentFileName = request.Document.FileName
+            }),
+            cancellationToken);
+
+        var dto = _mapper.Map<AccessRequestDto>(accessRequest);
+
+        return new SubmitAccessRequestResponse
         {
-            _logger.LogWarning(ex, "Tentative de soumission invalide pour la demande {AccessRequestId}", request.AccessRequestId);
-            throw new ValidationException("ERR.AccessRequest.InvalidStatusForSubmit");
-        }
+            AccessRequest = dto,
+            Message = "MSG.AccessRequest.Submitted"
+        };
     }
 }

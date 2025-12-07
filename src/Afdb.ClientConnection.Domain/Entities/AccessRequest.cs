@@ -1,4 +1,4 @@
-using Afdb.ClientConnection.Domain.Common;
+﻿using Afdb.ClientConnection.Domain.Common;
 using Afdb.ClientConnection.Domain.EntitiesParams;
 using Afdb.ClientConnection.Domain.Enums;
 using Afdb.ClientConnection.Domain.Events;
@@ -77,9 +77,22 @@ public sealed class AccessRequest : AggregateRoot
         _projects = newParam.Projects;
 
         // Add domain event for Teams approval process with actual entity names
-        AddDomainEvent(new AccessRequestCreatedEvent(Id, Email, FirstName, LastName,
-             Function?.Name, BusinessProfile?.Name, Country?.Name, FinancingType?.Name, 
-             Status.ToString(), ApproversEmail,Code));
+        AddDomainEvent(new AccessRequestCreatedEvent(
+            new AccessRequestEventParams
+            {
+                AccessRequestId = Id,
+                Email = Email,
+                FirstName = FirstName,
+                LastName = LastName,
+                Function = Function?.Name,
+                BusinessProfile = BusinessProfile?.Name,
+                Country = Country?.Name,
+                FinancingType = FinancingType?.Name,
+                Status = Status.ToString(),
+                ApproversEmail = ApproversEmail,
+                RegistrationCode = Code,
+                Projects = [.. _projects.Select(p => new SelectedProjectCreatedEvent(p.SapCode, p.ProjectTitle))]
+            }));
     }
 
     public AccessRequest(AccessRequestLoadParam loadParam)
@@ -127,11 +140,24 @@ public sealed class AccessRequest : AggregateRoot
         SetUpdated(Email);
 
         // Add domain event for Teams approval process with actual entity names
-        AddDomainEvent(new AccessRequestSubmitedEvent(Id, Email, FirstName, LastName,
-             Function?.Name, BusinessProfile?.Name, Country?.Name, FinancingType?.Name,
-             Status.ToString(), ApproversEmail, Code));
+        AddDomainEvent(new AccessRequestSubmitedEvent(
+            new AccessRequestCreatedEvent(
+             new AccessRequestEventParams
+             {
+                 AccessRequestId = Id,
+                 Email = Email,
+                 FirstName = FirstName,
+                 LastName = LastName,
+                 Function = Function?.Name,
+                 BusinessProfile = BusinessProfile?.Name,
+                 Country = Country?.Name,
+                 FinancingType = FinancingType?.Name,
+                 Status = Status.ToString(),
+                 ApproversEmail = ApproversEmail,
+                 RegistrationCode = Code,
+                 Projects = [.. _projects.Select(p => new SelectedProjectCreatedEvent(p.SapCode, p.ProjectTitle))]
+             })));
     }
-
 
     public void Approve(Guid processedById, string? comments, string updatedBy, string approvedByEmail, bool isFromApplication)
     {
@@ -251,9 +277,22 @@ public sealed class AccessRequest : AggregateRoot
         _projects.AddRange(updateParam.Projects);
         SetUpdated("System");
         // Add domain event for Teams approval process with actual entity names
-        AddDomainEvent(new AccessRequestCreatedEvent(Id, Email, FirstName, LastName,
-             Function?.Name, BusinessProfile?.Name, Country?.Name, FinancingType?.Name, 
-             Status.ToString(), ApproversEmail, Code));
+        AddDomainEvent(new AccessRequestCreatedEvent(
+            new AccessRequestEventParams
+            {
+                AccessRequestId = Id,
+                Email = Email,
+                FirstName = FirstName,
+                LastName = LastName,
+                Function = Function?.Name,
+                BusinessProfile = BusinessProfile?.Name,
+                Country = Country?.Name,
+                FinancingType = FinancingType?.Name,
+                Status = Status.ToString(),
+                ApproversEmail = ApproversEmail,
+                RegistrationCode = Code,
+                Projects = [.. _projects.Select(p => new SelectedProjectCreatedEvent(p.SapCode, p.ProjectTitle))]
+            }));
     }
 
     private static string GenerateRandomCode()

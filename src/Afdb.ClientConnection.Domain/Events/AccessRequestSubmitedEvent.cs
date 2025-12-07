@@ -15,21 +15,22 @@ public sealed class AccessRequestSubmitedEvent : DomainEvent
     public string? FinancingType { get; }
     public string Status { get; }
     public string[] ApproversEmail { get; }
+    public SelectedProjectCreatedEvent[] Projects { get; }
 
-    public AccessRequestSubmitedEvent(Guid accessRequestId, string email, string firstName,
-        string lastName, string? function, string? businessProfile, string? country,
-        string? financingType, string status, string[] approversEmail, string Code)
+    public AccessRequestSubmitedEvent(AccessRequestCreatedEvent eventData)
     {
-        AccessRequestId = accessRequestId;
-        Email = email;
-        FirstName = firstName;
-        LastName = lastName;
-        Function = function;
-        BusinessProfile = businessProfile;
-        Country = country;
-        FinancingType = financingType;
-        Status = status;
-        ApproversEmail = approversEmail;
-        RegistrationCode = Code;
+
+        AccessRequestId = eventData.AccessRequestId;
+        Email = eventData.Email;
+        FirstName = eventData.FirstName;
+        LastName = eventData.LastName;
+        Function = eventData.Function;
+        BusinessProfile = eventData.BusinessProfile;
+        Country = eventData.Country;
+        FinancingType = eventData.FinancingType;
+        Status = eventData.Status;
+        ApproversEmail = eventData.ApproversEmail;
+        RegistrationCode = eventData.RegistrationCode;
+        Projects = eventData.Projects;
     }
 }

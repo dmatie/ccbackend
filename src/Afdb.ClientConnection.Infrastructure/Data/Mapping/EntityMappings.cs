@@ -74,6 +74,21 @@ internal static partial  class EntityMappings
             }
         }
 
+        if (accessRequest.Documents.Count > 0)
+        {
+            entity.Documents = [];
+            foreach (var item in accessRequest.Documents)
+            {
+                entity.Documents.Add(new()
+                {
+                    DocumentUrl = item.DocumentUrl,
+                    FileName = item.FileName,
+                    CreatedAt = item.CreatedAt,
+                    CreatedBy = item.CreatedBy,
+                });
+            }
+        }
+
         entity.DomainEvents = accessRequest.DomainEvents.ToList();
     }
 

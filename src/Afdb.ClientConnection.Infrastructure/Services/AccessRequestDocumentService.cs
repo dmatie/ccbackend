@@ -49,21 +49,15 @@ public class AccessRequestDocumentService : IAccessRequestDocumentService
             var fileName = SanitizeFileName(document.FileName);
 
             using var stream = document.OpenReadStream();
-            var metadata = new Dictionary<string, object>
-            {
-                { "RequesterEmail", accessRequest.Email },
-                { "AccessRequestCode", accessRequest.Code },
-                { "SubmissionDate", DateTime.UtcNow.ToString("yyyy-MM-dd") }
-            };
 
             var webUrl = await _sharePointService.UploadFileAsync(
                 _sharePointSettings.SiteId,
-                _sharePointSettings.DriveId,
-                _sharePointSettings.ListId,
+                _sharePointSettings.DisbursementDriveId,
+                _sharePointSettings.DisbursementListId,
                 folderPath,
                 stream,
                 fileName,
-                metadata);
+                null);
 
             var documentParam = new AccessRequestDocumentNewParam
             {
@@ -122,7 +116,7 @@ public class AccessRequestDocumentService : IAccessRequestDocumentService
 
             return new FileDownloaded
             {
-                FileStream = fileStream,
+                FileContent = fileStream,
                 ContentType = contentType,
                 FileName = downloadFileName
             };

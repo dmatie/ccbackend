@@ -146,12 +146,15 @@ internal sealed class AccessRequestRepository : IAccessRequestRepository
 
     public async Task UpdateAsync(AccessRequest accessRequest)
     {
-        var entity = await _context.AccessRequests.Include(ar => ar.Projects)
+        var entity = await _context.AccessRequests
+            .Include(ar => ar.Projects)
+            .Include(dm => dm.Documents)
             .FirstOrDefaultAsync(ar => ar.Id == accessRequest.Id);
 
         if (entity != null)
         {
             entity.Projects.Clear();
+            entity.Documents.Clear();
             EntityMappings.UpdateEntityFromDomain(entity, accessRequest);
             await _context.SaveChangesAsync();
         }

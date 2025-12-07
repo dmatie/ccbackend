@@ -32,7 +32,8 @@ internal static partial class DomainMappings
                 Country = entity.Country != null ? MapCountry(entity.Country) : null,
                 BusinessProfile = entity.BusinessProfile != null ? MapBusinessProfile(entity.BusinessProfile) : null,
                 FinancingType = entity.FinancingType != null ? MapFinancingType(entity.FinancingType) : null,
-                Projects = entity.Projects?.Select(MapProject).ToList() ?? new List<AccessRequestProject>(),
+                Projects = entity.Projects?.Select(MapProject).ToList() ?? [],
+                Documents = entity.Documents?.Select(MapDocument).ToList() ?? [],
                 CreatedBy = entity.CreatedBy,
                 CreatedAt = entity.CreatedAt,
                 UpdatedBy = entity.UpdatedBy,
@@ -106,5 +107,19 @@ internal static partial class DomainMappings
     {
         // Mapper les propriétés nécessaires
         return new AccessRequestProject(entity.AccessRequestId, entity.SapCode, entity.ProjectTitle);
+    }
+
+    public static AccessRequestDocument MapDocument(AccessRequestDocumentEntity entity)
+    {
+        // Mapper les propriétés nécessaires
+        return new AccessRequestDocument(new AccessRequestDocumentLoadParam
+        {
+            Id = entity.Id,
+            AccessRequestId = entity.AccessRequestId,
+            FileName = entity.FileName,
+            DocumentUrl = entity.DocumentUrl,
+            CreatedBy = entity.CreatedBy,
+            CreatedAt = entity.CreatedAt            
+        });
     }
 }

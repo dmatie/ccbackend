@@ -59,13 +59,13 @@ public class SharePointManagerController : ControllerBase
                 return BadRequest(new { Message = "SharePoint storage est désactivé dans la configuration" });
             }
 
-            if (string.IsNullOrEmpty(_settings.SiteId) || string.IsNullOrEmpty(_settings.DriveId))
+            if (string.IsNullOrEmpty(_settings.SiteId) || string.IsNullOrEmpty(_settings.DisbursementDriveId))
             {
                 return BadRequest(new
                 {
                     Message = "Configuration SharePoint incomplète",
                     SiteIdConfigured = !string.IsNullOrEmpty(_settings.SiteId),
-                    DriveIdConfigured = !string.IsNullOrEmpty(_settings.DriveId)
+                    DriveIdConfigured = !string.IsNullOrEmpty(_settings.DisbursementDriveId)
                 });
             }
 
@@ -84,8 +84,8 @@ public class SharePointManagerController : ControllerBase
 
             var webUrl = await _sharePointService.UploadFileAsync(
                 _settings.SiteId,
-                _settings.DriveId,
-                _settings.ListId,
+                _settings.DisbursementDriveId,
+                _settings.DisbursementListId,
                 uploadDto.FolderPath,
                 stream,
                 uploadDto.File.FileName,
@@ -155,8 +155,8 @@ public class SharePointManagerController : ControllerBase
             {
                 webUrl = await _sharePointService.UploadFileAsync(
                     _settings.SiteId,
-                    _settings.DriveId,
-                    _settings.ListId,
+                    _settings.DisbursementDriveId,
+                    _settings.DisbursementListId,
                     folderPath,
                     uploadStream,
                     file.FileName,
@@ -242,12 +242,12 @@ public class SharePointManagerController : ControllerBase
         {
             UseSharePointStorage = _settings.UseSharePointStorage,
             SiteIdConfigured = !string.IsNullOrEmpty(_settings.SiteId),
-            DriveIdConfigured = !string.IsNullOrEmpty(_settings.DriveId),
+            DriveIdConfigured = !string.IsNullOrEmpty(_settings.DisbursementDriveId),
             SiteId = _settings.SiteId,
-            DriveId = _settings.DriveId,
+            DriveId = _settings.DisbursementDriveId,
             IsReady = _settings.UseSharePointStorage
                 && !string.IsNullOrEmpty(_settings.SiteId)
-                && !string.IsNullOrEmpty(_settings.DriveId)
+                && !string.IsNullOrEmpty(_settings.DisbursementDriveId)
         };
 
         return Ok(response);

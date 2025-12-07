@@ -10,7 +10,6 @@ public class MappingProfile : Profile
     {
         CreateMap<AccessRequestEntity, AccessRequest>()
             .ForMember(dest => dest.Projects, opt => opt.MapFrom(src => src.Projects))
-            .ForMember(dest => dest.Documents, opt => opt.MapFrom(src => src.Documents))
             .ForMember(dest => dest.Function, opt => opt.MapFrom(src => src.Function))
             .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country))
             .ForMember(dest => dest.BusinessProfile, opt => opt.MapFrom(src => src.BusinessProfile))
@@ -19,7 +18,6 @@ public class MappingProfile : Profile
             .ReverseMap();
 
         CreateMap<AccessRequestProjectEntity, AccessRequestProject>().ReverseMap();
-        CreateMap<AccessRequestDocumentEntity, AccessRequestDocument>().ReverseMap();
         CreateMap<FunctionEntity, Function>().ReverseMap();
         CreateMap<CountryEntity, Country>().ReverseMap();
         CreateMap<BusinessProfileEntity, BusinessProfile>().ReverseMap();

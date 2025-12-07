@@ -3,6 +3,7 @@ using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Application.Common.Models;
 using Afdb.ClientConnection.Domain.Events;
 using MediatR;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Logging;
 
 namespace Afdb.ClientConnection.Application.EventHandlers;
@@ -18,11 +19,7 @@ public sealed class AccessRequestSubmittedEventHandler(
     {
         try
         {
-            var notificationRequest = new NotificationRequest
-            {
-                EventType = NotificationEventType.AccessRequestSubmitted,
-                RecipientEmail = notification.ApproversEmail,
-                Data = new Dictionary<string, string>
+            var data = new Dictionary<string, object>
                 {
                     { "AccessRequestId", notification.AccessRequestId.ToString() },
                     { "Email", notification.Email },
@@ -34,7 +31,14 @@ public sealed class AccessRequestSubmittedEventHandler(
                     { "FinancingType", notification.FinancingType ?? "N/A" },
                     { "Status", notification.Status },
                     { "RegistrationCode", notification.RegistrationCode }
-                }
+                };
+
+            var notificationRequest = new NotificationRequest
+            {
+                EventType = NotificationEventType.AccessRequestSubmitted,
+                Recipient = notification.Email,
+                RecipientName = $"{notification.FirstName} {notification.LastName}",
+                Data = NotificationRequest.ConvertDictionaryToArray(data)
             };
 
             await _notificationService.SendNotificationAsync(notificationRequest, cancellationToken);

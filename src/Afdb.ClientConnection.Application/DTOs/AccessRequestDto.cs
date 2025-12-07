@@ -1,4 +1,4 @@
-using Afdb.ClientConnection.Domain.Enums;
+﻿using Afdb.ClientConnection.Domain.Enums;
 
 namespace Afdb.ClientConnection.Application.DTOs;
 
@@ -35,6 +35,6 @@ public sealed record AccessRequestDto
     public List<String> SelectedProjectCodes { get; init; } = default!;
     public string RegistrationCode { get; init; } = default!;
     public List<AccessRequestProjectDto> Projects { get; init; } = default!;
-    public List<AccessRequestDocumentDto> Documents { get; init; } = new();
+    public List<AccessRequestDocumentDto> Documents { get; init; } = default!;
 }
 

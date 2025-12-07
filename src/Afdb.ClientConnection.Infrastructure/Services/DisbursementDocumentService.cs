@@ -39,7 +39,7 @@ public sealed class DisbursementDocumentService : IDisbursementDocumentService
 
         (Stream FileContent, string ContentType, string FileName)? downloadResult = await
             _sharePointService.DownloadBySharePointUrlAsync(
-            _sharePointSettings.DriveId,
+            _sharePointSettings.DisbursementDriveId,
             relativePath);
 
         if(downloadResult == null)
@@ -88,8 +88,8 @@ public sealed class DisbursementDocumentService : IDisbursementDocumentService
 
                 var documentUrl = await _sharePointService.UploadFileAsync(
                     _sharePointSettings.SiteId,
-                    _sharePointSettings.DriveId,
-                    _sharePointSettings.ListId,
+                    _sharePointSettings.DisbursementDriveId,
+                    _sharePointSettings.DisbursementListId,
                     disbursement.RequestNumber,
                     stream,
                     document.FileName,
