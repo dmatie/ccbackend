@@ -74,6 +74,8 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.SapCode, opt => opt.MapFrom(src => src.SapCode))
             .ForMember(dest => dest.ProjectTitle, opt => opt.MapFrom(src => src.ProjectTitle));
 
+        CreateMap<AccessRequestDocument, AccessRequestDocumentDto>();
+
         CreateMap<AccessRequest, AccessRequestDto>()
             .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
             .ForMember(dest => dest.CanBeProcessed, opt => opt.MapFrom(src => src.CanBeProcessed))

@@ -104,6 +104,7 @@ public static class DependencyInjection
         services.AddScoped<ISharePointGraphService, SharePointGraphService>();
         services.AddScoped<IFileValidationService, FileValidationService>();
         services.AddScoped<IDisbursementDocumentService, DisbursementDocumentService>();
+        services.AddScoped<IAccessRequestDocumentService, AccessRequestDocumentService>();
 
         // Payload Encryption Service
         services.AddSingleton<IPayloadEncryptionService, PayloadEncryptionService>();

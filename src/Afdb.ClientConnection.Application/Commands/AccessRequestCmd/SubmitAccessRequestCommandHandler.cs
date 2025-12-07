@@ -11,21 +11,38 @@ namespace Afdb.ClientConnection.Application.Commands.AccessRequestCmd;
 public sealed class SubmitAccessRequestCommandHandler(
     IAccessRequestRepository accessRequestRepository,
     IAuditService auditService,
+    IAccessRequestDocumentService documentService,
+    IFileValidationService fileValidationService,
     IMapper mapper,
     ILogger<SubmitAccessRequestCommandHandler> logger) : IRequestHandler<SubmitAccessRequestCommand, SubmitAccessRequestResponse>
 {
     private readonly IAccessRequestRepository _accessRequestRepository = accessRequestRepository;
     private readonly IAuditService _auditService = auditService;
+    private readonly IAccessRequestDocumentService _documentService = documentService;
+    private readonly IFileValidationService _fileValidationService = fileValidationService;
     private readonly IMapper _mapper = mapper;
     private readonly ILogger<SubmitAccessRequestCommandHandler> _logger = logger;
 
     public async Task<SubmitAccessRequestResponse> Handle(SubmitAccessRequestCommand request, CancellationToken cancellationToken)
     {
+        if (request.Document == null)
+            throw new ValidationException("ERR.AccessRequest.DocumentRequired");
+
+        await _fileValidationService.ValidateAndThrowAsync(new[] { request.Document }, "Document");
+
+        if (!request.Document.FileName.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+            throw new ValidationException("ERR.AccessRequest.OnlyPdfAllowed");
+
         var accessRequest = await _accessRequestRepository.GetByIdAsync(request.AccessRequestId)
             ?? throw new NotFoundException(nameof(AccessRequest), request.AccessRequestId);
 
         try
         {
+            await _documentService.UploadAndAttachDocumentAsync(
+                accessRequest,
+                request.Document,
+                cancellationToken);
+
             accessRequest.Submit();
 
             await _accessRequestRepository.UpdateAsync(accessRequest);
@@ -37,7 +54,8 @@ public sealed class SubmitAccessRequestCommandHandler(
                 oldValues: null,
                 newValues: System.Text.Json.JsonSerializer.Serialize(new
                 {
-                    Status = accessRequest.Status.ToString()
+                    Status = accessRequest.Status.ToString(),
+                    DocumentFileName = request.Document.FileName
                 }),
                 cancellationToken);
 

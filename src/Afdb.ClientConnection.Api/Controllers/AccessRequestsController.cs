@@ -78,14 +78,21 @@ public class AccessRequestsController(IMediator mediator) : ControllerBase
     }
 
     /// <summary>
-    /// Soumettre une demande d'accès (accessible sans authentification)
+    /// Soumettre une demande d'accès avec un document PDF obligatoire (accessible sans authentification)
     /// </summary>
     [HttpPost("{id}/submit")]
     [AllowAnonymous]
+    [Consumes("multipart/form-data")]
     public async Task<ActionResult<SubmitAccessRequestResponse>> SubmitAccessRequest(
-        Guid id, CancellationToken cancellationToken = default)
+        Guid id,
+        [FromForm] IFormFile document,
+        CancellationToken cancellationToken = default)
     {
-        var command = new SubmitAccessRequestCommand { AccessRequestId = id };
+        var command = new SubmitAccessRequestCommand
+        {
+            AccessRequestId = id,
+            Document = document
+        };
         var result = await _mediator.Send(command, cancellationToken);
         return Ok(result);
     }

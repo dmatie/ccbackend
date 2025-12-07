@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Domain.Common;
+using Afdb.ClientConnection.Domain.Common;
 using Afdb.ClientConnection.Domain.EntitiesParams;
 using Afdb.ClientConnection.Domain.Enums;
 using Afdb.ClientConnection.Domain.Events;
@@ -12,6 +12,7 @@ public sealed class AccessRequest : AggregateRoot
 {
 
     private readonly List<AccessRequestProject> _projects = [];
+    private readonly List<AccessRequestDocument> _documents = [];
 
     public string Email { get; private set; }
     public string FirstName { get; private set; }
@@ -42,6 +43,7 @@ public sealed class AccessRequest : AggregateRoot
     public string CountryName => Country != null ? Country.Name : "";
 
     public ICollection<AccessRequestProject> Projects => _projects;
+    public ICollection<AccessRequestDocument> Documents => _documents;
 
     private AccessRequest() { } // For EF Core
 

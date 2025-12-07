@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Domain.Enums;
+using Afdb.ClientConnection.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -58,4 +58,5 @@ public class AccessRequestEntity : BaseEntityConfiguration
     [ForeignKey(nameof(FinancingTypeEntityId))]
     public FinancingTypeEntity? FinancingType { get; set; }
     public ICollection<AccessRequestProjectEntity> Projects { get; set; } = default!;
+    public ICollection<AccessRequestDocumentEntity> Documents { get; set; } = default!;
 }
