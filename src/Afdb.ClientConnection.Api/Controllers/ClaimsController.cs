@@ -1,6 +1,7 @@
 using Afdb.ClientConnection.Application.Commands.ClaimCmd;
 using Afdb.ClientConnection.Application.DTOs;
 using Afdb.ClientConnection.Application.Queries.ClaimQrs;
+using Afdb.ClientConnection.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -88,6 +89,49 @@ public class ClaimsController(IMediator mediator) : ControllerBase
         [FromQuery] GetAllClaimsQuery query,
         CancellationToken cancellationToken = default)
     {
+        var result = await _mediator.Send(query, cancellationToken);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Récupérer la liste des claims avec filtres et pagination (Admin, DA, DO uniquement)
+    /// </summary>
+    /// <param name="status">Filtre par statut du claim</param>
+    /// <param name="claimTypeId">Filtre par type de claim</param>
+    /// <param name="countryId">Filtre par pays</param>
+    /// <param name="createdFrom">Date de début de la plage de création</param>
+    /// <param name="createdTo">Date de fin de la plage de création</param>
+    /// <param name="pageNumber">Numéro de page (défaut: 1)</param>
+    /// <param name="pageSize">Taille de page (défaut: 10, max: 100)</param>
+    /// <param name="cancellationToken">Token d'annulation</param>
+    /// <returns>Liste paginée des claims avec métadonnées</returns>
+    [HttpGet("with-filters")]
+    [Authorize(Policy = "InternalUsers")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<GetClaimsWithFiltersResponse>> GetClaimsWithFilters(
+        [FromQuery] ClaimStatus? status,
+        [FromQuery] Guid? claimTypeId,
+        [FromQuery] Guid? countryId,
+        [FromQuery] DateTime? createdFrom,
+        [FromQuery] DateTime? createdTo,
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 10,
+        CancellationToken cancellationToken = default)
+    {
+        var query = new GetClaimsWithFiltersQuery
+        {
+            Status = status,
+            ClaimTypeId = claimTypeId,
+            CountryId = countryId,
+            CreatedFrom = createdFrom,
+            CreatedTo = createdTo,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
+
         var result = await _mediator.Send(query, cancellationToken);
         return Ok(result);
     }

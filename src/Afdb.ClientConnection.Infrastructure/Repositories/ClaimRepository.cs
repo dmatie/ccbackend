@@ -189,4 +189,65 @@ internal sealed class ClaimRepository : IClaimRepository
             .Where(c => c.UserId == userId && c.Status == status)
             .CountAsync(cancellationToken);
     }
+
+    public async Task<(List<Claim> items, int totalCount)> GetWithFiltersAndPaginationAsync(
+        UserContext userContext,
+        ClaimStatus? status,
+        Guid? claimTypeId,
+        Guid? countryId,
+        DateTime? createdFrom,
+        DateTime? createdTo,
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken = default)
+    {
+        var query = _context.Claims
+            .Include(c => c.ClaimType)
+            .Include(c => c.Country)
+            .Include(c => c.User)
+            .Include(c => c.Processes).ThenInclude(pr => pr.User)
+            .AsQueryable();
+
+        if (status.HasValue)
+        {
+            query = query.Where(c => c.Status == status.Value);
+        }
+
+        if (claimTypeId.HasValue)
+        {
+            query = query.Where(c => c.ClaimTypeId == claimTypeId.Value);
+        }
+
+        if (countryId.HasValue)
+        {
+            query = query.Where(c => c.CountryId == countryId.Value);
+        }
+
+        if (createdFrom.HasValue)
+        {
+            query = query.Where(c => c.CreatedAt >= createdFrom.Value);
+        }
+
+        if (createdTo.HasValue)
+        {
+            query = query.Where(c => c.CreatedAt <= createdTo.Value);
+        }
+
+        if (userContext.RequiresCountryFilter)
+        {
+            query = query.Where(c => userContext.CountryIds.Contains(c.CountryId));
+        }
+
+        var totalCount = await query.CountAsync(cancellationToken);
+
+        var entities = await query
+            .OrderByDescending(c => c.CreatedAt)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        var items = entities.Select(DomainMappings.MapClaimToDomain).ToList();
+
+        return (items, totalCount);
+    }
 }
