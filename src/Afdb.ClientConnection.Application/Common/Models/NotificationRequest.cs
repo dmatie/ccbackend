@@ -17,6 +17,7 @@ public sealed record NotificationRequest
     public NotificationDataItem [] Data { get; init; } = [];
 
     public string Language { get; init; } = "en";
+    public EmailAttachment[]? Attachments { get; init; } = [];
 
     public static NotificationDataItem [] ConvertDictionaryToArray(Dictionary<string, object> dict)
     {
@@ -28,4 +29,12 @@ public sealed record NotificationDataItem
 {
     public string Key { get; init; } = string.Empty;
     public string Value { get; init; } = string.Empty;
+}
+
+public sealed record EmailAttachment
+{
+    public string FileName { get; init; } = string.Empty;
+    public string FileUrl { get; init; } = string.Empty;
+    public string FileIdentifier { get; set; } = string.Empty;
+    public string ContentType { get; init; } = "application/pdf";
 }

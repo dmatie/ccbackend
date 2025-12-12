@@ -82,6 +82,7 @@ public sealed class UpdateRejectedAccessRequestCommandHandler(
 
         existingRejectRequest.Update(new Domain.EntitiesParams.AccessRequestNewParam()
         {
+            Code = existingRejectRequest.Code,
             ApproversEmail = approvers.ToArray(),
             BusinessProfile = businessProfile,
             BusinessProfileId = request.BusinessProfileId,

@@ -38,7 +38,7 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
             .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Code))
-            .ForMember(dest => dest.NameFr, opt => opt.MapFrom(src => src.Name))
+            .ForMember(dest => dest.NameFr, opt => opt.MapFrom(src => src.NameFr))
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
             .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive));
 
@@ -82,13 +82,19 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.IsProcessed, opt => opt.MapFrom(src => src.IsProcessed))
             .ForMember(dest => dest.HasEntraIdAccount, opt => opt.MapFrom(src => src.HasEntraIdAccount))
             .ForMember(dest => dest.FunctionName, opt => opt.MapFrom(src => src.Function != null ? src.Function.Name : null))
+            .ForMember(dest => dest.FunctionNameFr, opt => opt.MapFrom(src => src.Function != null ? src.Function.NameFr : null))
             .ForMember(dest => dest.RegistrationCode, opt => 
                 opt.MapFrom(src => src.Status== Domain.Enums.RequestStatus.Pending? src.Code : ""))
             .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Country != null ? src.Country.Name : null))
+            .ForMember(dest => dest.CountryNameFr, opt => opt.MapFrom(src => src.Country != null ? src.Country.NameFr : null))
             .ForMember(dest => dest.BusinessProfileName, 
                 opt => opt.MapFrom(src => src.BusinessProfile != null ? src.BusinessProfile.Name : null))
+            .ForMember(dest => dest.BusinessProfileNameFr,
+                opt => opt.MapFrom(src => src.BusinessProfile != null ? src.BusinessProfile.NameFr : null))
             .ForMember(dest => dest.FinancingTypeName, 
                 opt => opt.MapFrom(src => src.FinancingType != null ? src.FinancingType.Name : null))
+            .ForMember(dest => dest.FinancingTypeNameFr,
+                opt => opt.MapFrom(src => src.FinancingType != null ? src.FinancingType.NameFr : null))
             .ForMember(dest => dest.SelectedProjectCodes, opt => opt.MapFrom(src => src.Projects.Select(p=>p.SapCode).ToList()));
 
         CreateMap<ClaimType, ClaimTypeDto>();

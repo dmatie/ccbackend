@@ -58,6 +58,9 @@ public sealed class AccessRequest : AggregateRoot
         if (string.IsNullOrWhiteSpace(newParam.LastName))
             throw new ArgumentException("Last name cannot be empty");
 
+        if (string.IsNullOrWhiteSpace(newParam.Code))
+            throw new ArgumentException("Code cannot be empty");
+
         Email = newParam.Email.ToLowerInvariant();
         FirstName = newParam.FirstName;
         LastName = newParam.LastName;
@@ -70,7 +73,7 @@ public sealed class AccessRequest : AggregateRoot
         BusinessProfile = newParam.BusinessProfile;
         FinancingType = newParam.FinancingType;
         Status = RequestStatus.Draft;
-        Code = GenerateRandomCode();
+        Code = newParam.Code;
         RequestedDate = DateTime.UtcNow;
         CreatedBy = newParam.CreatedBy;
         ApproversEmail = newParam.ApproversEmail ?? [];
@@ -85,6 +88,7 @@ public sealed class AccessRequest : AggregateRoot
                 FirstName = FirstName,
                 LastName = LastName,
                 Function = Function?.Name,
+                FunctionFr = Function?.NameFr,
                 BusinessProfile = BusinessProfile?.Name,
                 Country = Country?.Name,
                 FinancingType = FinancingType?.Name,
@@ -128,7 +132,12 @@ public sealed class AccessRequest : AggregateRoot
         CreatedBy = loadParam.CreatedBy;
         ApproversEmail = loadParam.ApproversEmail ?? [];
         _projects = loadParam.Projects;
+        _documents = loadParam.Documents;
+    }
 
+    public void SetApproversEmail(string[] approversEmail)
+    {
+        ApproversEmail = approversEmail;
     }
 
     public void Submit()
@@ -155,6 +164,7 @@ public sealed class AccessRequest : AggregateRoot
                  Status = Status.ToString(),
                  ApproversEmail = ApproversEmail,
                  RegistrationCode = Code,
+                 DocumentFileName = _documents.Count > 0 ? _documents[0].FileName : string.Empty,
                  Projects = [.. _projects.Select(p => new SelectedProjectCreatedEvent(p.SapCode, p.ProjectTitle))]
              })));
     }
@@ -294,16 +304,6 @@ public sealed class AccessRequest : AggregateRoot
                 Projects = [.. _projects.Select(p => new SelectedProjectCreatedEvent(p.SapCode, p.ProjectTitle))]
             }));
     }
-
-    private static string GenerateRandomCode()
-    {
-        using var rng = RandomNumberGenerator.Create();
-        var bytes = new byte[4];
-        rng.GetBytes(bytes);
-        var value = BitConverter.ToUInt32(bytes, 0) % 1000000;
-        return value.ToString("D6");
-    }
-
 
     public string FullName => $"{FirstName} {LastName}";
     public bool CanBeProcessed => Status == RequestStatus.Pending;

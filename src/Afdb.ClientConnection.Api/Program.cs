@@ -4,6 +4,9 @@ using Afdb.ClientConnection.Infrastructure;
 using Azure.Identity;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
+using QuestPDF.Infrastructure;
+
+QuestPDF.Settings.License = LicenseType.Community;
 
 var builder = WebApplication.CreateBuilder(args);
 

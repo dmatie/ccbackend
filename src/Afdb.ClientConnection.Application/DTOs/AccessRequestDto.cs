@@ -23,9 +23,13 @@ public sealed record AccessRequestDto
 
     // Noms des entités de référence
     public string? FunctionName { get; init; }
+    public string? FunctionNameFr { get; init; }
     public string? CountryName { get; init; }
+    public string? CountryNameFr { get; init; }
     public string? BusinessProfileName { get; init; }
+    public string? BusinessProfileNameFr { get; init; }
     public string? FinancingTypeName { get; init; }
+    public string? FinancingTypeNameFr { get; init; }
 
     public string[] ApproversEmail { get; init; } = Array.Empty<string>();
     public string FullName => $"{FirstName} {LastName}";

@@ -15,11 +15,12 @@ public sealed class AccessRequestSubmitedEvent : DomainEvent
     public string? FinancingType { get; }
     public string Status { get; }
     public string[] ApproversEmail { get; }
+    public string DocumentFileName { get; }
+
     public SelectedProjectCreatedEvent[] Projects { get; }
 
     public AccessRequestSubmitedEvent(AccessRequestCreatedEvent eventData)
     {
-
         AccessRequestId = eventData.AccessRequestId;
         Email = eventData.Email;
         FirstName = eventData.FirstName;
@@ -31,6 +32,7 @@ public sealed class AccessRequestSubmitedEvent : DomainEvent
         Status = eventData.Status;
         ApproversEmail = eventData.ApproversEmail;
         RegistrationCode = eventData.RegistrationCode;
-        Projects = eventData.Projects;
+        Projects = eventData.SelectedProjects;
+        DocumentFileName = eventData.DocumentFileName;
     }
 }

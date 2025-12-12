@@ -12,6 +12,9 @@ public class AccessRequestConfiguration : IEntityTypeConfiguration<AccessRequest
 
         builder.HasIndex(e => e.Email);
 
+        builder.HasIndex(e => e.Code)
+            .IsUnique();
+
         builder.Property(e => e.Code)
             .IsRequired()
             .HasDefaultValue("123456")

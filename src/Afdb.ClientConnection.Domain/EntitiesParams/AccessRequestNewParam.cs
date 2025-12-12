@@ -7,6 +7,7 @@ public sealed record AccessRequestNewParam
     public string Email { get; init; } = default!;
     public string FirstName { get; init; } = default!;
     public string LastName { get; init; } = default!;
+    public required string Code { get; init; } = default!;
     public string CreatedBy { get; init; } = default!;
     public string[] ApproversEmail { get; init; } = [];
     public Guid? FunctionId { get; init; }

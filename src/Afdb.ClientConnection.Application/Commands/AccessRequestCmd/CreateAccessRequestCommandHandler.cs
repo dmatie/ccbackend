@@ -70,7 +70,7 @@ public sealed class CreateAccessRequestCommandHandler(
             });
 
         if (command.CountryId.HasValue)
-            country = await _referenceService.GetCountryByIdAsync(command.CountryId.Value, cancellationToken)??
+            country = await _referenceService.GetCountryByIdAsync(command.CountryId.Value, cancellationToken) ??
             throw new ValidationException(new[] {
                 new FluentValidation.Results.ValidationFailure("Country", "ERR.General.ReferenceDataNotExist")
             });
@@ -81,7 +81,7 @@ public sealed class CreateAccessRequestCommandHandler(
         List<AccessRequestProject> projects = [];
         if (command.Projects.Count > 0)
         {
-            foreach (var project in command.Projects) 
+            foreach (var project in command.Projects)
             {
                 projects.Add(new(Guid.Empty, project.SapCode, project.ProjectTitle));
             }
@@ -91,22 +91,24 @@ public sealed class CreateAccessRequestCommandHandler(
         if (approvers == null || approvers.Count == 0)
             throw new NotFoundException("ERR.General.MissingAdGroup");
 
+        string uniqueCode = await _accessRequestRepository.GenerateUniqueCodeAsync(cancellationToken);
 
-        var accessRequest = new AccessRequest(new Domain.EntitiesParams.AccessRequestNewParam() 
+        var accessRequest = new AccessRequest(new Domain.EntitiesParams.AccessRequestNewParam()
         {
-            ApproversEmail= approvers.ToArray(),
-            BusinessProfile= businessProfile,
-            BusinessProfileId= command.BusinessProfileId,
-            CountryId= command.CountryId,
+            Code = uniqueCode,
+            ApproversEmail = approvers.ToArray(),
+            BusinessProfile = businessProfile,
+            BusinessProfileId = command.BusinessProfileId,
+            CountryId = command.CountryId,
             Country = country,
-            CreatedBy= "System",
-            Email= command.Email,
-            FinancingType= financingType,
+            CreatedBy = "System",
+            Email = command.Email,
+            FinancingType = financingType,
             FinancingTypeId = command.FinancingTypeId,
-            FirstName= command.FirstName,
-            Function= function,
-            FunctionId= command.FunctionId,
-            LastName= command.LastName, 
+            FirstName = command.FirstName,
+            Function = function,
+            FunctionId = command.FunctionId,
+            LastName = command.LastName,
             Projects = projects
         });
 

@@ -17,7 +17,7 @@ public class SharePointGraphService : ISharePointGraphService
         _graphClient = graphClient;
     }
 
-    public async Task<string> UploadFileAsync(string _siteId, string _driveId, string _listId, string folderPath,
+    public async Task<(string, string)> UploadFileAsync(string _siteId, string _driveId, string _listId, string folderPath,
         Stream fileStream, string fileName, Dictionary<string, object>? metadata = null)
     {
         try
@@ -71,8 +71,11 @@ public class SharePointGraphService : ISharePointGraphService
 
             var webUrl = fileItem.WebUrl
                 ?? throw new InvalidOperationException("WebUrl introuvable dans la réponse Graph.");
+            var identifier = fileItem.Id
+                ?? throw new InvalidOperationException("identifier introuvable dans la réponse Graph.");
 
-            return webUrl;
+
+            return (webUrl, identifier);
 
         }
         catch (ODataError ex)

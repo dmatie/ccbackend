@@ -71,8 +71,17 @@ public class FunctionConfiguration : IEntityTypeConfiguration<FunctionEntity>
                 Code = "OTHER",
                 Description = "Other functions",
                 IsActive = true
+            },
+            new FunctionEntity
+            {
+                Id = Guid.Parse("1ea69a03-75fe-40b5-84c4-734e079d8e3c"),
+                Name = "Signatory",
+                NameFr = "Saignataire",
+                Code = "SIGNATORY",
+                Description = "Other functions",
+                IsActive = true
             }
-);
+        );
 
 
     }

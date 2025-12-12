@@ -31,4 +31,6 @@ public interface IAccessRequestRepository
         int pageSize,
         CancellationToken cancellationToken = default);
 
+    Task<string> GenerateUniqueCodeAsync(CancellationToken cancellationToken = default);
+    Task<AccessRequest?> GetByIdAndRegistrationCodelAsync(Guid id, string code);
 }

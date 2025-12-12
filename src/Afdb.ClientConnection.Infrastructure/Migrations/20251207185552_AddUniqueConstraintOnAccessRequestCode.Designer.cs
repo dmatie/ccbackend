@@ -4,6 +4,7 @@ using Afdb.ClientConnection.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Afdb.ClientConnection.Infrastructure.Migrations
 {
     [DbContext(typeof(ClientConnectionDbContext))]
-    partial class ClientConnectionDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251207185552_AddUniqueConstraintOnAccessRequestCode")]
+    partial class AddUniqueConstraintOnAccessRequestCode
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2385,17 +2388,6 @@ namespace Afdb.ClientConnection.Infrastructure.Migrations
                             IsActive = true,
                             Name = "Other",
                             NameFr = "Autre"
-                        },
-                        new
-                        {
-                            Id = new Guid("1ea69a03-75fe-40b5-84c4-734e079d8e3c"),
-                            Code = "SIGNATORY",
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = "",
-                            Description = "Other functions",
-                            IsActive = true,
-                            Name = "Signatory",
-                            NameFr = "Saignataire"
                         });
                 });
 

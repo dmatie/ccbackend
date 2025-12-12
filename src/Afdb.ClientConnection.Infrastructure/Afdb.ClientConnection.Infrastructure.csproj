@@ -38,6 +38,7 @@
     <PackageReference Include="Azure.Identity" Version="1.12.1" />
     <PackageReference Include="Microsoft.Graph" Version="5.93.0" />
     <PackageReference Include="HtmlSanitizer" Version="8.1.870" />
+    <PackageReference Include="QuestPDF" Version="2024.12.3" />
   </ItemGroup>
 
 

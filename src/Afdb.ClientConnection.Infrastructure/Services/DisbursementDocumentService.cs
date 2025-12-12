@@ -86,7 +86,7 @@ public sealed class DisbursementDocumentService : IDisbursementDocumentService
             {
                 using var stream = document.OpenReadStream();
 
-                var documentUrl = await _sharePointService.UploadFileAsync(
+                var (documentUrl, idDoc) = await _sharePointService.UploadFileAsync(
                     _sharePointSettings.SiteId,
                     _sharePointSettings.DisbursementDriveId,
                     _sharePointSettings.DisbursementListId,

@@ -14,4 +14,14 @@ public interface IAccessRequestDocumentService
         string code,
         string fileName,
         CancellationToken cancellationToken = default);
+
+    Task<(string frenchUrl, string idFr, string englishUrl, string idEn)> GenerateAndUploadAuthorizationFormsAsync(
+        string code,
+        string firstName,
+        string lastName,
+        string email,
+        string functionName,
+        string functionNameFr,
+        List<string> projects,
+        CancellationToken cancellationToken = default);
 }

@@ -1,5 +1,6 @@
 ﻿using Afdb.ClientConnection.Application.Commands.AccessRequestCmd;
 using Afdb.ClientConnection.Application.Queries.AccessRequestQrs;
+using Afdb.ClientConnection.Application.Queries.DisbursementQrs;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -82,17 +83,10 @@ public class AccessRequestsController(IMediator mediator) : ControllerBase
     /// </summary>
     [HttpPost("{id}/submit")]
     [AllowAnonymous]
-    [Consumes("multipart/form-data")]
     public async Task<ActionResult<SubmitAccessRequestResponse>> SubmitAccessRequest(
-        Guid id,
-        [FromForm] IFormFile document, 
+        [FromForm] SubmitAccessRequestCommand command, 
         CancellationToken cancellationToken = default)
     {
-        var command = new SubmitAccessRequestCommand
-        {
-            AccessRequestId = id,
-            Document = document
-        };
         var result = await _mediator.Send(command, cancellationToken);
         return Ok(result);
     }
@@ -210,4 +204,14 @@ public class AccessRequestsController(IMediator mediator) : ControllerBase
         var result = await _mediator.Send(command, cancellationToken);
         return Ok(result);
     }
+
+    [HttpGet("downloadsignedform")]
+    [Authorize]
+    public async Task<IActionResult> DownloadSignedForm([FromQuery] GetSignedFormUploadedQuery query,
+    CancellationToken cancellationToken = default)
+    {
+        var result = await _mediator.Send(query, cancellationToken);
+        return File(result.FileContent, result.ContentType, result.FileName);
+    }
+
 }

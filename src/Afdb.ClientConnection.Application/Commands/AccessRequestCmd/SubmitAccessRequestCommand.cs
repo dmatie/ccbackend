@@ -7,6 +7,7 @@ namespace Afdb.ClientConnection.Application.Commands.AccessRequestCmd;
 public sealed record SubmitAccessRequestCommand : IRequest<SubmitAccessRequestResponse>
 {
     public Guid AccessRequestId { get; set; }
+    public string RegistrationCode { get; set; } = string.Empty;
     public IFormFile Document { get; set; } = null!;
 }
 

@@ -41,10 +41,20 @@ public sealed class NotificationService : INotificationService
                 ["userclaimurl"] = _frontEndUrl.UserClaim,
                 ["adminclaimurl"] = _frontEndUrl.AdminClaim,
                 ["userdisburl"] = _frontEndUrl.UserDisbursement,
-                ["admindisburl"] = _frontEndUrl.AdminDisbursement
+                ["admindisburl"] = _frontEndUrl.AdminDisbursement,
+                ["amendreqsturl"] = _frontEndUrl.UserAccessRequestAmend
             };
 
             NotificationDataItem[] requestData = [..request.Data, .. NotificationRequest.ConvertDictionaryToArray(appUrlData)];
+
+            var attachments = request.Attachments?.Select(a => new
+            {
+                FileName = a.FileName,
+                FileUrl = a.FileUrl,
+                FileId = a.FileIdentifier,
+                ContentType = a.ContentType
+            }).ToArray();
+
 
             var payload = new
             {
@@ -55,6 +65,7 @@ public sealed class NotificationService : INotificationService
                 CcRecipients = request.CcRecipients,
                 Language = request.Language,
                 Data = requestData,
+                Attachments = attachments,
                 Timestamp = DateTime.UtcNow
             };
 

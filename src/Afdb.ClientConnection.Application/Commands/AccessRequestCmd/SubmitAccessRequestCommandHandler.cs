@@ -12,6 +12,7 @@ namespace Afdb.ClientConnection.Application.Commands.AccessRequestCmd;
 public sealed class SubmitAccessRequestCommandHandler(
     IAccessRequestRepository accessRequestRepository,
     IAuditService auditService,
+    IGraphService graphService,
     IAccessRequestDocumentService documentService,
     IFileValidationService fileValidationService,
     IMapper mapper,
@@ -19,6 +20,7 @@ public sealed class SubmitAccessRequestCommandHandler(
 {
     private readonly IAccessRequestRepository _accessRequestRepository = accessRequestRepository;
     private readonly IAuditService _auditService = auditService;
+    private readonly IGraphService _graphService = graphService;
     private readonly IAccessRequestDocumentService _documentService = documentService;
     private readonly IFileValidationService _fileValidationService = fileValidationService;
     private readonly IMapper _mapper = mapper;
@@ -39,8 +41,14 @@ public sealed class SubmitAccessRequestCommandHandler(
                 new FluentValidation.Results.ValidationFailure("Document","ERR.AccessRequest.OnlyPdfAllowed")
             });
 
-        var accessRequest = await _accessRequestRepository.GetByIdAsync(request.AccessRequestId)
-            ?? throw new NotFoundException(nameof(AccessRequest), request.AccessRequestId);
+        List<string> approvers = await _graphService.GetFifcAdmin(cancellationToken);
+        if (approvers == null || approvers.Count == 0)
+            throw new NotFoundException("ERR.General.MissingAdGroup");
+
+
+        var accessRequest = await _accessRequestRepository
+            .GetByIdAndRegistrationCodelAsync(request.AccessRequestId, request.RegistrationCode)
+            ?? throw new NotFoundException("ERR.AccessRequest.CodeNotFound");
 
         await _documentService.UploadAndAttachDocumentAsync(
                 accessRequest,
@@ -48,6 +56,7 @@ public sealed class SubmitAccessRequestCommandHandler(
                 cancellationToken);
 
 
+        accessRequest.SetApproversEmail(approvers.ToArray());
         accessRequest.Submit();
 
         await _accessRequestRepository.UpdateAsync(accessRequest);

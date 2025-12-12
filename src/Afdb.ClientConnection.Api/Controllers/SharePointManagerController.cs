@@ -82,7 +82,7 @@ public class SharePointManagerController : ControllerBase
 
             using var stream = uploadDto.File.OpenReadStream();
 
-            var webUrl = await _sharePointService.UploadFileAsync(
+            var (webUrl, id) = await _sharePointService.UploadFileAsync(
                 _settings.SiteId,
                 _settings.DisbursementDriveId,
                 _settings.DisbursementListId,
@@ -151,9 +151,10 @@ public class SharePointManagerController : ControllerBase
             var uploadStart = DateTime.UtcNow;
 
             string webUrl;
+            
             using (var uploadStream = file.OpenReadStream())
             {
-                webUrl = await _sharePointService.UploadFileAsync(
+              var(url, id) = await _sharePointService.UploadFileAsync(
                     _settings.SiteId,
                     _settings.DisbursementDriveId,
                     _settings.DisbursementListId,
@@ -161,6 +162,8 @@ public class SharePointManagerController : ControllerBase
                     uploadStream,
                     file.FileName,
                     null);
+
+                webUrl= url;
             }
 
             var uploadDuration = DateTime.UtcNow - uploadStart;

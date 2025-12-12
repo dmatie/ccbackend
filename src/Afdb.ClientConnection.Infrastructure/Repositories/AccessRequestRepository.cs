@@ -30,7 +30,23 @@ internal sealed class AccessRequestRepository : IAccessRequestRepository
             .Include(ar => ar.BusinessProfile)
             .Include(ar => ar.FinancingType)
             .Include(ar => ar.Projects)
+            .Include(ar => ar.Documents)
             .FirstOrDefaultAsync(ar => ar.Id == id);
+
+        return entity == null ? null : DomainMappings.MapToDomain(entity);
+    }
+
+    public async Task<AccessRequest?> GetByIdAndRegistrationCodelAsync(Guid id, string code )
+    {
+        var entity = await _context.AccessRequests
+            .Include(ar => ar.ProcessedBy)
+            .Include(ar => ar.Function)
+            .Include(ar => ar.Country)
+            .Include(ar => ar.BusinessProfile)
+            .Include(ar => ar.FinancingType)
+            .Include(ar => ar.Projects)
+            .Include(ar => ar.Documents)
+            .FirstOrDefaultAsync(ar => ar.Id == id && ar.Code.ToUpper().Equals(code.ToUpper()));
 
         return entity == null ? null : DomainMappings.MapToDomain(entity);
     }
@@ -44,6 +60,7 @@ internal sealed class AccessRequestRepository : IAccessRequestRepository
             .Include(ar => ar.BusinessProfile)
             .Include(ar => ar.FinancingType)
             .Include(ar => ar.Projects)
+            .Include(ar => ar.Documents)
             .FirstOrDefaultAsync(ar => ar.Email.ToLower() == email.ToLower());
 
         return entity == null ? null : DomainMappings.MapToDomain(entity);
@@ -58,6 +75,7 @@ internal sealed class AccessRequestRepository : IAccessRequestRepository
             .Include(ar => ar.BusinessProfile)
             .Include(ar => ar.FinancingType)
             .Include(ar => ar.Projects)
+            .Include(ar => ar.Documents)
             .FirstOrDefaultAsync(ar => ar.Email.ToLower() == email.ToLower() && ar.Status == status);
 
         return entity == null ? null : DomainMappings.MapToDomain(entity);
@@ -268,5 +286,20 @@ internal sealed class AccessRequestRepository : IAccessRequestRepository
         var items = entities.Select(DomainMappings.MapToDomain).ToList();
 
         return (items, totalCount);
+    }
+
+    public async Task<string> GenerateUniqueCodeAsync(CancellationToken cancellationToken = default)
+    {
+        var code = Guid.NewGuid().ToString("N")[..6].ToUpperInvariant();
+
+        var exists = await _context.AccessRequests
+            .AnyAsync(ar => ar.Code == code, cancellationToken);
+
+        if (exists)
+        {
+            code = Guid.NewGuid().ToString("N")[..6].ToUpperInvariant();
+        }
+
+        return code;
     }
 }

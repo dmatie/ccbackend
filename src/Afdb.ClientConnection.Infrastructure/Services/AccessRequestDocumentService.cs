@@ -14,6 +14,7 @@ public class AccessRequestDocumentService : IAccessRequestDocumentService
 {
     private readonly ISharePointGraphService _sharePointService;
     private readonly ICurrentUserService _currentUserService;
+    private readonly IPdfGenerationService _pdfGenerationService;
     private readonly ClientConnectionDbContext _context;
     private readonly SharePointSettings _sharePointSettings;
     private readonly ILogger<AccessRequestDocumentService> _logger;
@@ -21,12 +22,14 @@ public class AccessRequestDocumentService : IAccessRequestDocumentService
     public AccessRequestDocumentService(
         ISharePointGraphService sharePointService,
         ICurrentUserService currentUserService,
+        IPdfGenerationService pdfGenerationService,
         ClientConnectionDbContext context,
         IOptions<SharePointSettings> sharePointSettings,
         ILogger<AccessRequestDocumentService> logger)
     {
         _sharePointService = sharePointService;
         _currentUserService = currentUserService;
+        _pdfGenerationService = pdfGenerationService;
         _context = context;
         _sharePointSettings = sharePointSettings.Value;
         _logger = logger;
@@ -45,15 +48,15 @@ public class AccessRequestDocumentService : IAccessRequestDocumentService
 
         try
         {
-            var folderPath = $"AccessRequests/{accessRequest.Code}";
+            var folderPath = $"{accessRequest.Code}/Signed";
             var fileName = SanitizeFileName(document.FileName);
 
             using var stream = document.OpenReadStream();
 
-            var webUrl = await _sharePointService.UploadFileAsync(
+            var (webUrl, id) = await _sharePointService.UploadFileAsync(
                 _sharePointSettings.SiteId,
-                _sharePointSettings.DisbursementDriveId,
-                _sharePointSettings.DisbursementListId,
+                _sharePointSettings.AccessRequestDriveId,
+                _sharePointSettings.AccessRequestListId,
                 folderPath,
                 stream,
                 fileName,
@@ -111,21 +114,89 @@ public class AccessRequestDocumentService : IAccessRequestDocumentService
                 return null;
             }
 
-            var (fileStream, contentType, downloadFileName) =
-                await _sharePointService.DownloadByWebUrlAsync(document.DocumentUrl);
+            var relativePath = string.Join('/', code, "Signed", fileName);
+
+            (Stream FileContent, string ContentType, string FileName)? downloadResult = await
+                _sharePointService.DownloadBySharePointUrlAsync(
+                _sharePointSettings.AccessRequestDriveId,
+                relativePath);
+
+            if (downloadResult == null)
+                return null;
 
             return new FileDownloaded
             {
-                FileContent = fileStream,
-                ContentType = contentType,
-                FileName = downloadFileName
+                FileName = downloadResult?.FileName ?? string.Empty,
+                FileContent = downloadResult?.FileContent ?? Stream.Null,
+                ContentType = downloadResult?.ContentType ?? string.Empty
             };
+
         }
         catch (Exception ex)
         {
             _logger.LogError(ex,
                 "Error downloading document {FileName} for AccessRequest {Code}",
                 fileName, code);
+            throw;
+        }
+    }
+
+    public async Task<(string frenchUrl, string idFr, string englishUrl, string idEn)> GenerateAndUploadAuthorizationFormsAsync(
+       string code,
+       string firstName,
+       string lastName,
+       string email,
+       string functionName,
+       string functionNameFr,
+       List<string> projects,
+       CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(code))
+            throw new ArgumentException("AccessRequest code is required", nameof(code));
+
+        try
+        {
+            var frenchPdf = _pdfGenerationService.GenerateAuthorizationForm(
+                firstName, lastName, email, functionNameFr, projects, "fr");
+
+            var englishPdf = _pdfGenerationService.GenerateAuthorizationForm(
+                firstName, lastName, email, functionName, projects, "en");
+
+            var folderPath = $"{code}/Forms";
+            var frenchFileName = $"Formulaire_Autorisation_FR_{code}.pdf";
+            var englishFileName = $"Authorization_Form_EN_{code}.pdf";
+
+            using var frenchStream = new MemoryStream(frenchPdf);
+             var(frenchPdfUrl, idFr) = await _sharePointService.UploadFileAsync(
+                _sharePointSettings.SiteId,
+                _sharePointSettings.AccessRequestDriveId,
+                _sharePointSettings.AccessRequestListId,
+                folderPath,
+                frenchStream,
+                frenchFileName,
+                null);
+
+            using var englishStream = new MemoryStream(englishPdf);
+            var(englishPdfUrl, idEn) = await _sharePointService.UploadFileAsync(
+                _sharePointSettings.SiteId,
+                _sharePointSettings.AccessRequestDriveId,
+                _sharePointSettings.AccessRequestListId,
+                folderPath,
+                englishStream,
+                englishFileName,
+                null);
+
+            _logger.LogInformation(
+                "Authorization forms (FR/EN) generated and uploaded successfully for AccessRequest {Code}",
+                code);
+
+            return (frenchPdfUrl, idFr, englishPdfUrl, idEn);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex,
+                "Error generating and uploading authorization forms for AccessRequest {Code}",
+                code);
             throw;
         }
     }
