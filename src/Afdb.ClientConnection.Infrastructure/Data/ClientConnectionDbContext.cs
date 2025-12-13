@@ -35,6 +35,9 @@ public class ClientConnectionDbContext(DbContextOptions<ClientConnectionDbContex
     public DbSet<DisbursementA3Entity> DisbursementA3 { get; set; } = null!;
     public DbSet<DisbursementB1Entity> DisbursementB1 { get; set; } = null!;
     public DbSet<DisbursementPermissionEntity> DisbursementPermissions { get; set; } = null!;
+    public DbSet<OtherDocumentTypeEntity> OtherDocumentTypes { get; set; } = null!;
+    public DbSet<OtherDocumentEntity> OtherDocuments { get; set; } = null!;
+    public DbSet<OtherDocumentFileEntity> OtherDocumentFiles { get; set; } = null!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
