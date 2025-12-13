@@ -28,4 +28,15 @@ public interface IClaimRepository
         int pageNumber,
         int pageSize,
         CancellationToken cancellationToken = default);
+
+    Task<(List<Claim> items, int totalCount)> GetByUserIdWithFiltersAndPaginationAsync(
+        Guid userId,
+        ClaimStatus? status,
+        Guid? claimTypeId,
+        Guid? countryId,
+        DateTime? createdFrom,
+        DateTime? createdTo,
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken = default);
 }

@@ -250,4 +250,60 @@ internal sealed class ClaimRepository : IClaimRepository
 
         return (items, totalCount);
     }
+
+    public async Task<(List<Claim> items, int totalCount)> GetByUserIdWithFiltersAndPaginationAsync(
+        Guid userId,
+        ClaimStatus? status,
+        Guid? claimTypeId,
+        Guid? countryId,
+        DateTime? createdFrom,
+        DateTime? createdTo,
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken = default)
+    {
+        var query = _context.Claims
+            .Include(c => c.ClaimType)
+            .Include(c => c.Country)
+            .Include(c => c.User)
+            .Include(c => c.Processes).ThenInclude(pr => pr.User)
+            .Where(c => c.UserId == userId);
+
+        if (status.HasValue)
+        {
+            query = query.Where(c => c.Status == status.Value);
+        }
+
+        if (claimTypeId.HasValue)
+        {
+            query = query.Where(c => c.ClaimTypeId == claimTypeId.Value);
+        }
+
+        if (countryId.HasValue)
+        {
+            query = query.Where(c => c.CountryId == countryId.Value);
+        }
+
+        if (createdFrom.HasValue)
+        {
+            query = query.Where(c => c.CreatedAt >= createdFrom.Value);
+        }
+
+        if (createdTo.HasValue)
+        {
+            query = query.Where(c => c.CreatedAt <= createdTo.Value);
+        }
+
+        var totalCount = await query.CountAsync(cancellationToken);
+
+        var entities = await query
+            .OrderByDescending(c => c.CreatedAt)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        var items = entities.Select(DomainMappings.MapClaimToDomain).ToList();
+
+        return (items, totalCount);
+    }
 }
