@@ -4,5 +4,5 @@ public enum OtherDocumentStatus
 {
     Draft = 1,
     Submitted = 2,
-    UnderReview = 3
+    Consulted = 3
 }
