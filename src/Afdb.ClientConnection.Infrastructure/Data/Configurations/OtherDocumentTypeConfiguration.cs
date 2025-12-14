@@ -20,6 +20,11 @@ public class OtherDocumentTypeConfiguration : IEntityTypeConfiguration<OtherDocu
             .IsRequired()
             .HasMaxLength(200);
 
+        builder.Property(e => e.IsActive)
+            .IsRequired()
+            .HasDefaultValue(true);
+
+
         builder.Property(x => x.CreatedBy)
             .IsRequired()
             .HasMaxLength(255);
