@@ -50,6 +50,8 @@ public static class DependencyInjection
         services.AddScoped<IDisbursementTypeRepository, DisbursementTypeRepository>();
         services.AddScoped<ICurrencyRepository, CurrencyRepository>();
         services.AddScoped<IDisbursementPermissionRepository, DisbursementPermissionRepository>();
+        services.AddScoped<IOtherDocumentTypeRepository, OtherDocumentTypeRepository>();
+        services.AddScoped<IOtherDocumentRepository, OtherDocumentRepository>();
 
         // Services
         services.AddScoped<IAuditService, AuditService>();
@@ -106,6 +108,7 @@ public static class DependencyInjection
         services.AddScoped<IFileValidationService, FileValidationService>();
         services.AddScoped<IDisbursementDocumentService, DisbursementDocumentService>();
         services.AddScoped<IAccessRequestDocumentService, AccessRequestDocumentService>();
+        services.AddScoped<IOtherDocumentService, OtherDocumentService>();
 
         // Payload Encryption Service
         services.AddSingleton<IPayloadEncryptionService, PayloadEncryptionService>();
