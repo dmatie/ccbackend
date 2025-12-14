@@ -167,5 +167,14 @@ public class MappingProfile : Profile
 
         CreateMap<AzureAdUserDetails, AzureAdUserDetailsDto>();
 
+        CreateMap<OtherDocumentType, OtherDocumentTypeDto>();
+
+        CreateMap<OtherDocumentFile, OtherDocumentFileDto>();
+
+        CreateMap<OtherDocument, OtherDocumentDto>()
+            .ForMember(dest => dest.OtherDocumentType, opt => opt.MapFrom(src => src.OtherDocumentType))
+            .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User))
+            .ForMember(dest => dest.Files, opt => opt.MapFrom(src => src.Files));
+
     }
 }
