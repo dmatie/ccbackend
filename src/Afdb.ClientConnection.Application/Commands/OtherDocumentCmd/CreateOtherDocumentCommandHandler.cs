@@ -67,21 +67,21 @@ public sealed class CreateOtherDocumentCommandHandler(
 
         var otherDocument = new OtherDocument(otherDocumentNewParam);
 
-        var createdOtherDocument = await _otherDocumentRepository.AddAsync(otherDocument, cancellationToken);
+        await _otherDocumentRepository.AddAsync(otherDocument, cancellationToken);
 
         if (request.Files != null && request.Files.Count > 0)
         {
             await _otherDocumentService.UploadAndAttachFilesAsync(
-                createdOtherDocument,
+                otherDocument,
                 request.Files,
                 cancellationToken);
 
-            await _otherDocumentRepository.UpdateAsync(createdOtherDocument, cancellationToken);
+            await _otherDocumentRepository.UpdateAsync(otherDocument, cancellationToken);
         }
 
         return new CreateOtherDocumentResponse
         {
-            OtherDocument = _mapper.Map<DTOs.OtherDocumentDto>(createdOtherDocument),
+            OtherDocument = _mapper.Map<DTOs.OtherDocumentDto>(otherDocument),
             Message = "MSG.OtherDocument.CreatedSuccess"
         };
     }

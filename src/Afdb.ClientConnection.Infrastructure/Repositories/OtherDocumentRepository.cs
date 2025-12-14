@@ -1,4 +1,5 @@
 using Afdb.ClientConnection.Application.Common.Interfaces;
+using Afdb.ClientConnection.Application.Common.Models;
 using Afdb.ClientConnection.Domain.Entities;
 using Afdb.ClientConnection.Domain.Enums;
 using Afdb.ClientConnection.Infrastructure.Data;
@@ -118,5 +119,119 @@ internal sealed class OtherDocumentRepository : IOtherDocumentRepository
 
         _context.OtherDocuments.Remove(entity);
         await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<(IEnumerable<OtherDocument> Items, int TotalCount)> GetByUserIdWithFiltersAndPaginationAsync(
+        Guid userId,
+        OtherDocumentStatus? status,
+        Guid? otherDocumentTypeId,
+        string? sapCode,
+        string? year,
+        DateTime? createdFrom,
+        DateTime? createdTo,
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken = default)
+    {
+        var query = _context.OtherDocuments
+            .Include(o => o.OtherDocumentType)
+            .Include(o => o.User)
+            .Include(o => o.Files)
+            .Where(o => o.UserId == userId);
+
+        query = ApplyFilters(query, status, otherDocumentTypeId, sapCode, year, createdFrom, createdTo);
+
+        var totalCount = await query.CountAsync(cancellationToken);
+
+        var entities = await query
+            .OrderByDescending(o => o.CreatedAt)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        var domainObjects = entities.Select(DomainMappings.MapOtherDocumentToDomain).ToList();
+
+        return (domainObjects, totalCount);
+    }
+
+    public async Task<(IEnumerable<OtherDocument> Items, int TotalCount)> GetWithFiltersAndPaginationAsync(
+        UserContext userContext,
+        OtherDocumentStatus? status,
+        Guid? otherDocumentTypeId,
+        string? sapCode,
+        string? year,
+        DateTime? createdFrom,
+        DateTime? createdTo,
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken = default)
+    {
+        var query = _context.OtherDocuments
+            .Include(o => o.OtherDocumentType)
+            .Include(o => o.User)
+            .Include(o => o.Files)
+            .AsQueryable();
+
+        if (userContext.Role == UserRole.CountryAdmin)
+        {
+            var countryCodes = userContext.CountryCodes;
+            query = query.Where(o => countryCodes.Contains(o.User.Country.Code));
+        }
+
+        query = ApplyFilters(query, status, otherDocumentTypeId, sapCode, year, createdFrom, createdTo);
+
+        var totalCount = await query.CountAsync(cancellationToken);
+
+        var entities = await query
+            .OrderByDescending(o => o.CreatedAt)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        var domainObjects = entities.Select(DomainMappings.MapOtherDocumentToDomain).ToList();
+
+        return (domainObjects, totalCount);
+    }
+
+    private static IQueryable<Data.Entities.OtherDocumentEntity> ApplyFilters(
+        IQueryable<Data.Entities.OtherDocumentEntity> query,
+        OtherDocumentStatus? status,
+        Guid? otherDocumentTypeId,
+        string? sapCode,
+        string? year,
+        DateTime? createdFrom,
+        DateTime? createdTo)
+    {
+        if (status.HasValue)
+        {
+            query = query.Where(o => o.Status == status.Value);
+        }
+
+        if (otherDocumentTypeId.HasValue)
+        {
+            query = query.Where(o => o.OtherDocumentTypeId == otherDocumentTypeId.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(sapCode))
+        {
+            query = query.Where(o => o.SAPCode == sapCode);
+        }
+
+        if (!string.IsNullOrWhiteSpace(year))
+        {
+            query = query.Where(o => o.Year == year);
+        }
+
+        if (createdFrom.HasValue)
+        {
+            query = query.Where(o => o.CreatedAt >= createdFrom.Value);
+        }
+
+        if (createdTo.HasValue)
+        {
+            query = query.Where(o => o.CreatedAt <= createdTo.Value);
+        }
+
+        return query;
     }
 }
