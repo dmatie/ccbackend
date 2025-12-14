@@ -148,6 +148,26 @@ public class OtherDocumentsController(IMediator mediator) : ControllerBase
     }
 
     /// <summary>
+    /// Télécharger le premier fichier d'un document (Tous les rôles authentifiés)
+    /// </summary>
+    /// <param name="otherDocumentId">ID du document</param>
+    /// <param name="cancellationToken">Token d'annulation</param>
+    /// <returns>Le premier fichier du document</returns>
+    [HttpGet("DownloadFirstFile")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DownloadFirstFile(
+        [FromQuery] Guid otherDocumentId,
+        CancellationToken cancellationToken = default)
+    {
+        var query = new GetFirstFileQuery { OtherDocumentId = otherDocumentId };
+        var result = await _mediator.Send(query, cancellationToken);
+        return File(result.FileContent, result.ContentType, result.FileName);
+    }
+
+    /// <summary>
     /// Récupérer la liste des types de documents (Tous les rôles authentifiés)
     /// </summary>
     /// <param name="cancellationToken">Token d'annulation</param>
