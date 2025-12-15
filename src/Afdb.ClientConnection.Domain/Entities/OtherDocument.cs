@@ -1,6 +1,7 @@
 using Afdb.ClientConnection.Domain.Common;
 using Afdb.ClientConnection.Domain.EntitiesParams;
 using Afdb.ClientConnection.Domain.Enums;
+using Afdb.ClientConnection.Domain.Events;
 
 namespace Afdb.ClientConnection.Domain.Entities;
 
@@ -52,7 +53,21 @@ public sealed class OtherDocument : AggregateRoot
         Status = newParam.Status;
         SAPCode = newParam.SAPCode;
         LoanNumber = newParam.LoanNumber;
+        OtherDocumentType = newParam.OtherDocumentType;
+        User = newParam.User;
         CreatedBy = newParam.CreatedBy;
+
+        AddDomainEvent(new OtherDocumentCreatedEvent(
+            Id,
+            newParam.Name,
+            newParam.Year,
+            newParam.SAPCode,
+            newParam.LoanNumber,
+            newParam.OtherDocumentType,
+            newParam.User,
+            newParam.FileNames,
+            newParam.AssignTo,
+            newParam.AssignCc));
     }
 
     public OtherDocument(OtherDocumentLoadParam loadParam)

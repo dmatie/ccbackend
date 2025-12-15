@@ -15,6 +15,9 @@ public sealed class CreateOtherDocumentCommandHandler(
     ICurrentUserService currentUserService,
     IFileValidationService fileValidationService,
     IOtherDocumentService otherDocumentService,
+    ICountryAdminRepository countryAdminRepository,
+    IAccessRequestRepository accessRequestRepository,
+    IGraphService graphService,
     IMapper mapper)
     : IRequestHandler<CreateOtherDocumentCommand, CreateOtherDocumentResponse>
 {
@@ -24,6 +27,9 @@ public sealed class CreateOtherDocumentCommandHandler(
     private readonly ICurrentUserService _currentUserService = currentUserService;
     private readonly IFileValidationService _fileValidationService = fileValidationService;
     private readonly IOtherDocumentService _otherDocumentService = otherDocumentService;
+    private readonly ICountryAdminRepository _countryAdminRepository = countryAdminRepository;
+    private readonly IAccessRequestRepository _accessRequestRepository = accessRequestRepository;
+    private readonly IGraphService _graphService = graphService;
     private readonly IMapper _mapper = mapper;
 
     public async Task<CreateOtherDocumentResponse> Handle(
@@ -53,16 +59,44 @@ public sealed class CreateOtherDocumentCommandHandler(
         var user = await _userRepository.GetByEmailAsync(_currentUserService.Email)
             ?? throw new NotFoundException("ERR.General.UserNotFound");
 
+        var accessRequest = await _accessRequestRepository.GetByEmailAsync(user.Email)
+            ?? throw new NotFoundException("ERR.General.AccessRequestNotFound");
+
+        string[] fifcAdmins = (await _graphService.GetFifcAdmin(cancellationToken)).ToArray() ?? [];
+        string[] assignTo = [];
+
+        if (accessRequest.CountryId.HasValue)
+        {
+            var countryAdmins = await _countryAdminRepository.GetByCountryIdAsync(accessRequest.CountryId.Value, cancellationToken);
+
+            if (countryAdmins != null && countryAdmins.Any())
+            {
+                assignTo = countryAdmins.Select(ca => ca.User!.Email).ToArray();
+            }
+        }
+
+        if (assignTo.Length == 0)
+        {
+            assignTo = fifcAdmins;
+        }
+
+        var fileNames = request.Files?.Select(f => f.FileName).ToArray() ?? [];
+
         var otherDocumentNewParam = new OtherDocumentNewParam
         {
             OtherDocumentTypeId = request.OtherDocumentTypeId,
             Name = request.Name,
             Year = request.Year,
             UserId = user.Id,
-            Status = OtherDocumentStatus.Draft,
+            Status = OtherDocumentStatus.Submitted,
             SAPCode = request.SAPCode,
             LoanNumber = request.LoanNumber,
-            CreatedBy = _currentUserService.Email
+            CreatedBy = _currentUserService.Email,
+            User = user,
+            OtherDocumentType = otherDocumentType,
+            FileNames = fileNames,
+            AssignTo = assignTo,
+            AssignCc = fifcAdmins
         };
 
         var otherDocument = new OtherDocument(otherDocumentNewParam);

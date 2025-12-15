@@ -22,5 +22,8 @@ public enum NotificationEventType
     AccessRequestApproved,
     AccessRequestRejected,
 
-    OtpCreated
+    OtpCreated,
+
+    OtherDocumentCreated,
+    OtherDocumentCreatedInternal
 }
