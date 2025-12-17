@@ -34,7 +34,7 @@ public sealed class DisbursementDocumentService : IDisbursementDocumentService
     public async Task<FileDownloaded?> 
         DownloadAttachDocumentsAsync(string reference, string fileName , CancellationToken cancellationToken = default)
     {
-        // Le chemin relatif commence après "Disbursements"
+        // Le chemin relatif commence aprÃ¨s "Disbursements"
         var relativePath = string.Join('/', reference, fileName);
 
         (Stream FileContent, string ContentType, string FileName)? downloadResult = await
