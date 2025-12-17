@@ -334,6 +334,15 @@ public sealed class Disbursement : AggregateRoot
         _documents.Add(document);
     }
 
+    public void RemoveDocument(Guid documentId)
+    {
+        var document = _documents.FirstOrDefault(d => d.Id == documentId);
+        if (document == null)
+            throw new ArgumentException($"Document with ID {documentId} not found");
+
+        _documents.Remove(document);
+    }
+
     public bool CanBeSubmitted => Status == DisbursementStatus.Draft || Status == DisbursementStatus.BackedToClient;
     public bool CanBeApproved => Status == DisbursementStatus.Submitted;
     public bool CanBeRejected => Status == DisbursementStatus.Submitted;

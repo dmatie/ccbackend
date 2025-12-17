@@ -1,4 +1,4 @@
-﻿using Afdb.ClientConnection.Application.Common.Interfaces;
+using Afdb.ClientConnection.Application.Common.Interfaces;
 using Afdb.ClientConnection.Infrastructure.Settings;
 using Microsoft.Extensions.Logging;
 using Microsoft.Graph;
@@ -164,6 +164,39 @@ public class SharePointGraphService : ISharePointGraphService
         string fileName = driveItem.Name ?? "fichier";
 
         return (stream, contentType, fileName);
+    }
+
+    public async Task DeleteFileByUrlAsync(string webUrl)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(webUrl))
+                throw new ArgumentException("L'URL du fichier est obligatoire.", nameof(webUrl));
+
+            string encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(webUrl))
+                .TrimEnd('=')
+                .Replace('+', '-')
+                .Replace('/', '_');
+
+            var driveItem = await _graphClient
+                .Shares[encoded]
+                .DriveItem
+                .GetAsync()
+                ?? throw new FileNotFoundException("Impossible de résoudre l'élément à partir de l'URL fournie.");
+
+            if (driveItem.ParentReference == null)
+                throw new InvalidOperationException("DriveId introuvable pour l'élément spécifié.");
+
+            await _graphClient
+                .Drives[driveItem.ParentReference.DriveId]
+                .Items[driveItem.Id]
+                .DeleteAsync();
+        }
+        catch (ODataError ex)
+        {
+            throw new InvalidOperationException(
+                $"Graph API error: {ex.Error?.Code} - {ex.Error?.Message}", ex);
+        }
     }
 
     private async Task<DriveItem?> EnsureFolderExistsAsync(string _driveId, string folderPath)

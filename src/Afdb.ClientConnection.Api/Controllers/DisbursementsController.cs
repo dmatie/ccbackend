@@ -192,6 +192,48 @@ public class DisbursementsController(IMediator mediator) : ControllerBase
         return Ok(result);
     }
 
+    [HttpPost("{id}/documents")]
+    [Authorize(Policy = "ExternalUsers")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<AddDisbursementDocumentsResponse>> AddDocuments(
+        Guid id,
+        [FromForm] List<IFormFile> documents,
+        CancellationToken cancellationToken = default)
+    {
+        var command = new AddDisbursementDocumentsCommand
+        {
+            DisbursementId = id,
+            Documents = documents
+        };
+        var result = await _mediator.Send(command, cancellationToken);
+        return Ok(result);
+    }
+
+    [HttpDelete("{id}/documents/{documentId}")]
+    [Authorize(Policy = "ExternalUsers")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<DeleteDisbursementDocumentResponse>> DeleteDocument(
+        Guid id,
+        Guid documentId,
+        CancellationToken cancellationToken = default)
+    {
+        var command = new DeleteDisbursementDocumentCommand
+        {
+            DisbursementId = id,
+            DocumentId = documentId
+        };
+        var result = await _mediator.Send(command, cancellationToken);
+        return Ok(result);
+    }
+
     [HttpGet("DownloadDocument")]
     [Authorize]
     public async Task<IActionResult> DownloadDocument([FromQuery] GetFileUploadedQuery query,
