@@ -17,15 +17,7 @@ public sealed class CreateOtherDocumentCommandValidator : AbstractValidator<Crea
             .WithMessage("ERR.OtherDocument.NameRequired")
             .MaximumLength(200)
             .WithMessage("ERR.OtherDocument.NameTooLong")
-            .SafeText(sanitizationService);
-
-        RuleFor(x => x.Year)
-            .NotEmpty()
-            .WithMessage("ERR.OtherDocument.YearRequired")
-            .Length(4)
-            .WithMessage("ERR.OtherDocument.YearMustBe4Digits")
-            .Matches(@"^\d{4}$")
-            .WithMessage("ERR.OtherDocument.YearMustBeNumeric");
+            .SafeText();
 
         RuleFor(x => x.SAPCode)
             .NotEmpty()

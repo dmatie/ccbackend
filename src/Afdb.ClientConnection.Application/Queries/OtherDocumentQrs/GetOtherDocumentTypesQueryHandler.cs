@@ -20,7 +20,7 @@ public sealed class GetOtherDocumentTypesQueryHandler : IRequestHandler<GetOther
 
     public async Task<List<OtherDocumentTypeDto>> Handle(GetOtherDocumentTypesQuery request, CancellationToken cancellationToken)
     {
-        var otherDocumentTypes = await _otherDocumentTypeRepository.GetActiveAsync();
+        var otherDocumentTypes = await _otherDocumentTypeRepository.GetAllAsync();
 
         return _mapper.Map<List<OtherDocumentTypeDto>>(otherDocumentTypes);
     }

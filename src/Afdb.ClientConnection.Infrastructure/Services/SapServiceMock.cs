@@ -27,6 +27,11 @@ internal sealed class SapServiceMock : ISapService
         }
     }
 
+    public Task<List<SapProjectLoanNumber>> GetProjectLoanNumbersAsync(string sapCode, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task<IEnumerable<ProjectDto>> GetProjectsAsync(CancellationToken cancellationToken = default)
         => Task.FromResult<IEnumerable<ProjectDto>>(_projects);
 

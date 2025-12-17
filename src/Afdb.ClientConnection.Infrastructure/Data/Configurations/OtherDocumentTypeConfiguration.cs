@@ -24,7 +24,6 @@ public class OtherDocumentTypeConfiguration : IEntityTypeConfiguration<OtherDocu
             .IsRequired()
             .HasDefaultValue(true);
 
-
         builder.Property(x => x.CreatedBy)
             .IsRequired()
             .HasMaxLength(255);
@@ -36,5 +35,26 @@ public class OtherDocumentTypeConfiguration : IEntityTypeConfiguration<OtherDocu
             .WithOne(x => x.OtherDocumentType)
             .HasForeignKey(x => x.OtherDocumentTypeId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasData(
+            new OtherDocumentTypeEntity
+            {
+                Id = Guid.Parse("eae933da-22e9-4735-96c4-4483157bb27f"),
+                Name = "specimen signature",
+                NameFr = "Spécimen de signature",
+                IsActive = true,
+                CreatedBy = "System",
+                CreatedAt = new DateTime(2025,12,14,0,0,0,DateTimeKind.Utc),
+            },
+            new OtherDocumentTypeEntity
+            {
+                Id = Guid.Parse("25364bf0-87ae-4a5e-9897-c1eb5351ad5f"),
+                Name = "Other",
+                NameFr = "Autre",
+                IsActive = true,
+                CreatedBy = "System",
+                CreatedAt = new DateTime(2025, 12, 14, 0, 0, 0, DateTimeKind.Utc),
+            }
+         );
     }
 }

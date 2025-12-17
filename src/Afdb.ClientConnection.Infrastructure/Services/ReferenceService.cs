@@ -9,6 +9,7 @@ public class ReferenceService(
     IClaimTypeRepository claimTypeRepository,
     IDisbursementTypeRepository disbursementTypeRepository,
     ICurrencyRepository currencyRepository,
+    IOtherDocumentTypeRepository otherDocumentTypeRepository,
     IFinancingTypeRepository financingTypeRepository) : IReferenceService
 {
     private readonly IFunctionRepository _functionRepository = functionRepository;
@@ -17,7 +18,10 @@ public class ReferenceService(
     private readonly IFinancingTypeRepository _financingTypeRepository = financingTypeRepository;
     private readonly IClaimTypeRepository _claimTypeRepository = claimTypeRepository;
     private readonly IDisbursementTypeRepository _disbursementTypeRepository = disbursementTypeRepository;
+    private readonly IOtherDocumentTypeRepository _otherDocumentTypeRepository = otherDocumentTypeRepository;
     private readonly ICurrencyRepository _currencyRepository = currencyRepository;
+
+
 
     public async Task<Function?> GetFunctionByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
@@ -81,4 +85,6 @@ public class ReferenceService(
     public async Task<IEnumerable<Currency>?> GetCurrenciesAsync(CancellationToken cancellationToken = default) =>
         await _currencyRepository.GetAllAsync();
 
+    public async Task<IEnumerable<OtherDocumentType>?> GetDocumentTypeAsync(CancellationToken cancellationToken = default) =>
+        await _otherDocumentTypeRepository.GetAllAsync();
 }

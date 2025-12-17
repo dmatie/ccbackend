@@ -31,12 +31,6 @@ public sealed class OtherDocument : AggregateRoot
         if (string.IsNullOrWhiteSpace(newParam.Name))
             throw new ArgumentException("Name cannot be empty", nameof(newParam.Name));
 
-        if (string.IsNullOrWhiteSpace(newParam.Year))
-            throw new ArgumentException("Year cannot be empty", nameof(newParam.Year));
-
-        if (newParam.Year.Length != 4)
-            throw new ArgumentException("Year must be 4 characters", nameof(newParam.Year));
-
         if (newParam.UserId == Guid.Empty)
             throw new ArgumentException("UserId must be a valid GUID", nameof(newParam.UserId));
 
@@ -48,7 +42,7 @@ public sealed class OtherDocument : AggregateRoot
 
         OtherDocumentTypeId = newParam.OtherDocumentTypeId;
         Name = newParam.Name;
-        Year = newParam.Year;
+        Year = DateTime.UtcNow.Year.ToString();
         UserId = newParam.UserId;
         Status = newParam.Status;
         SAPCode = newParam.SAPCode;
@@ -57,17 +51,20 @@ public sealed class OtherDocument : AggregateRoot
         User = newParam.User;
         CreatedBy = newParam.CreatedBy;
 
-        AddDomainEvent(new OtherDocumentCreatedEvent(
-            Id,
-            newParam.Name,
-            newParam.Year,
-            newParam.SAPCode,
-            newParam.LoanNumber,
-            newParam.OtherDocumentType,
-            newParam.User,
-            newParam.FileNames,
-            newParam.AssignTo,
-            newParam.AssignCc));
+        AddDomainEvent(new OtherDocumentCreatedEvent(new OtherDocumentEventNewParam
+        {
+            OtherDocumentId = Id,
+            DocumentName = newParam.Name,
+            Year = Year,
+            SapCode = newParam.SAPCode,
+            LoanNumber = newParam.LoanNumber,
+            OtherDocumentType = newParam.OtherDocumentType,
+            CreatedByUser = newParam.User,
+            FileNames = newParam.FileNames,
+            AssignToEmail = newParam.AssignTo,
+            AssignCcEmail = newParam.AssignCc
+
+        }));
     }
 
     public OtherDocument(OtherDocumentLoadParam loadParam)

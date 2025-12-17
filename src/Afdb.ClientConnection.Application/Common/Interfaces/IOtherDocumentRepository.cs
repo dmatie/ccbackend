@@ -11,19 +11,20 @@ public interface IOtherDocumentRepository
     Task<IEnumerable<OtherDocument>> GetAllAsync(CancellationToken cancellationToken = default);
     Task<IEnumerable<OtherDocument>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
     Task<IEnumerable<OtherDocument>> GetByStatusAsync(OtherDocumentStatus status, CancellationToken cancellationToken = default);
-    Task<IEnumerable<OtherDocument>> GetByProjectAsync(string sapCode, string loanNumber, CancellationToken cancellationToken = default);
+    Task<IEnumerable<OtherDocument>> GetByProjectAsync(string sapCode, string loanNumber, 
+        CancellationToken cancellationToken = default);
 
     Task<(IEnumerable<OtherDocument> Items, int TotalCount)> GetByUserIdWithFiltersAndPaginationAsync(
-        Guid userId,
-        OtherDocumentStatus? status,
-        Guid? otherDocumentTypeId,
-        string? sapCode,
-        string? year,
-        DateTime? createdFrom,
-        DateTime? createdTo,
-        int pageNumber,
-        int pageSize,
-        CancellationToken cancellationToken = default);
+       Guid userId,
+       OtherDocumentStatus? status,
+       Guid? otherDocumentTypeId,
+       string? sapCode,
+       string? year,
+       DateTime? createdFrom,
+       DateTime? createdTo,
+       int pageNumber,
+       int pageSize,
+       CancellationToken cancellationToken = default);
 
     Task<(IEnumerable<OtherDocument> Items, int TotalCount)> GetWithFiltersAndPaginationAsync(
         UserContext userContext,

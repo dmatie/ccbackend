@@ -8,6 +8,11 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
+
+        CreateMap<SapProjectLoanNumber, ProjectLoanNumberDto>()
+            .ForMember(dest => dest.SapCode, opt => opt.MapFrom(src => src.ProjectCode))
+            .ForMember(dest => dest.LoanNumber, opt => opt.MapFrom(src => src.LoanNumber));
+
         CreateMap<SapProjectData, ProjectDto>()
             .ForMember(dest => dest.SapCode, opt => opt.MapFrom(src => src.ProjectCode))
             .ForMember(dest => dest.CountryCode, opt => opt.MapFrom(src => src.CountryCode))
@@ -175,6 +180,5 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.OtherDocumentType, opt => opt.MapFrom(src => src.OtherDocumentType))
             .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User))
             .ForMember(dest => dest.Files, opt => opt.MapFrom(src => src.Files));
-
     }
 }

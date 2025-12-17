@@ -37,14 +37,7 @@ public class OtherDocumentsController(IMediator mediator) : ControllerBase
     /// <summary>
     /// Récupérer les documents d'un utilisateur avec filtres et pagination (ExternalUser uniquement)
     /// </summary>
-    /// <param name="status">Filtre par statut du document</param>
-    /// <param name="otherDocumentTypeId">Filtre par type de document</param>
-    /// <param name="sapCode">Filtre par code SAP</param>
-    /// <param name="year">Filtre par année</param>
-    /// <param name="createdFrom">Date de début de la plage de création</param>
-    /// <param name="createdTo">Date de fin de la plage de création</param>
-    /// <param name="pageNumber">Numéro de page (défaut: 1)</param>
-    /// <param name="pageSize">Taille de page (défaut: 10, max: 100)</param>
+    /// <param name="query">Paramètre de Filtre</param>
     /// <param name="cancellationToken">Token d'annulation</param>
     /// <returns>Liste paginée des documents de l'utilisateur avec métadonnées</returns>
     [HttpGet("by-user-filtered")]
@@ -55,28 +48,9 @@ public class OtherDocumentsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<GetOtherDocumentsByUserFilteredResponse>> GetOtherDocumentsByUserFiltered(
-        [FromQuery] OtherDocumentStatus? status,
-        [FromQuery] Guid? otherDocumentTypeId,
-        [FromQuery] string? sapCode,
-        [FromQuery] string? year,
-        [FromQuery] DateTime? createdFrom,
-        [FromQuery] DateTime? createdTo,
-        [FromQuery] int pageNumber = 1,
-        [FromQuery] int pageSize = 10,
+        [FromQuery] GetOtherDocumentsByUserFilteredQuery query,
         CancellationToken cancellationToken = default)
     {
-        var query = new GetOtherDocumentsByUserFilteredQuery
-        {
-            Status = status,
-            OtherDocumentTypeId = otherDocumentTypeId,
-            SAPCode = sapCode,
-            Year = year,
-            CreatedFrom = createdFrom,
-            CreatedTo = createdTo,
-            PageNumber = pageNumber,
-            PageSize = pageSize
-        };
-
         var result = await _mediator.Send(query, cancellationToken);
         return Ok(result);
     }
@@ -84,14 +58,7 @@ public class OtherDocumentsController(IMediator mediator) : ControllerBase
     /// <summary>
     /// Récupérer la liste des documents avec filtres et pagination (Admin, DA, DO uniquement)
     /// </summary>
-    /// <param name="status">Filtre par statut du document</param>
-    /// <param name="otherDocumentTypeId">Filtre par type de document</param>
-    /// <param name="sapCode">Filtre par code SAP</param>
-    /// <param name="year">Filtre par année</param>
-    /// <param name="createdFrom">Date de début de la plage de création</param>
-    /// <param name="createdTo">Date de fin de la plage de création</param>
-    /// <param name="pageNumber">Numéro de page (défaut: 1)</param>
-    /// <param name="pageSize">Taille de page (défaut: 10, max: 100)</param>
+    /// <param name="query">Filtre</param>
     /// <param name="cancellationToken">Token d'annulation</param>
     /// <returns>Liste paginée des documents avec métadonnées</returns>
     [HttpGet("with-filters")]
@@ -101,28 +68,9 @@ public class OtherDocumentsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<GetOtherDocumentsWithFiltersResponse>> GetOtherDocumentsWithFilters(
-        [FromQuery] OtherDocumentStatus? status,
-        [FromQuery] Guid? otherDocumentTypeId,
-        [FromQuery] string? sapCode,
-        [FromQuery] string? year,
-        [FromQuery] DateTime? createdFrom,
-        [FromQuery] DateTime? createdTo,
-        [FromQuery] int pageNumber = 1,
-        [FromQuery] int pageSize = 10,
+        [FromQuery] GetOtherDocumentsWithFiltersQuery  query,
         CancellationToken cancellationToken = default)
     {
-        var query = new GetOtherDocumentsWithFiltersQuery
-        {
-            Status = status,
-            OtherDocumentTypeId = otherDocumentTypeId,
-            SAPCode = sapCode,
-            Year = year,
-            CreatedFrom = createdFrom,
-            CreatedTo = createdTo,
-            PageNumber = pageNumber,
-            PageSize = pageSize
-        };
-
         var result = await _mediator.Send(query, cancellationToken);
         return Ok(result);
     }
@@ -148,26 +96,6 @@ public class OtherDocumentsController(IMediator mediator) : ControllerBase
     }
 
     /// <summary>
-    /// Télécharger le premier fichier d'un document (Tous les rôles authentifiés)
-    /// </summary>
-    /// <param name="otherDocumentId">ID du document</param>
-    /// <param name="cancellationToken">Token d'annulation</param>
-    /// <returns>Le premier fichier du document</returns>
-    [HttpGet("DownloadFirstFile")]
-    [Authorize]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DownloadFirstFile(
-        [FromQuery] Guid otherDocumentId,
-        CancellationToken cancellationToken = default)
-    {
-        var query = new GetFirstFileQuery { OtherDocumentId = otherDocumentId };
-        var result = await _mediator.Send(query, cancellationToken);
-        return File(result.FileContent, result.ContentType, result.FileName);
-    }
-
-    /// <summary>
     /// Récupérer la liste des types de documents (Tous les rôles authentifiés)
     /// </summary>
     /// <param name="cancellationToken">Token d'annulation</param>
@@ -182,5 +110,25 @@ public class OtherDocumentsController(IMediator mediator) : ControllerBase
         var query = new GetOtherDocumentTypesQuery();
         var result = await _mediator.Send(query, cancellationToken);
         return Ok(result);
+    }
+
+    /// <summary>
+    /// Télécharger le premier fichier d'un document (Tous les rôles authentifiés)
+    /// </summary>
+    /// <param name="otherDocumentId">ID du document</param>
+    /// <param name="cancellationToken">Token d'annulation</param>
+    /// <returns>Le premier fichier du document</returns>
+    [HttpGet("DownloadFile")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DownloadFirstFile(
+        [FromQuery] Guid otherDocumentId,
+        CancellationToken cancellationToken = default)
+    {
+        var query = new GetFirstFileQuery { OtherDocumentId = otherDocumentId };
+        var result = await _mediator.Send(query, cancellationToken);
+        return File(result.FileContent, result.ContentType, result.FileName);
     }
 }

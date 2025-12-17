@@ -5,6 +5,7 @@ using Afdb.ClientConnection.Domain.EntitiesParams;
 using Afdb.ClientConnection.Domain.Enums;
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 
 namespace Afdb.ClientConnection.Application.Commands.OtherDocumentCmd;
 
@@ -38,7 +39,7 @@ public sealed class CreateOtherDocumentCommandHandler(
     {
         if (request.Files != null && request.Files.Count > 0)
         {
-            await _fileValidationService.ValidateAndThrowAsync(request.Files, "Files");
+            await _fileValidationService.ValidateFilesAsync(request.Files);
         }
 
         var otherDocumentType = await _otherDocumentTypeRepository.GetByIdAsync(request.OtherDocumentTypeId);
@@ -86,22 +87,19 @@ public sealed class CreateOtherDocumentCommandHandler(
         {
             OtherDocumentTypeId = request.OtherDocumentTypeId,
             Name = request.Name,
-            Year = request.Year,
             UserId = user.Id,
             Status = OtherDocumentStatus.Submitted,
             SAPCode = request.SAPCode,
             LoanNumber = request.LoanNumber,
             CreatedBy = _currentUserService.Email,
-            User = user,
-            OtherDocumentType = otherDocumentType,
             FileNames = fileNames,
             AssignTo = assignTo,
-            AssignCc = fifcAdmins
+            AssignCc = fifcAdmins,
+            User = user,
+            OtherDocumentType = otherDocumentType,
         };
 
         var otherDocument = new OtherDocument(otherDocumentNewParam);
-
-        await _otherDocumentRepository.AddAsync(otherDocument, cancellationToken);
 
         if (request.Files != null && request.Files.Count > 0)
         {
@@ -109,13 +107,15 @@ public sealed class CreateOtherDocumentCommandHandler(
                 otherDocument,
                 request.Files,
                 cancellationToken);
-
-            await _otherDocumentRepository.UpdateAsync(otherDocument, cancellationToken);
         }
+
+        await _otherDocumentRepository.AddAsync(otherDocument, cancellationToken);
+        var createdOtherDocument = await _otherDocumentRepository.GetByIdAsync(otherDocument.Id, cancellationToken)
+            ?? throw new InvalidOperationException("ERR.OtherDocument.CreationFailed");
 
         return new CreateOtherDocumentResponse
         {
-            OtherDocument = _mapper.Map<DTOs.OtherDocumentDto>(otherDocument),
+            OtherDocument = _mapper.Map<DTOs.OtherDocumentDto>(createdOtherDocument),
             Message = "MSG.OtherDocument.CreatedSuccess"
         };
     }

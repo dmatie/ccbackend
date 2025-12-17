@@ -28,10 +28,18 @@ public sealed class GetClaimsByUserFilteredQueryHandler : IRequestHandler<GetCla
     public async Task<GetClaimsByUserFilteredResponse> Handle(GetClaimsByUserFilteredQuery request, CancellationToken cancellationToken)
     {
         if (request.PageNumber < 1)
-            throw new ValidationException("PageNumber must be greater than or equal to 1.");
+        {
+            throw new ValidationException(new[] {
+                new FluentValidation.Results.ValidationFailure("PageNumber", "ERR.General.PageNumberGEOne")
+            });
+        }
 
         if (request.PageSize < 1 || request.PageSize > 100)
-            throw new ValidationException("PageSize must be between 1 and 100.");
+        {
+            throw new ValidationException(new[] {
+                new FluentValidation.Results.ValidationFailure("PageSize", "ERR.General.PageSizeInterval")
+            });
+        }
 
         var user = await _userRepository.GetByEmailAsync(_currentUserService.Email);
         if (user == null)

@@ -7,4 +7,5 @@ public interface ISapService
 {
     Task<IEnumerable<ProjectDto>> GetProjectsAsync(CancellationToken cancellationToken = default);
     Task<List<SapProjectData>> GetProjectsByCountryAsync(string countryCode, CancellationToken cancellationToken = default);
+    Task<List<SapProjectLoanNumber>> GetProjectLoanNumbersAsync(string sapCode, CancellationToken cancellationToken = default);
 }

@@ -252,15 +252,15 @@ internal sealed class ClaimRepository : IClaimRepository
     }
 
     public async Task<(List<Claim> items, int totalCount)> GetByUserIdWithFiltersAndPaginationAsync(
-        Guid userId,
-        ClaimStatus? status,
-        Guid? claimTypeId,
-        Guid? countryId,
-        DateTime? createdFrom,
-        DateTime? createdTo,
-        int pageNumber,
-        int pageSize,
-        CancellationToken cancellationToken = default)
+       Guid userId,
+       ClaimStatus? status,
+       Guid? claimTypeId,
+       Guid? countryId,
+       DateTime? createdFrom,
+       DateTime? createdTo,
+       int pageNumber,
+       int pageSize,
+       CancellationToken cancellationToken = default)
     {
         var query = _context.Claims
             .Include(c => c.ClaimType)

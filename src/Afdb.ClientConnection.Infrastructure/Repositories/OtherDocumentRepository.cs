@@ -63,7 +63,8 @@ internal sealed class OtherDocumentRepository : IOtherDocumentRepository
         return entities.Select(DomainMappings.MapOtherDocumentToDomain).ToList();
     }
 
-    public async Task<IEnumerable<OtherDocument>> GetByStatusAsync(OtherDocumentStatus status, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<OtherDocument>> GetByStatusAsync(OtherDocumentStatus status, 
+        CancellationToken cancellationToken = default)
     {
         var entities = await _context.OtherDocuments
             .Include(o => o.OtherDocumentType)
@@ -76,7 +77,8 @@ internal sealed class OtherDocumentRepository : IOtherDocumentRepository
         return entities.Select(DomainMappings.MapOtherDocumentToDomain).ToList();
     }
 
-    public async Task<IEnumerable<OtherDocument>> GetByProjectAsync(string sapCode, string loanNumber, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<OtherDocument>> GetByProjectAsync(string sapCode, string loanNumber, 
+        CancellationToken cancellationToken = default)
     {
         var entities = await _context.OtherDocuments
             .Include(o => o.OtherDocumentType)
@@ -141,7 +143,7 @@ internal sealed class OtherDocumentRepository : IOtherDocumentRepository
 
         query = ApplyFilters(query, status, otherDocumentTypeId, sapCode, year, createdFrom, createdTo);
 
-        var totalCount = await query.CountAsync(cancellationToken);
+      var totalCount = await query.CountAsync(cancellationToken);
 
         var entities = await query
             .OrderByDescending(o => o.CreatedAt)
@@ -172,10 +174,18 @@ internal sealed class OtherDocumentRepository : IOtherDocumentRepository
             .Include(o => o.Files)
             .AsQueryable();
 
-        if (userContext.Role == UserRole.CountryAdmin)
+        if (userContext.RequiresCountryFilter)
         {
-            var countryCodes = userContext.CountryCodes;
-            query = query.Where(o => countryCodes.Contains(o.User.Country.Code));
+            query = query
+                .Join(
+                    _context.AccessRequests,
+                    otherDocument => otherDocument.User!.Email,
+                    accessRequest => accessRequest.Email,
+                    (otherDocument, accessRequest) => new { otherDocument, accessRequest }
+                )
+                .Where(x => x.accessRequest.CountryEntityId != null &&
+                    userContext.CountryIds.Contains(x.accessRequest.CountryEntityId.Value))
+                .Select(x => x.otherDocument);
         }
 
         query = ApplyFilters(query, status, otherDocumentTypeId, sapCode, year, createdFrom, createdTo);

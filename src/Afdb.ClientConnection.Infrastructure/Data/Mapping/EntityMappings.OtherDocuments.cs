@@ -65,7 +65,6 @@ internal partial class EntityMappings
     {
         var entity = new OtherDocumentFileEntity
         {
-            Id = source.Id,
             OtherDocumentId = source.OtherDocumentId,
             FileName = source.FileName,
             FileSize = source.FileSize,

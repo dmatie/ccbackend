@@ -8,7 +8,6 @@ public sealed record CreateOtherDocumentCommand : IRequest<CreateOtherDocumentRe
 {
     public Guid OtherDocumentTypeId { get; init; }
     public string Name { get; init; } = string.Empty;
-    public string Year { get; init; } = string.Empty;
     public string SAPCode { get; init; } = string.Empty;
     public string LoanNumber { get; init; } = string.Empty;
     public IFormFileCollection? Files { get; init; }

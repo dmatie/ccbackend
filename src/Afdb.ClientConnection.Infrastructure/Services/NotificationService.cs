@@ -42,7 +42,10 @@ public sealed class NotificationService : INotificationService
                 ["adminclaimurl"] = _frontEndUrl.AdminClaim,
                 ["userdisburl"] = _frontEndUrl.UserDisbursement,
                 ["admindisburl"] = _frontEndUrl.AdminDisbursement,
-                ["amendreqsturl"] = _frontEndUrl.UserAccessRequestAmend
+                ["amendreqsturl"] = _frontEndUrl.UserAccessRequestAmend,
+                ["completereqsturl"] = _frontEndUrl.UserAccessRequestComplete,
+                ["userdocurl"] = _frontEndUrl.UserOtherDocument,
+                ["admindocurl"] = _frontEndUrl.AdminOtherDocument
             };
 
             NotificationDataItem[] requestData = [..request.Data, .. NotificationRequest.ConvertDictionaryToArray(appUrlData)];

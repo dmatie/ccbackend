@@ -25,7 +25,7 @@ public sealed class AddOtherDocumentFileCommandHandler(
             });
         }
 
-        await _fileValidationService.ValidateAndThrowAsync(request.Files, "Files");
+        await _fileValidationService.ValidateFilesAsync(request.Files);
 
         var otherDocument = await _otherDocumentRepository.GetByIdAsync(request.OtherDocumentId);
         if (otherDocument == null)

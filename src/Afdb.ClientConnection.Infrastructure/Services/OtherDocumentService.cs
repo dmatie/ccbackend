@@ -14,6 +14,7 @@ public class OtherDocumentService : IOtherDocumentService
 {
     private readonly ISharePointGraphService _sharePointService;
     private readonly ICurrentUserService _currentUserService;
+    private readonly IAccessRequestRepository _accessRequestRepository;
     private readonly ClientConnectionDbContext _context;
     private readonly SharePointSettings _sharePointSettings;
     private readonly ILogger<OtherDocumentService> _logger;
@@ -21,12 +22,14 @@ public class OtherDocumentService : IOtherDocumentService
     public OtherDocumentService(
         ISharePointGraphService sharePointService,
         ICurrentUserService currentUserService,
+        IAccessRequestRepository accessRequestRepository,
         ClientConnectionDbContext context,
         IOptions<SharePointSettings> sharePointSettings,
         ILogger<OtherDocumentService> logger)
     {
         _sharePointService = sharePointService;
         _currentUserService = currentUserService;
+        _accessRequestRepository = accessRequestRepository;
         _context = context;
         _sharePointSettings = sharePointSettings.Value;
         _logger = logger;
@@ -40,12 +43,16 @@ public class OtherDocumentService : IOtherDocumentService
         if (otherDocument == null)
             throw new ArgumentNullException(nameof(otherDocument));
 
+        var accessRequest = await _accessRequestRepository.GetByEmailAsync(_currentUserService.Email)
+            ?? throw new InvalidOperationException("ERR.General.UserNotExist");
+
         if (files == null || files.Count == 0)
             throw new ArgumentException("At least one file is required", nameof(files));
 
         try
         {
-            var folderPath = $"OtherDocuments/{otherDocument.SAPCode}/{otherDocument.LoanNumber}/{otherDocument.Year}";
+            var folderPath = 
+                $"{accessRequest.Code}/OtherDocuments/{otherDocument.SAPCode}/{otherDocument.LoanNumber}/{otherDocument.Year}";
 
             foreach (var file in files)
             {
@@ -64,6 +71,10 @@ public class OtherDocumentService : IOtherDocumentService
                     stream,
                     fileName,
                     null);
+
+                _logger.LogInformation(
+                    "File URL {FileUrl} uploaded successfully with unique {Id}",
+                    webUrl, id);
 
                 var fileParam = new OtherDocumentFileNewParam
                 {
@@ -128,7 +139,11 @@ public class OtherDocumentService : IOtherDocumentService
                 return null;
             }
 
-            var relativePath = string.Join('/', "OtherDocuments", otherDocument.SAPCode,
+            var accessRequest = await _accessRequestRepository.GetByEmailAsync(file.CreatedBy)
+                ?? throw new InvalidOperationException("ERR.General.UserNotExist");
+
+
+            var relativePath = string.Join('/',accessRequest.Code , "OtherDocuments", otherDocument.SAPCode,
                 otherDocument.LoanNumber, otherDocument.Year, fileName);
 
             (Stream FileContent, string ContentType, string FileName)? downloadResult = await

@@ -1,5 +1,6 @@
 using Afdb.ClientConnection.Domain.Common;
 using Afdb.ClientConnection.Domain.Entities;
+using Afdb.ClientConnection.Domain.EntitiesParams;
 
 namespace Afdb.ClientConnection.Domain.Events;
 
@@ -19,30 +20,20 @@ public sealed class OtherDocumentCreatedEvent : DomainEvent
     public string[] AssignToEmail { get; }
     public string[] AssignCcEmail { get; }
 
-    public OtherDocumentCreatedEvent(
-        Guid otherDocumentId,
-        string documentName,
-        string year,
-        string sapCode,
-        string loanNumber,
-        OtherDocumentType otherDocumentType,
-        User createdByUser,
-        string[] fileNames,
-        string[] assignToEmail,
-        string[] assignCcEmail)
+    public OtherDocumentCreatedEvent(OtherDocumentEventNewParam newParam)
     {
-        OtherDocumentId = otherDocumentId;
-        DocumentName = documentName;
-        Year = year;
-        SAPCode = sapCode;
-        LoanNumber = loanNumber;
-        OtherDocumentTypeName = otherDocumentType.Name;
-        OtherDocumentTypeNameFr = otherDocumentType.NameFr;
-        CreatedByFirstName = createdByUser.FirstName;
-        CreatedByLastName = createdByUser.LastName;
-        CreatedByEmail = createdByUser.Email;
-        FileNames = fileNames;
-        AssignToEmail = assignToEmail;
-        AssignCcEmail = assignCcEmail;
+        OtherDocumentId = newParam.OtherDocumentId;
+        DocumentName = newParam.DocumentName;
+        Year = newParam.Year;
+        SAPCode = newParam.SapCode;
+        LoanNumber = newParam.LoanNumber;
+        OtherDocumentTypeName = newParam.OtherDocumentType.Name;
+        OtherDocumentTypeNameFr = newParam.OtherDocumentType.NameFr;
+        CreatedByFirstName = newParam.CreatedByUser.FirstName;
+        CreatedByLastName = newParam.CreatedByUser.LastName;
+        CreatedByEmail = newParam.CreatedByUser.Email;
+        FileNames = newParam.FileNames;
+        AssignToEmail = newParam.AssignToEmail;
+        AssignCcEmail = newParam.AssignCcEmail;
     }
 }
